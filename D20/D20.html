@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D20</title> <!-- Updated tab name -->
+    <link rel="icon" href="pics/d20.png" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
+            color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .character-card {
+            background: linear-gradient(to bottom, #4b4b4b, #2f2f2f);
+            border-radius: 15px;
+            padding: 20px;
+            width: 960px; /* Updated width */
+            height: 540px; /* Updated height */
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: row; /* Ensure horizontal layout */
+            justify-content: space-between; /* Space between stats and portrait */
+            align-items: flex-start; /* Align items at the top */
+        }
+        .character-name {
+            text-align: center;
+            font-size: 32px; /* Resized font */
+            padding: 15px;
+            border: 2px solid #676767;
+            border-radius: 10px;
+            background: #2c2c2c;
+            margin-bottom: 20px;
+        }
+        .details {
+            display: flex;
+            flex-direction: row-reverse; /* Reverse the order to place the portrait on the right */
+            justify-content: space-between;
+            width: 100%; /* Ensure full use of space */
+        }
+        .stats {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            width: 50%;
+        }
+        .portrait {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%; /* Adjust width to take half of the card */
+            position: relative; /* Make the portrait container the reference for .actions */
+        }
+        .stat, .action-slot {
+            margin: 5px; /* Reduced margin to move circles closer */
+            width: 75px; /* Equal width */
+            height: 75px; /* Equal height */
+            border: 2px solid #676767;
+            border-radius: 50%; /* Ensures the element is a circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            font-size: 18px; /* Resized text */
+        }
+        input, select {
+            font-size: 18px; /* Resized input font */
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #676767;
+            border-radius: 5px;
+            background: #2c2c2c;
+            color: #f0f0f0;
+            width: 90%;
+        }
+        .portrait img {
+            width: 240px; /* Updated image width */
+            height: 450px; /* Updated image height */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            object-fit: cover;
+            border: 5px solid #000000; /* Optional: Add a border for the frame */
+        }
+        .actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: absolute;
+            left: -60px;
+            height: 100%;
+            gap: 10px;
+            z-index: 10; /* Ensure it appears above other elements */
+        }
+
+        .actions .action-slot {
+            margin: 0; /* Remove extra margin */
+            width: 75px; /* Equal width */
+            height: 75px; /* Equal height */
+            border: 2px solid #676767;
+            border-radius: 50%; /* Ensures the element is a circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            font-size: 18px; /* Resized text */
+            color: #f0f0f0;
+            cursor: pointer; /* Add pointer cursor for buttons */
+            outline: none; /* Remove default button outline */
+        }
+
+        .actions .action-slot:hover {
+            background: #533663; /* Add hover effect */
+            transition: background 0.2s ease-in-out;
+        }
+
+        .actions .action-slot:last-child {
+            position: absolute;
+            bottom: 50px;
+            left: 25px;
+            display: none; /* Hide Action Slot H by default */
+        }
+        .stats-box {
+            background: #2c2c2c;
+            border: 2px solid #676767;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            width: 50%;
+            height: 484px; /* Set a fixed height */
+            overflow-y: auto; /* Enable vertical scrolling if content overflows */
+        }
+
+        .stats-box input {
+            width: 94%; /* Make inputs fill the box */
+            margin-bottom: 10px; /* Add spacing between inputs */
+            font-size: 16px;
+            padding: 8px;
+            border: 1px solid #676767;
+            border-radius: 5px;
+            background: #1e1e1e;
+            color: #f0f0f0;
+        }
+        .rulebook-icon {
+            position: absolute;
+            top: 10px; /* Distance from the top */
+            right: 10px; /* Distance from the right */
+            width: 50px; /* Icon width */
+            height: 50px; /* Icon height */
+            z-index: 1000; /* Ensure it appears above other elements */
+        }
+
+        .rulebook-icon img {
+            width: 100%; /* Make the image fill the container */
+            height: 100%; /* Maintain aspect ratio */
+            object-fit: cover; /* Ensure the image fits properly */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            border-radius: 5px; /* Optional: Add rounded corners */
+            border: 2px solid #676767; /* Optional: Add a border */
+        }
+
+        .rulebook-icon img:hover {
+            transform: scale(1.1); /* Slight zoom effect on hover */
+            transition: transform 0.2s ease-in-out; /* Smooth transition */
+        }
+        .modal {
+            position: fixed;
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Adjust for the modal's size */
+            width: 100%; /* Full-screen width */
+            height: 100%; /* Full-screen height */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            display: none; /* Hidden by default */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            z-index: 2000; /* Ensure it appears above other elements */
+        }
+
+        .modal-content {
+            background: #2c2c2c;
+            border: 2px solid #676767;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-height: 80%;
+            overflow-y: auto; /* Enable scrolling for long content */
+            color: #f0f0f0;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: #ff0000;
+        }
+        .rules-content h3 {
+            margin-top: 20px;
+            color: #533663;
+        }
+
+        .rules-content p {
+            margin: 10px 0;
+        }
+        .die-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            z-index: 1; /* Lower z-index to place it below the buttons */
+        }
+        .action-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2c2c2c;
+            border: 2px solid #676767;
+            border-radius: 10px;
+            padding: 20px; /* Adjust padding for spacing */
+            display: flex;
+            flex-direction: column; /* Stack search bar and icons vertically */
+            gap: 15px; /* Add spacing between search bar and icons */
+            z-index: 1000; /* Ensure it appears above other elements */
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
+            width: 850px; /* Slightly smaller than the character card */
+            height: 480px; /* Slightly smaller than the character card */
+            overflow-y: auto; /* Enable scrolling if content overflows */
+        }
+
+        .menu-content {
+            display: flex;
+            flex-direction: row; /* Arrange icons in a horizontal line */
+            flex-wrap: wrap; /* Allow icons to wrap to the next line if needed */
+            justify-content: flex-start; /* Align icons to the left */
+            align-items: center; /* Align icons vertically */
+            gap: 10px; /* Add spacing between icons */
+        }
+
+        .menu-icon {
+            width: 50px; /* Set a smaller width for the icons */
+            height: 50px; /* Set a smaller height for the icons */
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: transform 0.2s, border-color 0.2s;
+            object-fit: cover; /* Ensure the image fits properly within the icon */
+        }
+
+        .menu-icon:hover {
+            transform: scale(1.2); /* Slightly enlarge the icon on hover */
+            border-color: #533663;
+        }
+    </style>
+</head>
+<body>
+    <div class="character-card">
+        <div class="stats-box">
+            <input type="text" placeholder="Character Name" id="characterName" oninput="updateName()"><br>
+            <input type="number" placeholder="Level" id="level" oninput="updateStats()"><br>
+
+            <!-- Dropdown for Race -->
+            <select id="race" onchange="updateRace()">
+                <option value="">Select Race</option>
+                <option value="Human">Human</option>
+                <option value="Robot">Robot</option>
+                <option value="Geovector">Geovector</option>
+                <option value="Eltinian">Eltinian</option>
+                <option value="Reptilian">Reptilian</option>
+                <option value="GoldSerian">GoldSerian</option>
+            </select><br>
+
+            <!-- Dropdown for Class -->
+            <select id="class" onchange="updateClass()">
+                <option value="">Select Class</option>
+                <option value="Mechanic">Mechanic</option>
+                <option value="Artillery Specialist">Artillery Specialist</option>
+                <option value="Pilot">Pilot</option>
+                <option value="Medic">Medic</option>
+                <option value="Swordsman">Swordsman</option>
+                <option value="Brawler">Brawler</option>
+            </select><br>
+
+            <div class="button-row">
+                <button onclick="exportCode()" style="margin-top: 10px; padding: 10px; background: #533663; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Export Code</button>
+                <button onclick="pasteCode()" style="margin-top: 10px; padding: 10px; background: #3c763d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Paste Code</button>
+            </div>
+        </div>
+        <div class="details">
+            <div class="portrait">
+                <img id="portraitImage" src="placeholder.jpg" alt="Character Portrait">
+                <input type="file" accept="image/*" id="imageUploader" onchange="uploadImage()">
+                <div class="actions">
+                    <button class="action-slot">1</button>
+                    <button class="action-slot">2</button>
+                    <button class="action-slot">3</button>
+                    <button class="action-slot">H</button>
+                </div>
+            </div>
+            <div class="die-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative;">
+                <button id="rollDie" onclick="rollDie()" style="background: none; border: none; cursor: pointer; position: relative;">
+                    <img src="pics/20SidedDie.png" alt="Roll D20" style="width: 300px; height: 300px;">
+                    <div id="dieResult" style="position: absolute; top: 48%; left: 51.5%; transform: translate(-50%, -50%); font-size: 48px; color: #533663; font-weight: bold;">-</div>
+                </button>
+            </div>
+            <audio id="diceSound" src="sounds/diceroll.mp3"></audio>
+        </div>
+    </div>
+    <div class="circle-container">
+        <div class="circle" id="circle1"></div>
+        <div class="circle" id="circle2"></div>
+    </div>
+    <div class="rulebook-icon">
+        <a href="javascript:void(0);" title="Rulebook" onclick="openRulebook()">
+            <img src="pics/RuleBook.png" alt="Rulebook Icon">
+        </a>
+    </div>
+
+    <!-- Rulebook Modal -->
+    <div id="rulebookModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeRulebook()">×</span>
+            <h2>Rules of the Game: D20</h2>
+            <div class="rules-content">
+                <h3>Initial Setup</h3>
+                <p><strong>1. Player Order:</strong> Each player rolls a 20-sided die (d20). The highest roll goes first, and turn order follows from highest to lowest. In case of a tie, the players who tied roll again.</p>
+                <p><strong>2. Character Creation:</strong> Each player starts at level 5. Players choose a class as determined or approved by the GM. Each class comes with a base skill provided by the GM. Each character starts with one weapon that suits their class.</p>
+                
+                <h3>Turn Structure</h3>
+                <p><strong>1. Turn Composition:</strong> Each turn (scene) allows a player one movement and one action. Actions may include attacking, using a skill, interacting with the environment, or other GM-approved actions.</p>
+                <p><strong>2. Scenes:</strong> A scene represents one complete turn rotation. When multiple players are in the same scene, they may interact with each other. Once all players have completed their actions in a scene, the turn order continues with the next scene.</p>
+                
+                <h3>Skill Checks and Combat</h3>
+                <p><strong>1. Skill Checks:</strong> Players must roll a d20 to determine the success of an action. The roll must be equal to or higher than a target number set by the GM to succeed.</p>
+                <p><strong>2. Combat:</strong> Initial combat order follows the turn order established at the game’s start. Enemies also roll a d20 to determine their place in the combat order. Combat proceeds in rounds, following the established order.</p>
+                
+                <h3>Leveling Up</h3>
+                <p><strong>1. Experience and Levels:</strong> Characters can gain up to three levels in a single scene. Leveling up can result from battles, events, or finding artifacts.</p>
+                
+                <h3>Inventory Management</h3>
+                <p><strong>1. Items:</strong> Each character can hold up to three items. Certain items may allow characters to hold more than three items. Items must be class-appropriate and approved by the GM.</p>
+                
+                <h3>Game Rules and Endgame</h3>
+                <p><strong>1. Class and Weapon Restrictions:</strong> Characters' weapons must suit their class unless otherwise specified by the GM. Class changes are not allowed unless the GM decides otherwise.</p>
+                <p><strong>2. Artifact Rules:</strong> Once an artifact's description and effects are determined by the GM, they cannot change.</p>
+                <p><strong>3. Starting Location:</strong> All characters begin in the story in the same location unless specified by the GM.</p>
+                <p><strong>4. Endgame:</strong> The game concludes once the designated end goal is achieved. The end goal is defined by the GM and can involve completing a quest, defeating a final boss, or reaching a specific destination.</p>
+                
+                <h3>Miscellaneous</h3>
+                <p><strong>1. Game Master's Role:</strong> The GM is responsible for setting scenes, defining challenges, and arbitrating rules. The GM has the final say on all game-related decisions, including interpreting rules and resolving disputes.</p>
+                <p><strong>2. Interaction and Role-Playing:</strong> Players are encouraged to role-play their characters and interact with the game world creatively. Communication and cooperation between players can enhance the storytelling experience.</p>
+            </div>
+        </div>
+    </div>
+    <audio id="rulebookSound" src="sounds/RuleBook.mp3"></audio>
+
+    <!-- Action Menu -->
+    <div id="actionMenu" class="action-menu" style="display: none;">
+        <input type="text" id="searchBar" placeholder="Search items..." oninput="filterMenu()" 
+               style="width: 80%; height: 6%; padding: 3px; margin-bottom: 10px; border: 1px solid #676767; border-radius: 5px; background: #1e1e1e; color: #f0f0f0; font-size: 12px;">
+        <div class="menu-content"></div>
+        <button id="clearSlotButton" onclick="clearSlot()" 
+                style="margin-top: 15px; padding: 10px; background: #ff4d4d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; width: 80%;">
+            Clear Slot
+        </button>
+    </div>
+
+    <script>
+        function updateName() {
+            const nameField = document.getElementById('characterName').value;
+            const nameDiv = document.querySelector('.character-name');
+            nameDiv.textContent = nameField || 'Character Name';
+        }
+
+        function updateStats() {
+            const level = document.getElementById('level').value || 'Level';
+            const race = document.getElementById('race').value || 'Race';
+            const className = document.getElementById('class').value || 'Class';
+            const skill = document.getElementById('skill').value || 'Skill';
+            const passiveTrait = document.getElementById('passiveTrait').value || 'Passive Trait';
+            const classPassiveTrait = document.getElementById('classPassiveTrait').value || 'Class Passive Trait';
+            const atk = document.getElementById('atk').value || 'ATK';
+            const def = document.getElementById('def').value || 'DEF';
+
+            const stats = document.querySelector('.stats');
+            stats.innerHTML = `
+                <div class="stat">Lvl. ${level}</div>
+                <div class="stat">Race: ${race}</div>
+                <div class="stat">Class: ${className}</div>
+                <div class="stat">Skill: ${skill}</div>
+                <div class="stat">Passive: ${passiveTrait}</div>
+                <div class="stat">Class Passive: ${classPassiveTrait}</div>
+                <div class="stat">ATK: ${atk}</div>
+                <div class="stat">DEF: ${def}</div>
+            `;
+        }
+
+        function uploadImage() {
+            const fileInput = document.getElementById('imageUploader');
+            const imageElement = document.getElementById('portraitImage');
+            
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageElement.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function rollDie() {
+            const result = Math.floor(Math.random() * 20) + 1;
+            document.getElementById('dieResult').textContent = result;
+            const diceSound = document.getElementById('diceSound');
+            diceSound.play();
+        }
+
+        function exportCode() {
+            const characterName = document.getElementById('characterName').value || 'Character Name';
+            const level = document.getElementById('level').value || 'Level';
+            const race = document.getElementById('race').value || 'Race';
+            const className = document.getElementById('class').value || 'Class';
+            const passiveTrait = document.getElementById('passiveTrait').value || 'Passive Trait';
+            const classPassiveTrait = document.getElementById('classPassiveTrait').value || 'Class Passive Trait';
+
+            const exportData = `
+                Character Name: ${characterName}
+                Level: ${level}
+                Race: ${race}
+                Class: ${className}
+                Passive Trait: ${passiveTrait}
+                Class Passive Trait: ${classPassiveTrait}
+            `;
+
+            navigator.clipboard.writeText(exportData.trim()).then(() => {
+                alert('Character information copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        function pasteCode() {
+            navigator.clipboard.readText().then((text) => {
+                const lines = text.split('\n').map(line => line.trim());
+                const data = {};
+                lines.forEach(line => {
+                    const [key, value] = line.split(':').map(part => part.trim());
+                    if (key && value) {
+                        data[key] = value;
+                    }
+                });
+
+                document.getElementById('characterName').value = data['Character Name'] || '';
+                document.getElementById('level').value = data['Level'] || '';
+                document.getElementById('race').value = data['Race'] || '';
+                document.getElementById('class').value = data['Class'] || '';
+                document.getElementById('passiveTrait').value = data['Passive Trait'] || '';
+                document.getElementById('classPassiveTrait').value = data['Class Passive Trait'] || '';
+                updateStats();
+            }).catch(err => {
+                console.error('Read clipboard: ', err);
+                alert('Pasted Data from clipboard.');
+            });
+        }
+
+        function updateRace() {
+            const race = document.getElementById('race').value;
+            const statsBox = document.querySelector('.stats-box'); // Select the stats box
+
+            // Define race-to-passive trait and icon mapping
+            const raceTraits = {
+                Geovector: { 
+                    passive: "Brute Strength", 
+                    icon: "brutestrength.png", 
+                    description: "Naturally strong, providing enhanced physical abilities." 
+                },
+                Eltinian: { 
+                    passive: "Advanced Perception", 
+                    icon: "advancedperception.png", 
+                    description: "Adaptive senses, allowing for heightened awareness." 
+                },
+                Reptilian: { 
+                    passive: "Slither", 
+                    icon: "slither.png", 
+                    description: "Naturally quick and sneaky, ideal for stealth." 
+                },
+                GoldSerian: { 
+                    passive: "First Guard", 
+                    icon: "firstguard.png", 
+                    description: "Immunity to the first hit of a battle." 
+                }
+            };
+
+            // Get the selected race traits
+            const selectedRace = raceTraits[race] || { passive: "", icon: "", description: "" };
+
+            // Remove any existing race passive trait display
+            const existingPassive = statsBox.querySelector('.race-passive-trait');
+            if (existingPassive) {
+                existingPassive.remove();
+            }
+
+            // Add the passive trait inline with skills
+            if (selectedRace.passive) {
+                const passiveTraitCard = document.createElement('div');
+                passiveTraitCard.className = 'race-passive-trait';
+                passiveTraitCard.style.display = 'inline-flex';
+                passiveTraitCard.style.alignItems = 'center';
+                passiveTraitCard.style.marginRight = '5px'; // Reduced margin for closer spacing
+                passiveTraitCard.style.cursor = 'pointer';
+
+                const passiveIcon = document.createElement('img');
+                passiveIcon.src = `pics/charicons/raceicons/passiveicons/${selectedRace.icon}`;
+                passiveIcon.alt = selectedRace.passive;
+                passiveIcon.style.width = '50px';
+                passiveIcon.style.height = '50px';
+
+                passiveTraitCard.appendChild(passiveIcon);
+
+                // Add click event to show modal with passive trait details
+                passiveTraitCard.addEventListener('click', () => {
+                    showModal(selectedRace.passive, selectedRace.icon, selectedRace.description, true);
+                });
+
+                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
+                statsBox.insertBefore(passiveTraitCard, exportButtonRow); // Insert above the button row
+            }
+        }
+
+        function updateClass() {
+            const className = document.getElementById('class').value;
+            const statsBox = document.querySelector('.stats-box'); // Select the stats box
+
+            // Define class-to-skills, icons, passive traits, and descriptions mapping
+            const classTraits = {
+                Mechanic: {
+                    skills: [
+                        { skill: "Machine Maintenance", icon: "maintenance.png", description: "Be able to work at a workbench and be able to run maintenance on ships or machinery." },
+                        { skill: "Config", icon: "config.png", description: "If you have a tool bag on you, you can modify weapons and gear on the go by equipping artifacts on them." }
+                    ]
+                },
+                "Artillery Specialist": {
+                    passive: "Holster",
+                    passiveIcon: "holster.png",
+                    passiveDescription: "Gains +1 item slot specifically for firearms only. Dual pistols count as one item. Requires Firearms.",
+                    skills: [
+                        { skill: "Lock On", icon: "locked on.png", description: "Increase your accuracy or precision by one multiplied by skill level." }
+                    ]
+                },
+                Pilot: {
+                    skills: [
+                        { skill: "Ship Call", icon: "shipcall.png", description: "If you have one, you can pilot any ship. After activation, wait one full turn rotation for the ship registered to you." }
+                    ]
+                },
+                Medic: {
+                    passive: "Effective Dosage",
+                    passiveIcon: "effectivedosage.png",
+                    passiveDescription: "Your health items do twice the effects.",
+                    skills: [
+                        { skill: "Medical Experiment", icon: "medicalexperiment.png", description: "You can mix ingredients for new item effects." }
+                    ]
+                },
+                Swordsman: {
+                    passive: "Sheath",
+                    passiveIcon: "sheath.png",
+                    passiveDescription: "Gains +1 item slot specifically for swords only.",
+                    skills: [
+                        { skill: "Footwork", icon: "footwork.png", description: "Gains additional stealth points on use. Requires Sword." }
+                    ]
+                },
+                Brawler: {
+                    passive: "Bloodsport",
+                    passiveIcon: "bloodsport.png",
+                    passiveDescription: "In battle domes, you earn twice the amount of credits when winning a fight.",
+                    skills: [
+                        { skill: "Ambush", icon: "ambush.png", description: "On unexpected targets, the first hit will be 5x the result of a d20." }
+                    ]
+                }
+            };
+
+            // Get the selected class traits
+            const selectedClass = classTraits[className] || { passive: "", passiveIcon: "", passiveDescription: "", skills: [] };
+
+            // Remove any existing passive trait display
+            const existingPassive = statsBox.querySelector('.passive-trait');
+            if (existingPassive) {
+                existingPassive.remove();
+            }
+
+            // Add the passive trait inline with skills
+            if (selectedClass.passive) {
+                const passiveTraitButton = document.createElement('button');
+                passiveTraitButton.className = 'passive-trait';
+                passiveTraitButton.style.display = 'inline-flex';
+                passiveTraitButton.style.alignItems = 'center';
+                passiveTraitButton.style.marginRight = '5px'; // Reduced margin for closer spacing
+                passiveTraitButton.style.background = 'none';
+                passiveTraitButton.style.border = 'none';
+                passiveTraitButton.style.cursor = 'pointer';
+
+                const passiveIcon = document.createElement('img');
+                passiveIcon.src = `pics/charicons/classicons/passiveicons/${selectedClass.passiveIcon}`;
+                passiveIcon.alt = selectedClass.passive;
+                passiveIcon.style.width = '50px';
+                passiveIcon.style.height = '50px';
+
+                passiveTraitButton.appendChild(passiveIcon);
+
+                // Add click event to show modal with passive trait details
+                passiveTraitButton.addEventListener('click', () => {
+                    showModal(selectedClass.passive, selectedClass.passiveIcon, selectedClass.passiveDescription, true);
+                });
+
+                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
+                statsBox.insertBefore(passiveTraitButton, exportButtonRow); // Insert above the button row
+            }
+
+            // Remove any existing skill buttons
+            const existingSkills = statsBox.querySelectorAll('.skill-button');
+            existingSkills.forEach(skill => skill.remove());
+
+            // Add skill buttons for the selected class
+            selectedClass.skills.forEach(skill => {
+                const skillButton = document.createElement('button');
+                skillButton.className = 'skill-button';
+                skillButton.style.display = 'inline-flex';
+                skillButton.style.alignItems = 'center';
+                skillButton.style.marginRight = '5px'; // Reduced margin for closer spacing
+                skillButton.style.background = 'none';
+                skillButton.style.border = 'none';
+                skillButton.style.cursor = 'pointer';
+
+                const skillIcon = document.createElement('img');
+                skillIcon.src = `pics/charicons/classicons/skillicons/${skill.icon}`;
+                skillIcon.alt = skill.skill;
+                skillIcon.style.width = '50px';
+                skillIcon.style.height = '50px';
+                skillIcon.style.marginRight = '5px'; // Reduced margin for closer spacing
+
+                skillButton.appendChild(skillIcon);
+
+                // Add click event to show modal with skill details
+                skillButton.addEventListener('click', () => {
+                    showModal(skill.skill, skill.icon, skill.description, false);
+                });
+
+                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
+                statsBox.insertBefore(skillButton, exportButtonRow); // Insert above the button row
+            });
+        }
+
+        // Function to show a modal with the icon and description
+        function showModal(title, icon, description, isPassive = false) {
+            // Define the correct paths for icons
+            const iconPaths = {
+                "Machine Maintenance": "pics/charicons/classicons/skillicons/maintenance.png",
+                "Ambush": "pics/charicons/classicons/skillicons/ambush.png",
+                "Footwork": "pics/charicons/classicons/skillicons/footwork.png",
+                "Medical Experiment": "pics/charicons/classicons/skillicons/medicalexperiment.png",
+                "Ship Call": "pics/charicons/classicons/skillicons/shipcall.png",
+                "Lock On": "pics/charicons/classicons/skillicons/locked on.png",
+                "Config": "pics/charicons/classicons/skillicons/config.png",
+                "Bloodsport": "pics/charicons/classicons/passiveicons/bloodsport.png",
+                "Sheath": "pics/charicons/classicons/passiveicons/sheath.png",
+                "Effective Dosage": "pics/charicons/classicons/passiveicons/effectivedosage.png",
+                "Holster": "pics/charicons/classicons/passiveicons/holster.png",
+                "Reptile Efficiency": "pics/charicons/raceicons/passiveicons/reptile efficiency.png",
+                "Slither": "pics/charicons/raceicons/passiveicons/slither.png",
+                "Advanced Perception": "pics/charicons/raceicons/passiveicons/advancedperception.png",
+                "Brute Strength": "pics/charicons/raceicons/passiveicons/brutestrength.png",
+                "First Guard": "pics/charicons/raceicons/passiveicons/firstguard.png",
+                "Decoy": "pics/charicons/raceicons/skillicons/decoy.png",
+                "Connect": "pics/charicons/raceicons/skillicons/connect.png"
+            };
+
+            // Create the modal container
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '50%'; /* Center vertically */
+            modal.style.left = '50%'; /* Center horizontally */
+            modal.style.transform = 'translate(-50%, -50%)'; /* Adjust for the modal's size */
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            modal.style.display = 'flex';
+            modal.style.flexDirection = 'column';
+            modal.style.alignItems = 'center';
+            modal.style.padding = '20px';
+            modal.style.borderRadius = '10px';
+            modal.style.zIndex = '2000';
+
+            // Create the modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.background = '#2c2c2c';
+            modalContent.style.border = '2px solid #676767';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.padding = '20px';
+            modalContent.style.color = '#f0f0f0';
+            modalContent.style.textAlign = 'center';
+            modalContent.style.width = '400px';
+            modalContent.style.boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.6)';
+
+            // Add the icon to the modal
+            const modalIcon = document.createElement('img');
+            modalIcon.src = iconPaths[title] || icon; // Use the correct path or fallback to the provided icon
+            modalIcon.alt = title;
+            modalIcon.style.width = '100px';
+            modalIcon.style.height = '100px';
+            modalIcon.style.marginBottom = '10px';
+
+            // Add the title to the modal
+            const modalTitle = document.createElement('h3');
+            modalTitle.textContent = title;
+
+            // Add the description to the modal
+            const modalDescription = document.createElement('p');
+            modalDescription.textContent = description;
+
+            // Add a close button to the modal
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Close';
+            closeButton.style.marginTop = '10px';
+            closeButton.style.padding = '10px';
+            closeButton.style.background = '#533663';
+            closeButton.style.color = '#f0f0f0';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '5px';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.addEventListener('click', () => {
+                modal.remove();
+            });
+
+            // Append all elements to the modal content
+            modalContent.appendChild(modalIcon);
+            modalContent.appendChild(modalTitle);
+            modalContent.appendChild(modalDescription);
+            modalContent.appendChild(closeButton);
+
+            // Append the modal content to the modal container
+            modal.appendChild(modalContent);
+
+            // Append the modal to the body
+            document.body.appendChild(modal);
+        }
+
+        let selectedSlot = null; // Variable to store the clicked action slot
+
+        // Add event listeners to action slots
+        document.querySelectorAll('.action-slot').forEach(slot => {
+            slot.addEventListener('click', (event) => {
+                selectedSlot = event.target; // Store the clicked action slot
+                const menu = document.getElementById('actionMenu');
+                menu.style.display = 'flex'; // Show the menu
+            });
+        });
+
+        // List of image names in the folder
+        const imageList = [
+            'bayonet.png',
+            'bowie-knife.png',
+            'brass knuckles.png',
+            'broad-dagger.png',
+            'broadsword.png',
+            'crescent-blade.png',
+            'revolver.png',
+            'silver-bullet.png',
+            'steyr-aug.png',
+            'thrown-knife.png'
+        ];
+
+        // Dynamically populate the menu with images
+        const menuContent = document.querySelector('.menu-content');
+
+        menuContent.innerHTML = ''; // Clear existing content before populating
+        imageList.forEach(imageName => {
+            const imgElement = document.createElement('img');
+            imgElement.src = `pics/itemicons/equip/${imageName}`;
+            imgElement.alt = imageName;
+            imgElement.className = 'menu-icon';
+            imgElement.onclick = () => selectIcon(imageName);
+            menuContent.appendChild(imgElement);
+        });
+
+        // Function to handle icon selection
+        function selectIcon(iconName) {
+            if (selectedSlot) {
+                // Set the selected image as the background of the clicked action slot
+                selectedSlot.style.backgroundImage = `url('pics/itemicons/equip/${iconName}')`;
+                selectedSlot.style.backgroundSize = 'cover'; // Ensure the image covers the slot
+                selectedSlot.style.backgroundPosition = 'center'; // Center the image
+
+                // Remove the label (text content) from the action slot
+                selectedSlot.textContent = '';
+            }
+            const menu = document.getElementById('actionMenu');
+            menu.style.display = 'none'; // Hide the menu
+        }
+
+        // Hide the menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const menu = document.getElementById('actionMenu');
+            if (menu.style.display === 'flex' && !menu.contains(event.target) && !event.target.classList.contains('action-slot')) {
+                menu.style.display = 'none';
+            }
+        });
+
+        function filterMenu() {
+            const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+            const menuIcons = document.querySelectorAll('.menu-icon');
+
+            menuIcons.forEach(icon => {
+                const altText = icon.alt.toLowerCase();
+                if (altText.includes(searchQuery)) {
+                    icon.style.display = 'block'; // Show matching icons
+                } else {
+                    icon.style.display = 'none'; // Hide non-matching icons
+                }
+            });
+        }
+
+        function clearSlot() {
+            if (selectedSlot) {
+                // Remove the background image from the selected action slot
+                selectedSlot.style.backgroundImage = '';
+
+                // Restore the label (text content) of the action slot
+                if (selectedSlot.classList.contains('action-slot')) {
+                    const slotIndex = Array.from(selectedSlot.parentElement.children).indexOf(selectedSlot) + 1;
+                    selectedSlot.textContent = slotIndex === 4 ? 'H' : slotIndex.toString(); // Restore "H" for the last slot
+                }
+            }
+            const menu = document.getElementById('actionMenu');
+            menu.style.display = 'none'; // Hide the menu
+        }
+
+        function openRulebook() {
+            const rulebookModal = document.getElementById('rulebookModal');
+            rulebookModal.style.display = 'flex'; // Show the rulebook modal
+
+            // Play the rulebook sound
+            const rulebookSound = document.getElementById('rulebookSound');
+            rulebookSound.play();
+        }
+
+        function closeRulebook() {
+            const rulebookModal = document.getElementById('rulebookModal');
+            rulebookModal.style.display = 'none'; // Hide the rulebook modal
+        }
+    </script>
+</body>
+</html>
