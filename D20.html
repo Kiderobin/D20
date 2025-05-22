@@ -543,6 +543,9 @@
                 const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
                 statsBox.insertBefore(passiveTraitCard, exportButtonRow); // Insert above the button row
             }
+
+            // --- Show/hide slot H if needed ---
+            updateActionSlotH();
         }
 
         function updateClass() {
@@ -665,9 +668,52 @@
                 const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
                 statsBox.insertBefore(skillButton, exportButtonRow); // Insert above the button row
             });
+
+            // --- Show/hide slot H if needed ---
+            updateActionSlotH();
         }
 
-        // Function to show a modal with the icon and description
+        function updateActionSlotH() {
+            // Show slot H if class is "Artillery Specialist" or has "Holster" passive
+            // Show slot S if class is "Swordsman" or has "Sheath" passive
+            const className = document.getElementById('class').value;
+            let hasHolsterPassive = false;
+            let hasSheathPassive = false;
+
+            // Check for passive trait "Holster" or "Sheath" in the stats box
+            const statsBox = document.querySelector('.stats-box');
+            const passiveTraitButton = statsBox.querySelector('.passive-trait');
+            if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
+                const alt = passiveTraitButton.querySelector('img').alt;
+                if (alt && alt.toLowerCase() === 'holster') {
+                    hasHolsterPassive = true;
+                }
+                if (alt && alt.toLowerCase() === 'sheath') {
+                    hasSheathPassive = true;
+                }
+            }
+
+            // Show or hide the H/S slot and set its label
+            const actionSlots = document.querySelectorAll('.actions .action-slot');
+            if (actionSlots.length === 4) {
+                const hSlot = actionSlots[3];
+                if (className === 'Artillery Specialist' || hasHolsterPassive) {
+                    hSlot.style.display = 'flex';
+                    hSlot.textContent = 'H';
+                } else if (className === 'Swordsman' || hasSheathPassive) {
+                    hSlot.style.display = 'flex';
+                    hSlot.textContent = 'S';
+                } else {
+                    hSlot.style.display = 'none';
+                    hSlot.textContent = 'H'; // Reset to default if hidden
+                }
+                // Remove any background image if slot is hidden
+                if (hSlot.style.display === 'none') {
+                    hSlot.style.backgroundImage = '';
+                }
+            }
+        }
+
         function showModal(title, icon, description, isPassive = false) {
             // Define the correct paths for icons
             const iconPaths = {
@@ -844,7 +890,26 @@
                 // Restore the label (text content) of the action slot
                 if (selectedSlot.classList.contains('action-slot')) {
                     const slotIndex = Array.from(selectedSlot.parentElement.children).indexOf(selectedSlot) + 1;
-                    selectedSlot.textContent = slotIndex === 4 ? 'H' : slotIndex.toString(); // Restore "H" for the last slot
+                    if (slotIndex === 4) {
+                        // For the last slot, check if Swordsman or Sheath passive is active
+                        const className = document.getElementById('class').value;
+                        let hasSheathPassive = false;
+                        const statsBox = document.querySelector('.stats-box');
+                        const passiveTraitButton = statsBox.querySelector('.passive-trait');
+                        if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
+                            const alt = passiveTraitButton.querySelector('img').alt;
+                            if (alt && alt.toLowerCase() === 'sheath') {
+                                hasSheathPassive = true;
+                            }
+                        }
+                        if (className === 'Swordsman' || hasSheathPassive) {
+                            selectedSlot.textContent = 'S';
+                        } else {
+                            selectedSlot.textContent = 'H';
+                        }
+                    } else {
+                        selectedSlot.textContent = slotIndex.toString();
+                    }
                 }
             }
             const menu = document.getElementById('actionMenu');
