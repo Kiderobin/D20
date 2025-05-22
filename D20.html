@@ -434,23 +434,19 @@
         }
 
         function exportCode() {
-            const characterName = document.getElementById('characterName').value || 'Character Name';
-            const level = document.getElementById('level').value || 'Level';
-            const race = document.getElementById('race').value || 'Race';
-            const className = document.getElementById('class').value || 'Class';
-            const passiveTrait = document.getElementById('passiveTrait').value || 'Passive Trait';
-            const classPassiveTrait = document.getElementById('classPassiveTrait').value || 'Class Passive Trait';
+            const characterName = document.getElementById('characterName').value || '';
+            const level = document.getElementById('level').value || '';
+            const race = document.getElementById('race').value || '';
+            const className = document.getElementById('class').value || '';
 
             const exportData = `
-                Character Name: ${characterName}
-                Level: ${level}
-                Race: ${race}
-                Class: ${className}
-                Passive Trait: ${passiveTrait}
-                Class Passive Trait: ${classPassiveTrait}
-            `;
+Character Name: ${characterName}
+Level: ${level}
+Race: ${race}
+Class: ${className}
+`.trim();
 
-            navigator.clipboard.writeText(exportData.trim()).then(() => {
+            navigator.clipboard.writeText(exportData).then(() => {
                 alert('Character information copied to clipboard!');
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
@@ -462,19 +458,29 @@
                 const lines = text.split('\n').map(line => line.trim());
                 const data = {};
                 lines.forEach(line => {
-                    const [key, value] = line.split(':').map(part => part.trim());
-                    if (key && value) {
-                        data[key] = value;
+                    const [key, ...rest] = line.split(':');
+                    if (key && rest.length > 0) {
+                        data[key.trim()] = rest.join(':').trim();
                     }
                 });
 
-                document.getElementById('characterName').value = data['Character Name'] || '';
-                document.getElementById('level').value = data['Level'] || '';
-                document.getElementById('race').value = data['Race'] || '';
-                document.getElementById('class').value = data['Class'] || '';
-                document.getElementById('passiveTrait').value = data['Passive Trait'] || '';
-                document.getElementById('classPassiveTrait').value = data['Class Passive Trait'] || '';
+                if (typeof data['Character Name'] !== 'undefined') {
+                    document.getElementById('characterName').value = data['Character Name'];
+                }
+                if (typeof data['Level'] !== 'undefined') {
+                    document.getElementById('level').value = data['Level'];
+                }
+                if (typeof data['Race'] !== 'undefined') {
+                    document.getElementById('race').value = data['Race'];
+                }
+                if (typeof data['Class'] !== 'undefined') {
+                    document.getElementById('class').value = data['Class'];
+                }
+
+                updateName();
                 updateStats();
+                updateClass();
+                updateRace();
             }).catch(err => {
                 console.error('Read clipboard: ', err);
                 alert('Pasted Data from clipboard.');
