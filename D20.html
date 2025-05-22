@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D20</title> <!-- Updated tab name -->
-    <link rel="icon" href="pics/d20.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -316,11 +316,11 @@
             </div>
             <div class="die-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative;">
                 <button id="rollDie" onclick="rollDie()" style="background: none; border: none; cursor: pointer; position: relative;">
-                    <img src="pics/20SidedDie.png" alt="Roll D20" style="width: 300px; height: 300px;">
+                    <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/20SidedDie.png" alt="Roll D20" style="width: 300px; height: 300px;">
                     <div id="dieResult" style="position: absolute; top: 48%; left: 51.5%; transform: translate(-50%, -50%); font-size: 48px; color: #533663; font-weight: bold;">-</div>
                 </button>
             </div>
-            <audio id="diceSound" src="sounds/diceroll.mp3"></audio>
+            <audio id="diceSound" src="https://raw.githubusercontent.com/Kiderobin/D20/main/sounds/diceroll.mp3"></audio>
         </div>
     </div>
     <div class="circle-container">
@@ -329,7 +329,7 @@
     </div>
     <div class="rulebook-icon">
         <a href="javascript:void(0);" title="Rulebook" onclick="openRulebook()">
-            <img src="pics/RuleBook.png" alt="Rulebook Icon">
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/RuleBook.png" alt="Rulebook Icon">
         </a>
     </div>
 
@@ -369,7 +369,7 @@
             </div>
         </div>
     </div>
-    <audio id="rulebookSound" src="sounds/RuleBook.mp3"></audio>
+    <audio id="rulebookSound" src="https://raw.githubusercontent.com/Kiderobin/D20/main/sounds/RuleBook.mp3"></audio>
 
     <!-- Action Menu -->
     <div id="actionMenu" class="action-menu" style="display: none;">
@@ -528,7 +528,7 @@
                 passiveTraitCard.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `pics/charicons/raceicons/passiveicons/${selectedRace.icon}`;
+                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/${selectedRace.icon}`;
                 passiveIcon.alt = selectedRace.passive;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
@@ -617,7 +617,7 @@
                 passiveTraitButton.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `pics/charicons/classicons/passiveicons/${selectedClass.passiveIcon}`;
+                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${selectedClass.passiveIcon}`;
                 passiveIcon.alt = selectedClass.passive;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
@@ -649,7 +649,7 @@
                 skillButton.style.cursor = 'pointer';
 
                 const skillIcon = document.createElement('img');
-                skillIcon.src = `pics/charicons/classicons/skillicons/${skill.icon}`;
+                skillIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/${skill.icon}`;
                 skillIcon.alt = skill.skill;
                 skillIcon.style.width = '50px';
                 skillIcon.style.height = '50px';
@@ -671,24 +671,24 @@
         function showModal(title, icon, description, isPassive = false) {
             // Define the correct paths for icons
             const iconPaths = {
-                "Machine Maintenance": "pics/charicons/classicons/skillicons/maintenance.png",
-                "Ambush": "pics/charicons/classicons/skillicons/ambush.png",
-                "Footwork": "pics/charicons/classicons/skillicons/footwork.png",
-                "Medical Experiment": "pics/charicons/classicons/skillicons/medicalexperiment.png",
-                "Ship Call": "pics/charicons/classicons/skillicons/shipcall.png",
-                "Lock On": "pics/charicons/classicons/skillicons/locked on.png",
-                "Config": "pics/charicons/classicons/skillicons/config.png",
-                "Bloodsport": "pics/charicons/classicons/passiveicons/bloodsport.png",
-                "Sheath": "pics/charicons/classicons/passiveicons/sheath.png",
-                "Effective Dosage": "pics/charicons/classicons/passiveicons/effectivedosage.png",
-                "Holster": "pics/charicons/classicons/passiveicons/holster.png",
-                "Reptile Efficiency": "pics/charicons/raceicons/passiveicons/reptile efficiency.png",
-                "Slither": "pics/charicons/raceicons/passiveicons/slither.png",
-                "Advanced Perception": "pics/charicons/raceicons/passiveicons/advancedperception.png",
-                "Brute Strength": "pics/charicons/raceicons/passiveicons/brutestrength.png",
-                "First Guard": "pics/charicons/raceicons/passiveicons/firstguard.png",
-                "Decoy": "pics/charicons/raceicons/skillicons/decoy.png",
-                "Connect": "pics/charicons/raceicons/skillicons/connect.png"
+                "Machine Maintenance": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/maintenance.png",
+                "Ambush": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/ambush.png",
+                "Footwork": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/footwork.png",
+                "Medical Experiment": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/medicalexperiment.png",
+                "Ship Call": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/shipcall.png",
+                "Lock On": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/locked on.png",
+                "Config": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/config.png",
+                "Bloodsport": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/bloodsport.png",
+                "Sheath": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/sheath.png",
+                "Effective Dosage": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/effectivedosage.png",
+                "Holster": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/holster.png",
+                "Reptile Efficiency": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/reptile efficiency.png",
+                "Slither": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/slither.png",
+                "Advanced Perception": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/advancedperception.png",
+                "Brute Strength": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/brutestrength.png",
+                "First Guard": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/firstguard.png",
+                "Decoy": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/decoy.png",
+                "Connect": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/connect.png"
             };
 
             // Create the modal container
@@ -792,7 +792,7 @@
         menuContent.innerHTML = ''; // Clear existing content before populating
         imageList.forEach(imageName => {
             const imgElement = document.createElement('img');
-            imgElement.src = `pics/itemicons/equip/${imageName}`;
+            imgElement.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/itemicons/equip/${imageName}`;
             imgElement.alt = imageName;
             imgElement.className = 'menu-icon';
             imgElement.onclick = () => selectIcon(imageName);
@@ -803,7 +803,7 @@
         function selectIcon(iconName) {
             if (selectedSlot) {
                 // Set the selected image as the background of the clicked action slot
-                selectedSlot.style.backgroundImage = `url('pics/itemicons/equip/${iconName}')`;
+                selectedSlot.style.backgroundImage = `url('https://raw.githubusercontent.com/Kiderobin/D20/main/pics/itemicons/equip/${iconName}')`;
                 selectedSlot.style.backgroundSize = 'cover'; // Ensure the image covers the slot
                 selectedSlot.style.backgroundPosition = 'center'; // Center the image
 
