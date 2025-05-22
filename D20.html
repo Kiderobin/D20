@@ -122,7 +122,7 @@
 
         .actions .action-slot:last-child {
             position: absolute;
-            bottom: 50px;
+            bottom: 0px;
             left: 25px;
             display: none; /* Hide Action Slot H by default */
         }
@@ -268,6 +268,14 @@
             transform: scale(1.2); /* Slightly enlarge the icon on hover */
             border-color: #533663;
         }
+
+        #settingsPanel .modal-content {
+            overflow-x: hidden;
+            flex-wrap: wrap;
+            width: 320px;
+            max-width: 95vw;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -305,14 +313,19 @@
         </div>
         <div class="details">
             <div class="portrait">
-                <img id="portraitImage" src="placeholder.jpg" alt="Character Portrait">
-                <input type="file" accept="image/*" id="imageUploader" onchange="uploadImage()">
+                <img id="portraitImage" src="placeholder.jpg" alt="Character Portrait" style="cursor:pointer;">
                 <div class="actions">
                     <button class="action-slot">1</button>
                     <button class="action-slot">2</button>
                     <button class="action-slot">3</button>
                     <button class="action-slot">H</button>
                 </div>
+                <button id="affinityBtn" style="display:none; position:absolute; top:-10px; right: -20px; z-index:10; background:none; border:none; cursor:pointer; padding:0;">
+                    <img id="affinityIcon"
+                         src=""
+                         alt="Affinity"
+                         style="width:70px; height:70px; border-radius:0%; border:5px solid #000000;">
+                </button>
             </div>
             <div class="die-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative;">
                 <button id="rollDie" onclick="rollDie()" style="background: none; border: none; cursor: pointer; position: relative;">
@@ -331,6 +344,20 @@
         <a href="javascript:void(0);" title="Rulebook" onclick="openRulebook()">
             <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/RuleBook.png" alt="Rulebook Icon">
         </a>
+    </div>
+
+    <!-- Add Extra button under the rulebook icon -->
+    <div class="extra-icon" style="position: absolute; top: 70px; right: 10px; z-index: 1000;">
+        <button onclick="openExtraPanel()" style="width: 50px; height: 50px; background: #533663; color: #f0f0f0; border: 2px solid #676767; border-radius: 5px; font-size: 18px; cursor: pointer; padding: 0;">
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/Extra.png" alt="Extra" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
+        </button>
+    </div>
+
+    <!-- Settings Button (bottom left) -->
+    <div id="settingsBtn" style="position: fixed; bottom: 18px; left: 18px; z-index: 1200;">
+        <button style="background: none; border: none; cursor: pointer; padding: 0;">
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/cog.png" alt="Settings" style="width: 48px; height: 48px;">
+        </button>
     </div>
 
     <!-- Rulebook Modal -->
@@ -382,7 +409,69 @@
         </button>
     </div>
 
+    <!-- Extra Panel Modal -->
+    <div id="extraPanel" class="modal" style="display: none;">
+        <div class="modal-content" style="width: 320px; max-width: 90%; padding: 28px 20px 20px 20px; box-sizing: border-box; text-align: left;">
+            <span class="close-button" onclick="closeExtraPanel()" style="top: 10px; right: 15px;">×</span>
+            <h2 style="margin-top: 0; margin-bottom: 18px; text-align: left; font-size: 1.4em;">Extra Options</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer;">
+                    <input type="checkbox" id="affinityCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;">
+                    <span style="margin-left: 4px;">Affinity</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Affinity Picker Modal -->
+    <div id="affinityPicker" class="modal" style="display:none;">
+        <div class="modal-content" style="width:340px; max-width:90%; padding:24px;">
+            <span class="close-button" onclick="closeAffinityPicker()" style="top:10px; right:15px;">×</span>
+            <h2 style="margin-top:0; margin-bottom:18px; text-align:left; font-size:1.2em;">Select Affinity</h2>
+            <div id="affinityIcons" style="display:flex; flex-wrap:wrap; gap:12px;">
+                <!-- Affinity icons will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Portrait Modal -->
+    <div id="portraitModal" class="modal" style="display:none; z-index:3000;">
+        <div class="modal-content" style="width:340px; max-width:90%; padding:24px; display:flex; flex-direction:column; align-items:center;">
+            <span class="close-button" onclick="closePortraitModal()" style="top:10px; right:15px;">×</span>
+            <img id="modalPortraitImage" src="placeholder.jpg" alt="Character Portrait" style="width:240px; height:450px; border-radius:10px; object-fit:cover; border:5px solid #000;">
+            <input type="file" accept="image/*" id="imageUploader" onchange="uploadImage()" style="margin-top:18px;">
+        </div>
+    </div>
+
+    <!-- Settings Panel Modal -->
+    <div id="settingsPanel" class="modal" style="display: none;">
+        <div class="modal-content" style="width: 320px; max-width: 90%; padding: 28px 20px 20px 20px; box-sizing: border-box; text-align: left;">
+            <span class="close-button" onclick="closeSettingsPanel()" style="top: 10px; right: 15px;">×</span>
+            <h2 style="margin-top: 0; margin-bottom: 18px; text-align: left; font-size: 1.4em;">Settings</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer;">
+                    <input type="checkbox" id="exportPortraitCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
+                    <span style="margin-left: 4px;">Export Portrait</span>
+                </label>
+                <!-- Add this inside the settings panel, after Export Portrait -->
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px; flex-wrap: wrap;">
+                    <input type="file" id="cardBgUploader" accept="image/*" style="display:none;">
+                    <button type="button" onclick="document.getElementById('cardBgUploader').click()" style="margin-right:8px; background:#533663; color:#fff; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Upload Card Background</button>
+                    <span id="bgFileName" style="font-size: 14px; color: #aaa;"></span>
+                    <button type="button" onclick="resetCardBackground()" style="background:#444; color:#fff; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; margin-left:8px;">Reset</button>
+                </label>
+                <!-- Add the Export Mat setting checkbox in the Settings Panel, after Export Portrait -->
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
+                    <input type="checkbox" id="exportMatCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
+                    <span style="margin-left: 4px;">Export Mat</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let cardBgData = ""; // Add this at the top of your <script> section
+
         function updateName() {
             const nameField = document.getElementById('characterName').value;
             const nameDiv = document.querySelector('.character-name');
@@ -414,13 +503,12 @@
 
         function uploadImage() {
             const fileInput = document.getElementById('imageUploader');
-            const imageElement = document.getElementById('portraitImage');
-            
             const file = fileInput.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    imageElement.src = e.target.result;
+                    document.getElementById('portraitImage').src = e.target.result;
+                    document.getElementById('modalPortraitImage').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
@@ -439,17 +527,47 @@
             const race = document.getElementById('race').value || '';
             const className = document.getElementById('class').value || '';
 
-            const exportData = `
+            // Extra Options
+            const affinityChecked = document.getElementById('affinityCheckbox').checked;
+            const affinityIcon = affinityChecked ? (selectedAffinity || "none.png") : "";
+
+            // Settings: Export Portrait
+            const exportPortrait = document.getElementById('exportPortraitCheckbox')?.checked !== false;
+            // Settings: Export Mat
+            const exportMat = document.getElementById('exportMatCheckbox')?.checked !== false;
+
+            // Get portrait image as Data URL, but only if not placeholder and exportPortrait is enabled
+            const portraitImage = document.getElementById('portraitImage');
+            let portraitData = '';
+            if (
+                exportPortrait &&
+                portraitImage.src &&
+                portraitImage.src.startsWith('data:image') &&
+                !portraitImage.src.includes('placeholder')
+            ) {
+                portraitData = portraitImage.src;
+            }
+
+            let exportData = `
 Character Name: ${characterName}
 Level: ${level}
 Race: ${race}
 Class: ${className}
+Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
+Affinity Icon: ${affinityIcon}
 `.trim();
 
+            if (portraitData) {
+                exportData += `\nPortrait Image: ${portraitData}`;
+            }
+            if (exportMat && cardBgData) {
+                exportData += `\nCard Background: ${cardBgData}`;
+            }
+
             navigator.clipboard.writeText(exportData).then(() => {
-                alert('Character information copied to clipboard!');
+                alert(`${characterName || "Character"} has been saved to the clipboard`);
             }).catch(err => {
-                console.error('Failed to copy text: ', err);
+                console.error('Failed to save character: ', err);
             });
         }
 
@@ -472,18 +590,45 @@ Class: ${className}
                 }
                 if (typeof data['Race'] !== 'undefined') {
                     document.getElementById('race').value = data['Race'];
+                    updateRace();
                 }
                 if (typeof data['Class'] !== 'undefined') {
                     document.getElementById('class').value = data['Class'];
+                    updateClass();
+                }
+
+                // Handle Extra Options: Affinity
+                if (typeof data['Affinity Option'] !== 'undefined') {
+                    const affinityChecked = data['Affinity Option'] === "Enabled";
+                    document.getElementById('affinityCheckbox').checked = affinityChecked;
+                    affinityBtn.style.display = affinityChecked ? 'block' : 'none';
+                }
+                if (typeof data['Affinity Icon'] !== 'undefined') {
+                    selectedAffinity = data['Affinity Icon'] || "none.png";
+                    updateAffinityBtn();
+                }
+
+                // Handle Portrait Image
+                if (typeof data['Portrait Image'] !== 'undefined' && data['Portrait Image'].startsWith('data:image')) {
+                    document.getElementById('portraitImage').src = data['Portrait Image'];
+                    document.getElementById('modalPortraitImage').src = data['Portrait Image'];
+                }
+
+                // Handle Card Background
+                if (typeof data['Card Background'] !== 'undefined' && data['Card Background'].startsWith('data:image')) {
+                    document.querySelector('.character-card').style.backgroundImage = `url('${data['Card Background']}')`;
+                    document.querySelector('.character-card').style.backgroundSize = 'cover';
+                    document.querySelector('.character-card').style.backgroundPosition = 'center';
+                    cardBgData = data['Card Background'];
                 }
 
                 updateName();
                 updateStats();
-                updateClass();
-                updateRace();
             }).catch(err => {
                 console.error('Read clipboard: ', err);
-                alert('Pasted Data from clipboard.');
+                // Use the pasted character name if available
+                const pastedName = data['Character Name'] || "Character";
+                alert(`${pastedName} has been added`);
             });
         }
 
@@ -512,6 +657,11 @@ Class: ${className}
                     passive: "First Guard", 
                     icon: "firstguard.png", 
                     description: "Immunity to the first hit of a battle." 
+                },
+                Robot: {
+                    skill: "Connect",
+                    icon: "connect.png",
+                    description: "Can interface with machines and digital systems."
                 }
             };
 
@@ -524,30 +674,30 @@ Class: ${className}
                 existingPassive.remove();
             }
 
-            // Add the passive trait inline with skills
-            if (selectedRace.passive) {
-                const passiveTraitCard = document.createElement('div');
-                passiveTraitCard.className = 'race-passive-trait';
-                passiveTraitCard.style.display = 'inline-flex';
-                passiveTraitCard.style.alignItems = 'center';
-                passiveTraitCard.style.marginRight = '5px'; // Reduced margin for closer spacing
-                passiveTraitCard.style.cursor = 'pointer';
+            // Add the passive trait or skill inline with skills
+            if (selectedRace.passive || selectedRace.skill) {
+                const traitCard = document.createElement('div');
+                traitCard.className = 'race-passive-trait';
+                traitCard.style.display = 'inline-flex';
+                traitCard.style.alignItems = 'center';
+                traitCard.style.marginRight = '5px';
+                traitCard.style.cursor = 'pointer';
 
-                const passiveIcon = document.createElement('img');
-                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/${selectedRace.icon}`;
-                passiveIcon.alt = selectedRace.passive;
-                passiveIcon.style.width = '50px';
-                passiveIcon.style.height = '50px';
+                const traitIcon = document.createElement('img');
+                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/${selectedRace.passive ? 'passiveicons' : 'skillicons'}/${selectedRace.icon}`;
+                traitIcon.alt = selectedRace.passive || selectedRace.skill;
+                traitIcon.style.width = '50px';
+                traitIcon.style.height = '50px';
 
-                passiveTraitCard.appendChild(passiveIcon);
+                traitCard.appendChild(traitIcon);
 
-                // Add click event to show modal with passive trait details
-                passiveTraitCard.addEventListener('click', () => {
-                    showModal(selectedRace.passive, selectedRace.icon, selectedRace.description, true);
+                // Add click event to show modal with trait details
+                traitCard.addEventListener('click', () => {
+                    showModal(selectedRace.passive || selectedRace.skill, selectedRace.icon, selectedRace.description, true);
                 });
 
-                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
-                statsBox.insertBefore(passiveTraitCard, exportButtonRow); // Insert above the button row
+                const exportButtonRow = statsBox.querySelector('.button-row');
+                statsBox.insertBefore(traitCard, exportButtonRow);
             }
 
             // --- Show/hide slot H if needed ---
@@ -934,6 +1084,155 @@ Class: ${className}
         function closeRulebook() {
             const rulebookModal = document.getElementById('rulebookModal');
             rulebookModal.style.display = 'none'; // Hide the rulebook modal
+        }
+
+        function openExtraPanel() {
+            document.getElementById('extraPanel').style.display = 'flex';
+        }
+        function closeExtraPanel() {
+            document.getElementById('extraPanel').style.display = 'none';
+        }
+
+        // Affinity icon list (add more as needed)
+        const affinityList = [
+            "fire.png",
+            "water.png",
+            "earth.png",
+            "air.png",
+            "aether.png",
+            "void.png",
+            "none.png"
+        ];
+
+        // Add Affinity button to portrait (top right corner)
+        const portraitDiv = document.querySelector('.portrait');
+        const affinityBtn = document.getElementById('affinityBtn');
+        portraitDiv.style.position = 'relative';
+        portraitDiv.appendChild(affinityBtn);
+
+        // Handle Affinity checkbox toggle
+        document.getElementById('affinityCheckbox').addEventListener('change', function() {
+            affinityBtn.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Show affinity picker modal
+        affinityBtn.onclick = function() {
+            showAffinityPicker();
+        };
+
+        let selectedAffinity = null; // Track selected affinity
+
+        function updateAffinityBtn() {
+            const affinityIcon = document.getElementById('affinityIcon');
+            const affinityBtn = document.getElementById('affinityBtn');
+            if (!selectedAffinity || selectedAffinity === "none.png") {
+                affinityIcon.src = "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/none.png";
+                affinityIcon.style.background = "none";
+                affinityIcon.style.border = "0px solid #000000";
+                affinityIcon.style.width = "70px";
+                affinityIcon.style.height = "70px";
+                affinityBtn.style.background = "none";
+            } else {
+                affinityIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/${selectedAffinity}`;
+                affinityIcon.style.background = "none";
+                affinityIcon.style.border = "0px solid #000000";
+                affinityIcon.style.width = "70px";
+                affinityIcon.style.height = (selectedAffinity === "air.png") ? "108px" : "70px";
+                affinityBtn.style.background = "none";
+            }
+        }
+
+        function showAffinityPicker() {
+            const picker = document.getElementById('affinityPicker');
+            const iconsDiv = document.getElementById('affinityIcons');
+            iconsDiv.innerHTML = '';
+            affinityList.forEach(name => {
+                const img = document.createElement('img');
+                img.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/${name}`;
+                img.alt = name.replace('.png','');
+                img.style.width = "70px";
+                img.style.height = (name === "air.png") ? "108px" : "70px";
+                img.style.borderRadius = "0%";
+                img.style.background = "none";
+                img.style.cursor = "pointer";
+                // Highlight if selected
+                if (selectedAffinity === name || (!selectedAffinity && name === "none.png")) {
+                    img.style.border = "3px solid #533663";
+                    img.style.boxShadow = "0 0 8px #533663";
+                } else {
+                    img.style.border = "0px solid #000000";
+                    img.style.boxShadow = "none";
+                }
+                img.onclick = function() {
+                    selectedAffinity = name;
+                    updateAffinityBtn();
+                    closeAffinityPicker();
+                };
+                iconsDiv.appendChild(img);
+            });
+            picker.style.display = 'flex';
+        }
+
+        // On load, ensure button is correct
+        updateAffinityBtn();
+
+        function closeAffinityPicker() {
+            document.getElementById('affinityPicker').style.display = 'none';
+        }
+
+        // Optional: Hide affinity picker if modal background is clicked
+        document.getElementById('affinityPicker').addEventListener('click', function(e) {
+            if (e.target === this) closeAffinityPicker();
+        });
+
+        // Show modal when portrait is clicked
+        document.getElementById('portraitImage').onclick = function() {
+            // Set modal image to current portrait
+            document.getElementById('modalPortraitImage').src = document.getElementById('portraitImage').src;
+            document.getElementById('portraitModal').style.display = 'flex';
+        };
+
+        // Hide modal function
+        function closePortraitModal() {
+            document.getElementById('portraitModal').style.display = 'none';
+        }
+
+        // Optional: Hide modal if background is clicked
+        document.getElementById('portraitModal').addEventListener('click', function(e) {
+            if (e.target === this) closePortraitModal();
+        });
+
+        // Settings button logic
+        document.getElementById('settingsBtn').onclick = function() {
+            document.getElementById('settingsPanel').style.display = 'flex';
+        };
+        function closeSettingsPanel() {
+            document.getElementById('settingsPanel').style.display = 'none';
+        }
+        // Optional: Hide settings panel if background is clicked
+        document.getElementById('settingsPanel').addEventListener('click', function(e) {
+            if (e.target === this) closeSettingsPanel();
+        });
+
+        // Handle card background upload
+        document.getElementById('cardBgUploader').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.character-card').style.backgroundImage = `url('${e.target.result}')`;
+                document.querySelector('.character-card').style.backgroundSize = 'cover';
+                document.querySelector('.character-card').style.backgroundPosition = 'center';
+                cardBgData = e.target.result; // Store the Data URL
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function resetCardBackground() {
+            const card = document.querySelector('.character-card');
+            card.style.backgroundImage = '';
+            document.getElementById('bgFileName').textContent = '';
+            cardBgData = ""; // Reset the stored background
         }
     </script>
 </body>
