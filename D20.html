@@ -280,10 +280,17 @@
 </head>
 <body>
     <div class="character-card">
+        <!-- Replace the contents of .stats-box with this cleaner, grouped layout -->
         <div class="stats-box">
             <input type="text" placeholder="Character Name" id="characterName" oninput="updateName()"><br>
-            <input type="number" placeholder="Level" id="level" oninput="updateStats()"><br>
-
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="number" placeholder="Level" id="level" oninput="updateStats()" style="width: 40%;">
+                <div style="position: relative; flex: 1; min-width: 0;">
+                    <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 22px; color: #533663; pointer-events: none;">$</span>
+                    <input type="number" placeholder="Currency" id="currency" min="0" oninput="updateStats()" style="padding-left: 28px; width: 76%; min-width: 0;">
+                </div>
+            </div>
+            <br>
             <!-- Dropdown for Race -->
             <select id="race" onchange="updateRace()">
                 <option value="">Select Race</option>
@@ -294,7 +301,6 @@
                 <option value="Reptilian">Reptilian</option>
                 <option value="GoldSerian">GoldSerian</option>
             </select><br>
-
             <!-- Dropdown for Class -->
             <select id="class" onchange="updateClass()">
                 <option value="">Select Class</option>
@@ -305,7 +311,6 @@
                 <option value="Swordsman">Swordsman</option>
                 <option value="Brawler">Brawler</option>
             </select><br>
-
             <div class="button-row">
                 <button onclick="exportCode()" style="margin-top: 10px; padding: 10px; background: #533663; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Export Code</button>
                 <button onclick="pasteCode()" style="margin-top: 10px; padding: 10px; background: #3c763d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Paste Code</button>
@@ -357,6 +362,13 @@
     <div id="settingsBtn" style="position: fixed; bottom: 18px; left: 18px; z-index: 1200;">
         <button style="background: none; border: none; cursor: pointer; padding: 0;">
             <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/cog.png" alt="Settings" style="width: 48px; height: 48px;">
+        </button>
+    </div>
+
+    <!-- Add this just after the settingsBtn div, near the bottom left -->
+    <div id="calculatorBtn" style="position: fixed; bottom: 18px; left: 78px; z-index: 1200;">
+        <button style="background: none; border: none; cursor: pointer; padding: 0;">
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/calculator.png" alt="Calculator" style="width: 48px; height: 48px;">
         </button>
     </div>
 
@@ -469,6 +481,66 @@
         </div>
     </div>
 
+    <!-- Calculator Modal -->
+    <div id="calculatorModal" style="
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        left: 30px;
+        z-index: 3000;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
+        ">
+        <div id="calculatorHeader" style="
+            cursor: move;
+            background: #533663;
+            color: #fff;
+            padding: 8px 12px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 1.1em;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        ">
+            <span>Calculator</span>
+            <span class="close-button" onclick="closeCalculator()" style="cursor:pointer; font-size: 1.3em;">×</span>
+        </div>
+        <div class="modal-content" style="
+            width: 320px;
+            max-width: 90vw;
+            padding: 18px 20px 20px 20px;
+            box-sizing: border-box;
+            text-align: left;
+            background: #2c2c2c;
+            border: 2px solid #676767;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top: none;
+        ">
+            <input id="calcDisplay" type="text" readonly style="width: 100%; font-size: 1.3em; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #676767; background: #1e1e1e; color: #f0f0f0;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                <button onclick="calcInput('7')">7</button>
+                <button onclick="calcInput('8')">8</button>
+                <button onclick="calcInput('9')">9</button>
+                <button onclick="calcInput('/')">÷</button>
+                <button onclick="calcInput('4')">4</button>
+                <button onclick="calcInput('5')">5</button>
+                <button onclick="calcInput('6')">6</button>
+                <button onclick="calcInput('*')">×</button>
+                <button onclick="calcInput('1')">1</button>
+                <button onclick="calcInput('2')">2</button>
+                <button onclick="calcInput('3')">3</button>
+                <button onclick="calcInput('-')">−</button>
+                <button onclick="calcInput('0')">0</button>
+                <button onclick="calcInput('.')">.</button>
+                <button onclick="calcEquals()">=</button>
+                <button onclick="calcInput('+')">+</button>
+                <button onclick="calcClear()" style="grid-column: span 4; background: #ff4d4d; color: #fff;">C</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let cardBgData = ""; // Add this at the top of your <script> section
 
@@ -487,6 +559,7 @@
             const classPassiveTrait = document.getElementById('classPassiveTrait').value || 'Class Passive Trait';
             const atk = document.getElementById('atk').value || 'ATK';
             const def = document.getElementById('def').value || 'DEF';
+            const currency = document.getElementById('currency')?.value || '0';
 
             const stats = document.querySelector('.stats');
             stats.innerHTML = `
@@ -498,6 +571,7 @@
                 <div class="stat">Class Passive: ${classPassiveTrait}</div>
                 <div class="stat">ATK: ${atk}</div>
                 <div class="stat">DEF: ${def}</div>
+                <div class="stat">$${currency}</div>
             `;
         }
 
@@ -526,6 +600,7 @@
             const level = document.getElementById('level').value || '';
             const race = document.getElementById('race').value || '';
             const className = document.getElementById('class').value || '';
+            const currency = document.getElementById('currency').value || '';
 
             // Extra Options
             const affinityChecked = document.getElementById('affinityCheckbox').checked;
@@ -548,13 +623,31 @@
                 portraitData = portraitImage.src;
             }
 
+            // Get Action Slot icons (background images)
+            const actionSlots = document.querySelectorAll('.actions .action-slot');
+            let actionIcons = [];
+            actionSlots.forEach((slot, i) => {
+                // Extract the background image URL if set
+                let bg = slot.style.backgroundImage;
+                if (bg && bg.startsWith('url(')) {
+                    // Extract URL from: url("...")
+                    let url = bg.slice(5, -2);
+                    actionIcons.push(url);
+                } else {
+                    // If no icon, store the slot label (e.g., "1", "2", "3", "H", "S")
+                    actionIcons.push(slot.textContent.trim());
+                }
+            });
+
             let exportData = `
 Character Name: ${characterName}
 Level: ${level}
 Race: ${race}
 Class: ${className}
+Currency: ${currency}
 Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
 Affinity Icon: ${affinityIcon}
+Action Icons: ${JSON.stringify(actionIcons)}
 `.trim();
 
             if (portraitData) {
@@ -596,6 +689,9 @@ Affinity Icon: ${affinityIcon}
                     document.getElementById('class').value = data['Class'];
                     updateClass();
                 }
+                if (typeof data['Currency'] !== 'undefined') {
+                    document.getElementById('currency').value = data['Currency'];
+                }
 
                 // Handle Extra Options: Affinity
                 if (typeof data['Affinity Option'] !== 'undefined') {
@@ -606,6 +702,28 @@ Affinity Icon: ${affinityIcon}
                 if (typeof data['Affinity Icon'] !== 'undefined') {
                     selectedAffinity = data['Affinity Icon'] || "none.png";
                     updateAffinityBtn();
+                }
+
+                // Handle Action Slot icons
+                if (typeof data['Action Icons'] !== 'undefined') {
+                    try {
+                        const actionIcons = JSON.parse(data['Action Icons']);
+                        const actionSlots = document.querySelectorAll('.actions .action-slot');
+                        actionSlots.forEach((slot, i) => {
+                            const icon = actionIcons[i];
+                            if (icon && icon.startsWith('http')) {
+                                slot.style.backgroundImage = `url('${icon}')`;
+                                slot.style.backgroundSize = 'cover';
+                                slot.style.backgroundPosition = 'center';
+                                slot.textContent = '';
+                            } else {
+                                slot.style.backgroundImage = '';
+                                slot.textContent = icon || (i === 3 ? 'H' : (i + 1).toString());
+                            }
+                        });
+                    } catch (e) {
+                        // Ignore if parsing fails
+                    }
                 }
 
                 // Handle Portrait Image
@@ -1016,6 +1134,77 @@ Affinity Icon: ${affinityIcon}
             menu.style.display = 'none'; // Hide the menu
         }
 
+        // --- Add this code after your existing selectIcon function ---
+
+        // Allow uploading a custom icon for the selected action slot
+        function uploadCustomIcon(file) {
+            if (!selectedSlot || !file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedSlot.style.backgroundImage = `url('${e.target.result}')`;
+                selectedSlot.style.backgroundSize = 'cover';
+                selectedSlot.style.backgroundPosition = 'center';
+                selectedSlot.textContent = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Add a hidden file input for uploading custom icons
+        let customIconInput = document.getElementById('customIconInput');
+        if (!customIconInput) {
+            customIconInput = document.createElement('input');
+            customIconInput.type = 'file';
+            customIconInput.accept = 'image/*';
+            customIconInput.id = 'customIconInput';
+            customIconInput.style.display = 'none';
+            document.body.appendChild(customIconInput);
+
+            customIconInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    uploadCustomIcon(this.files[0]);
+                }
+                this.value = '';
+                document.getElementById('actionMenu').style.display = 'none';
+            });
+        }
+
+        // Add a button to the action menu for uploading custom icons
+        (function addCustomIconButton() {
+            const menu = document.getElementById('actionMenu');
+            if (!document.getElementById('uploadCustomIconBtn')) {
+                const btn = document.createElement('button');
+                btn.id = 'uploadCustomIconBtn';
+                btn.textContent = 'Upload Icon';
+                btn.style.marginTop = '10px';
+                btn.style.background = '#533663';
+                btn.style.color = '#fff';
+                btn.style.border = 'none';
+                btn.style.borderRadius = '5px';
+                btn.style.padding = '8px 12px';
+                btn.style.cursor = 'pointer';
+                btn.onclick = function() {
+                    customIconInput.click();
+                };
+                menu.appendChild(btn);
+            }
+        })();
+
+        // --- Paste image from clipboard into action slot ---
+        document.addEventListener('paste', function(e) {
+            if (!selectedSlot) return;
+            if (e.clipboardData && e.clipboardData.items) {
+                for (let i = 0; i < e.clipboardData.items.length; i++) {
+                    const item = e.clipboardData.items[i];
+                    if (item.type.indexOf('image') !== -1) {
+                        const file = item.getAsFile();
+                        uploadCustomIcon(file);
+                        document.getElementById('actionMenu').style.display = 'none';
+                        break;
+                    }
+                }
+            }
+        });
+
         // Hide the menu when clicking outside
         document.addEventListener('click', (event) => {
             const menu = document.getElementById('actionMenu');
@@ -1234,6 +1423,71 @@ Affinity Icon: ${affinityIcon}
             document.getElementById('bgFileName').textContent = '';
             cardBgData = ""; // Reset the stored background
         }
+
+        // Calculator logic
+        let calcValue = "";
+
+        document.getElementById('calculatorBtn').onclick = function() {
+            const calc = document.getElementById('calculatorModal');
+            calc.style.display = 'block';
+            document.getElementById('calcDisplay').value = calcValue;
+        };
+
+        function closeCalculator() {
+            document.getElementById('calculatorModal').style.display = 'none';
+        }
+
+        function calcInput(val) {
+            calcValue += val;
+            document.getElementById('calcDisplay').value = calcValue;
+        }
+
+        function calcEquals() {
+            try {
+                // Evaluate only safe math expressions
+                calcValue = eval(calcValue).toString();
+            } catch {
+                calcValue = "Error";
+            }
+            document.getElementById('calcDisplay').value = calcValue;
+        }
+
+        function calcClear() {
+            calcValue = "";
+            document.getElementById('calcDisplay').value = "";
+        }
+
+        // --- Draggable logic ---
+        (function() {
+            const calcModal = document.getElementById('calculatorModal');
+            const header = document.getElementById('calculatorHeader');
+            let offsetX = 0, offsetY = 0, isDragging = false;
+
+            header.onmousedown = function(e) {
+                isDragging = true;
+                // Get the current mouse position and modal position
+                const rect = calcModal.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                document.body.style.userSelect = "none";
+            };
+
+            document.onmousemove = function(e) {
+                if (isDragging) {
+                    calcModal.style.left = (e.clientX - offsetX) + "px";
+                    calcModal.style.top = (e.clientY - offsetY) + "px";
+                    calcModal.style.bottom = "auto";
+                }
+            };
+
+            document.onmouseup = function() {
+                isDragging = false;
+                document.body.style.userSelect = "";
+            };
+        })();
+
+        // Prevent accidental text selection while dragging
+        document.getElementById('calculatorModal').onselectstart = function() { return false; };
     </script>
 </body>
 </html>
