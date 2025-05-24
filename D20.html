@@ -372,6 +372,13 @@
         </button>
     </div>
 
+    <!-- Add this just after the calculatorBtn div, near the bottom left -->
+    <div id="notepadBtn" style="position: fixed; bottom: 18px; left: 138px; z-index: 1200;">
+        <button style="background: none; border: none; cursor: pointer; padding: 0;">
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/notebook.png" alt="Notepad" style="width: 48px; height: 48px;">
+        </button>
+    </div>
+
     <!-- Rulebook Modal -->
     <div id="rulebookModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -416,7 +423,7 @@
                style="width: 80%; height: 6%; padding: 3px; margin-bottom: 10px; border: 1px solid #676767; border-radius: 5px; background: #1e1e1e; color: #f0f0f0; font-size: 12px;">
         <div class="menu-content"></div>
         <button id="clearSlotButton" onclick="clearSlot()" 
-                style="margin-top: 15px; padding: 10px; background: #ff4d4d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; width: 80%;">
+                style="margin-top: 15px; padding: 10px; background: #ff4d4d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
             Clear Slot
         </button>
     </div>
@@ -540,6 +547,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Notepad Modal -->
+    <div id="notepadModal" style="
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    left: 90px;
+    z-index: 3000;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
+">
+    <div id="notepadHeader" style="
+        cursor: move;
+        background: #533663;
+        color: #fff;
+        padding: 8px 12px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 1.1em;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    ">
+        <span>Notepad</span>
+        <span class="close-button" onclick="closeNotepad()" style="cursor:pointer; font-size: 1.3em;">×</span>
+    </div>
+    <div class="modal-content" style="
+        width: 320px;
+        max-width: 90vw;
+        padding: 18px 20px 20px 20px;
+        box-sizing: border-box;
+        text-align: left;
+        background: #2c2c2c;
+        border: 2px solid #676767;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-top: none;
+    ">
+        <textarea id="notepadArea" style="width:100%; height:200px; font-size:1.1em; border-radius:6px; background:#1e1e1e; color:#f0f0f0; border:1px solid #676767; padding:10px;"></textarea>
+    </div>
+</div>
 
     <script>
         let cardBgData = ""; // Add this at the top of your <script> section
@@ -1094,16 +1142,323 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
         // List of image names in the folder
         const imageList = [
-            'bayonet.png',
-            'bowie-knife.png',
-            'brass knuckles.png',
-            'broad-dagger.png',
-            'broadsword.png',
-            'crescent-blade.png',
-            'revolver.png',
-            'silver-bullet.png',
-            'steyr-aug.png',
-            'thrown-knife.png'
+             "3d-meeple.png",
+            "abbot-meeple.png",
+            "ace.png",
+            "ages.png",
+            "almond.png",
+            "anchor.png",
+            "artichoke.png",
+            "asparagus.png",
+            "aubergine.png",
+            "avocado.png",
+            "backgammon.png",
+            "backpack.png",
+            "banana.png",
+            "bandana.png",
+            "barrel.png",
+            "bayonet.png",
+            "beer-bottle.png",
+            "beer-stein.png",
+            "beet.png",
+            "bell-pepper.png",
+            "berries-bowl.png",
+            "black-flag.png",
+            "blade-bite.png",
+            "blunderbuss.png",
+            "boba.png",
+            "bok-choy.png",
+            "bowie-knife.png",
+            "bowl-of-rice.png",
+            "brandy-bottle.png",
+            "brass knuckles.png",
+            "brass-eye.png",
+            "bread-slice.png",
+            "bread.png",
+            "broad-dagger.png",
+            "broadsword.png",
+            "burn.png",
+            "butter-toast.png",
+            "butter.png",
+            "buy-card.png",
+            "cabbage.png",
+            "cake-slice.png",
+            "candy-canes.png",
+            "canned-fish.png",
+            "cannon-ball.png",
+            "cannon-shot.png",
+            "cannon.png",
+            "card-10-clubs.png",
+            "card-10-diamonds.png",
+            "card-10-hearts.png",
+            "card-10-spades.png",
+            "card-2-clubs.png",
+            "card-2-diamonds.png",
+            "card-2-hearts.png",
+            "card-2-spades.png",
+            "card-3-clubs.png",
+            "card-3-diamonds.png",
+            "card-3-hearts.png",
+            "card-3-spades.png",
+            "card-4-clubs.png",
+            "card-4-diamonds.png",
+            "card-4-hearts.png",
+            "card-4-spades.png",
+            "card-5-clubs.png",
+            "card-5-diamonds.png",
+            "card-5-hearts.png",
+            "card-5-spades.png",
+            "card-6-clubs.png",
+            "card-6-diamonds.png",
+            "card-6-hearts.png",
+            "card-6-spades.png",
+            "card-7-clubs.png",
+            "card-7-diamonds.png",
+            "card-7-hearts.png",
+            "card-7-spades.png",
+            "card-8-clubs.png",
+            "card-8-diamonds.png",
+            "card-8-hearts.png",
+            "card-8-spades.png",
+            "card-9-clubs.png",
+            "card-9-diamonds.png",
+            "card-9-hearts.png",
+            "card-9-spades.png",
+            "card-ace-clubs.png",
+            "card-ace-diamonds.png",
+            "card-ace-hearts.png",
+            "card-ace-spades.png",
+            "card-burn.png",
+            "card-discard.png",
+            "card-draw.png",
+            "card-exchange.png",
+            "card-jack-clubs.png",
+            "card-jack-diamonds.png",
+            "card-jack-hearts.png",
+            "card-jack-spades.png",
+            "card-joker.png",
+            "card-king-clubs.png",
+            "card-king-diamonds.png",
+            "card-king-hearts.png",
+            "card-king-spades.png",
+            "card-pick.png",
+            "card-pickup.png",
+            "card-play.png",
+            "card-queen-clubs.png",
+            "card-queen-diamonds.png",
+            "card-queen-hearts.png",
+            "card-queen-spades.png",
+            "card-random.png",
+            "carrot.png",
+            "charcuterie.png",
+            "cheese-wedge.png",
+            "cherry.png",
+            "chess-bishop.png",
+            "chess-king.png",
+            "chess-knight.png",
+            "chess-pawn.png",
+            "chess-queen.png",
+            "chess-rook.png",
+            "chili-pepper.png",
+            "chips-bag.png",
+            "chocolate-bar.png",
+            "clubs.png",
+            "coffee-beans.png",
+            "coffee-cup.png",
+            "coffee-mug.png",
+            "coins.png",
+            "compass.png",
+            "conway-life-glider.png",
+            "cookie.png",
+            "cool-spices.png",
+            "corn.png",
+            "cornucopia.png",
+            "crescent-blade.png",
+            "croissant.png",
+            "crossed-bones.png",
+            "crossed-sabres.png",
+            "crow-nest.png",
+            "cupcake.png",
+            "curled-tentacle.png",
+            "dango.png",
+            "diamonds.png",
+            "dice-six-faces-three.png",
+            "dig-hole.png",
+            "dog-bowl.png",
+            "dolphin.png",
+            "domino-tiles.png",
+            "doner-kebab.png",
+            "donut.png",
+            "dripping-honey.png",
+            "dumpling-bao.png",
+            "dumpling.png",
+            "easter-egg.png",
+            "eating.png",
+            "egg-pod.png",
+            "elderberry.png",
+            "empty-chessboard.png",
+            "eyepatch.png",
+            "fast-noodles.png",
+            "figurehead.png",
+            "fishing-net.png",
+            "flour.png",
+            "food-chain.png",
+            "food-truck.png",
+            "french-fries.png",
+            "fried-eggs.png",
+            "full-pizza.png",
+            "galleon.png",
+            "garlic.png",
+            "gingerbread-man.png",
+            "gluttony.png",
+            "grain.png",
+            "grapes.png",
+            "grapple.png",
+            "hamburger.png",
+            "harpoon-chain.png",
+            "hearts.png",
+            "herbs-bundle.png",
+            "hexes.png",
+            "honey-jar.png",
+            "honeycomb.png",
+            "honeypot.png",
+            "hot-dog.png",
+            "hot-meal.png",
+            "hot-spices.png",
+            "hourglass.png",
+            "ice-cream-cone.png",
+            "ice-cube.png",
+            "ice-pop.png",
+            "island.png",
+            "jelly-beans.png",
+            "jelly.png",
+            "katana.png",
+            "ketchup.png",
+            "kiwi-fruit.png",
+            "knot.png",
+            "locked-chest.png",
+            "marshmallows.png",
+            "martini.png",
+            "meal.png",
+            "meat-cleaver.png",
+            "meat-hook.png",
+            "meeple-army.png",
+            "meeple-circle.png",
+            "meeple-group.png",
+            "meeple-king.png",
+            "meeple.png",
+            "milk-carton.png",
+            "monkey.png",
+            "mushroom-gills.png",
+            "mushroom.png",
+            "mushrooms.png",
+            "mussel.png",
+            "nachos.png",
+            "noodles.png",
+            "notebook.png",
+            "oat.png",
+            "oden.png",
+            "olive.png",
+            "one-eyed.png",
+            "onigori.png",
+            "open-treasure-chest.png",
+            "opened-food-can.png",
+            "opposite-hearts.png",
+            "overdose.png",
+            "oyster-pearl.png",
+            "palm-tree.png",
+            "parrot-head.png",
+            "pawn.png",
+            "pay-money.png",
+            "peanut.png",
+            "pear.png",
+            "perspective-dice-six-faces-four.png",
+            "pickle.png",
+            "pie-slice.png",
+            "pill.png",
+            "pimiento.png",
+            "piranha.png",
+            "pirate-cannon.png",
+            "pirate-captain.png",
+            "pirate-coat.png",
+            "pirate-flag.png",
+            "pirate-grave.png",
+            "pirate-hat.png",
+            "pirate-hook.png",
+            "pirate-skull.png",
+            "pizza-cutter.png",
+            "pizza-slice.png",
+            "player-base.png",
+            "player-next.png",
+            "player-previous.png",
+            "player-time.png",
+            "poker-hand.png",
+            "popcorn.png",
+            "potato.png",
+            "powder.png",
+            "pretzel.png",
+            "pumpkin-lantern.png",
+            "raw-egg.png",
+            "receive-money.png",
+            "revolver.png",
+            "rolling-dice-cup.png",
+            "rolling-dices.png",
+            "rope-coil.png",
+            "round-table.png",
+            "rule-book.png",
+            "saber-slash.png",
+            "sail.png",
+            "sake-bottle.png",
+            "salt-shaker.png",
+            "sands-of-time.png",
+            "sandwich.png",
+            "sell-card.png",
+            "sesame.png",
+            "sextant.png",
+            "shark-fin.png",
+            "shiny-apple.png",
+            "ship-wheel.png",
+            "ship-wreck.png",
+            "silver-bullet.png",
+            "skull-crossed-bones.png",
+            "sliced-bread.png",
+            "sliced-mushroom.png",
+            "soda-bottle.png",
+            "soda-can.png",
+            "spades.png",
+            "sparky-bomb.png",
+            "spiral-lollipop.png",
+            "spyglass.png",
+            "stack.png",
+            "stairs-cake.png",
+            "steyr-aug.png",
+            "stomach.png",
+            "stopwatch.png",
+            "suits.png",
+            "sushis.png",
+            "tabletop-players.png",
+            "tacos.png",
+            "tangerine.png",
+            "team-downgrade.png",
+            "team-upgrade.png",
+            "teapot.png",
+            "thrown-knife.png",
+            "tic-tac-toe.png",
+            "tied-scroll.png",
+            "toaster.png",
+            "token.png",
+            "tomato.png",
+            "treasure-map.png",
+            "two-coins.png",
+            "udder.png",
+            "unlit-bomb.png",
+            "up-card.png",
+            "vending-machine.png",
+            "wheat.png",
+            "wine-bottle.png",
+            "wine-glass.png",
+            "wooden-pegleg.png",
+            "wrapped-sweet.png"
         ];
 
         // Dynamically populate the menu with images
@@ -1488,6 +1843,53 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
         // Prevent accidental text selection while dragging
         document.getElementById('calculatorModal').onselectstart = function() { return false; };
+
+        // Notepad button logic
+document.getElementById('notepadBtn').onclick = function() {
+    const modal = document.getElementById('notepadModal');
+    modal.style.display = 'block';
+    modal.style.left = '90px';
+    modal.style.top = '';
+    modal.style.bottom = '90px';
+    modal.style.right = '';
+    modal.style.position = 'fixed';
+    document.getElementById('notepadArea').value = localStorage.getItem('d20notepad') || '';
+};
+function closeNotepad() {
+    document.getElementById('notepadModal').style.display = 'none';
+    localStorage.setItem('d20notepad', document.getElementById('notepadArea').value);
+}
+// Prevent accidental text selection while dragging
+document.getElementById('notepadModal').onselectstart = function() { return false; };
+
+(function() {
+    const notepadModal = document.getElementById('notepadModal');
+    const header = document.getElementById('notepadHeader');
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    header.onmousedown = function(e) {
+        isDragging = true;
+        const rect = notepadModal.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        document.body.style.userSelect = "none";
+    };
+
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            notepadModal.style.left = (e.clientX - offsetX) + "px";
+            notepadModal.style.top = (e.clientY - offsetY) + "px";
+            notepadModal.style.right = "auto";
+            notepadModal.style.bottom = "auto";
+            notepadModal.style.position = "fixed";
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+        document.body.style.userSelect = "";
+    });
+})();
     </script>
 </body>
 </html>
