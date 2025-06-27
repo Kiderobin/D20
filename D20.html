@@ -278,7 +278,7 @@
         }
     </style>
     <!-- Add in your <head> or before your main <script> -->
-    <script src="campaign/StellarOdyssey.js"></script>
+    <script src="campaign/StellarOdyssey/StellarOdyssey.js"></script>
 </head>
 <body>
     <div class="character-card">
@@ -295,23 +295,11 @@
             <br>
             <!-- Dropdown for Race -->
             <select id="race" onchange="updateRace()">
-                <option value="">Select Race</option>
-                <option value="Human">Human</option>
-                <option value="Robot">Robot</option>
-                <option value="Geovector">Geovector</option>
-                <option value="Eltinian">Eltinian</option>
-                <option value="Reptilian">Reptilian</option>
-                <option value="GoldSerian">GoldSerian</option>
-            </select><br>
+                 <option value="">Select Race</option>
+                </select><br>
             <!-- Dropdown for Class -->
             <select id="class" onchange="updateClass()">
                 <option value="">Select Class</option>
-                <option value="Mechanic">Mechanic</option>
-                <option value="Artillery Specialist">Artillery Specialist</option>
-                <option value="Pilot">Pilot</option>
-                <option value="Medic">Medic</option>
-                <option value="Swordsman">Swordsman</option>
-                <option value="Brawler">Brawler</option>
             </select><br>
             <div class="button-row">
                 <button onclick="exportCode()" style="margin-top: 10px; padding: 10px; background: #533663; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Export Code</button>
@@ -926,9 +914,16 @@ Action Icons: ${JSON.stringify(actionIcons)}
             const actionSlots = document.querySelectorAll('.actions .action-slot');
             if (actionSlots.length === 4) {
                 const hSlot = actionSlots[3];
-                if (cls && cls.AS) {
+                // Check for AS property on class or its passive
+                let asLabel = null;
+                if (cls && cls.passive && cls.passive.AS) {
+                    asLabel = cls.passive.AS;
+                } else if (cls && cls.AS) {
+                    asLabel = cls.AS;
+                }
+                if (asLabel) {
                     hSlot.style.display = 'flex';
-                    hSlot.textContent = cls.AS;
+                    hSlot.textContent = asLabel;
                 } else {
                     hSlot.style.display = 'none';
                     hSlot.textContent = 'H'; // Reset to default if hidden
@@ -937,36 +932,25 @@ Action Icons: ${JSON.stringify(actionIcons)}
             }
         }
 
-        function showModal(title, icon, description, isPassive = false) {
-            // Define the correct paths for icons
-            const iconPaths = {
-                "Machine Maintenance": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/maintenance.png",
-                "Ambush": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/ambush.png",
-                "Footwork": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/footwork.png",
-                "Medical Experiment": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/medicalexperiment.png",
-                "Ship Call": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/shipcall.png",
-                "Lock On": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/locked on.png",
-                "Config": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/config.png",
-                "Bloodsport": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/bloodsport.png",
-                "Sheath": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/sheath.png",
-                "Effective Dosage": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/effectivedosage.png",
-                "Holster": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/holster.png",
-                "Reptile Efficiency": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/reptile efficiency.png",
-                "Slither": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/slither.png",
-                "Advanced Perception": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/advancedperception.png",
-                "Brute Strength": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/brutestrength.png",
-                "First Guard": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/firstguard.png",
-                "Decoy": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/decoy.png",
-                "Connect": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/connect.png"
-            };
+        function showModal(title, icon, description, type) {
+            const basePath = "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/";
+            let subfolder = "";
+            switch (type) {
+                case "class-skill": subfolder = "classicons/skillicons/"; break;
+                case "race-skill": subfolder = "raceicons/skillicons/"; break;
+                case "class-passive": subfolder = "classicons/passiveicons/"; break;
+                case "race-passive": subfolder = "raceicons/passiveicons/"; break;
+                default: subfolder = ""; break;
+            }
+            const iconUrl = basePath + subfolder + icon;
 
             // Create the modal container
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.position = 'fixed';
-            modal.style.top = '50%'; /* Center vertically */
-            modal.style.left = '50%'; /* Center horizontally */
-            modal.style.transform = 'translate(-50%, -50%)'; /* Adjust for the modal's size */
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
             modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
             modal.style.display = 'flex';
             modal.style.flexDirection = 'column';
@@ -988,7 +972,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
             // Add the icon to the modal
             const modalIcon = document.createElement('img');
-            modalIcon.src = iconPaths[title] || icon; // Use the correct path or fallback to the provided icon
+            modalIcon.src = iconUrl;
             modalIcon.alt = title;
             modalIcon.style.width = '100px';
             modalIcon.style.height = '100px';
@@ -1664,6 +1648,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
         document.getElementById('cardBgUploader').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
+           
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.querySelector('.character-card').style.backgroundImage = `url('${e.target.result}')`;
@@ -1671,6 +1656,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 document.querySelector('.character-card').style.backgroundPosition = 'center';
                 cardBgData = e.target.result; // Store the Data URL
             };
+
             reader.readAsDataURL(file);
         });
 
