@@ -909,28 +909,33 @@ Action Icons: ${JSON.stringify(actionIcons)}
         }
 
         function updateActionSlotH() {
-            // Get selected class object from campaign data
             const className = document.getElementById('class').value;
             const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
 
-            // Find the 4th action slot (index 3)
             const actionSlots = document.querySelectorAll('.actions .action-slot');
             if (actionSlots.length === 4) {
                 const hSlot = actionSlots[3];
-                // Check for AS property on class or its passive
                 let asLabel = null;
                 if (cls && cls.passive && cls.passive.AS) {
                     asLabel = cls.passive.AS;
                 } else if (cls && cls.AS) {
                     asLabel = cls.AS;
+                } else if (cls && Array.isArray(cls.skills)) {
+                    // Check each skill for AS property
+                    for (const skill of cls.skills) {
+                        if (skill.AS) {
+                            asLabel = skill.AS;
+                            break;
+                        }
+                    }
                 }
                 if (asLabel) {
                     hSlot.style.display = 'flex';
                     hSlot.textContent = asLabel;
                 } else {
                     hSlot.style.display = 'none';
-                    hSlot.textContent = 'H'; // Reset to default if hidden
-                    hSlot.style.backgroundImage = ''; // Remove icon if hidden
+                    hSlot.textContent = 'H';
+                    hSlot.style.backgroundImage = '';
                 }
             }
         }
@@ -1636,6 +1641,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
         });
 
         // Settings button logic
+       
         document.getElementById('settingsBtn').onclick = function() {
             document.getElementById('settingsPanel').style.display = 'flex';
         };
