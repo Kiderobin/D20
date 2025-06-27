@@ -277,6 +277,8 @@
             box-sizing: border-box;
         }
     </style>
+    <!-- Add in your <head> or before your main <script> -->
+    <script src="campaign/data.js"></script>
 </head>
 <body>
     <div class="character-card">
@@ -799,40 +801,9 @@ Action Icons: ${JSON.stringify(actionIcons)}
         }
 
         function updateRace() {
-            const race = document.getElementById('race').value;
-            const statsBox = document.querySelector('.stats-box'); // Select the stats box
-
-            // Define race-to-passive trait and icon mapping
-            const raceTraits = {
-                Geovector: { 
-                    passive: "Brute Strength", 
-                    icon: "brutestrength.png", 
-                    description: "Naturally strong, providing enhanced physical abilities." 
-                },
-                Eltinian: { 
-                    passive: "Advanced Perception", 
-                    icon: "advancedperception.png", 
-                    description: "Adaptive senses, allowing for heightened awareness." 
-                },
-                Reptilian: { 
-                    passive: "Slither", 
-                    icon: "slither.png", 
-                    description: "Naturally quick and sneaky, ideal for stealth." 
-                },
-                GoldSerian: { 
-                    passive: "First Guard", 
-                    icon: "firstguard.png", 
-                    description: "Immunity to the first hit of a battle." 
-                },
-                Robot: {
-                    skill: "Connect",
-                    icon: "connect.png",
-                    description: "Can interface with machines and digital systems."
-                }
-            };
-
-            // Get the selected race traits
-            const selectedRace = raceTraits[race] || { passive: "", icon: "", description: "" };
+            const raceName = document.getElementById('race').value;
+            const statsBox = document.querySelector('.stats-box');
+            const race = window.D20_CAMPAIGN_DATA.races.find(r => r.name === raceName) || {};
 
             // Remove any existing race passive trait display
             const existingPassive = statsBox.querySelector('.race-passive-trait');
@@ -841,7 +812,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
             }
 
             // Add the passive trait or skill inline with skills
-            if (selectedRace.passive || selectedRace.skill) {
+            if (race.passive || race.skill) {
                 const traitCard = document.createElement('div');
                 traitCard.className = 'race-passive-trait';
                 traitCard.style.display = 'inline-flex';
@@ -850,8 +821,8 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 traitCard.style.cursor = 'pointer';
 
                 const traitIcon = document.createElement('img');
-                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/${selectedRace.passive ? 'passiveicons' : 'skillicons'}/${selectedRace.icon}`;
-                traitIcon.alt = selectedRace.passive || selectedRace.skill;
+                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/${race.passive ? 'passiveicons' : 'skillicons'}/${race.icon}`;
+                traitIcon.alt = race.passive || race.skill;
                 traitIcon.style.width = '50px';
                 traitIcon.style.height = '50px';
 
@@ -859,7 +830,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
                 // Add click event to show modal with trait details
                 traitCard.addEventListener('click', () => {
-                    showModal(selectedRace.passive || selectedRace.skill, selectedRace.icon, selectedRace.description, true);
+                    showModal(race.passive || race.skill, race.icon, race.description, true);
                 });
 
                 const exportButtonRow = statsBox.querySelector('.button-row');
@@ -872,57 +843,8 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
         function updateClass() {
             const className = document.getElementById('class').value;
-            const statsBox = document.querySelector('.stats-box'); // Select the stats box
-
-            // Define class-to-skills, icons, passive traits, and descriptions mapping
-            const classTraits = {
-                Mechanic: {
-                    skills: [
-                        { skill: "Machine Maintenance", icon: "maintenance.png", description: "Be able to work at a workbench and be able to run maintenance on ships or machinery." },
-                        { skill: "Config", icon: "config.png", description: "If you have a tool bag on you, you can modify weapons and gear on the go by equipping artifacts on them." }
-                    ]
-                },
-                "Artillery Specialist": {
-                    passive: "Holster",
-                    passiveIcon: "holster.png",
-                    passiveDescription: "Gains +1 item slot specifically for firearms only. Dual pistols count as one item. Requires Firearms.",
-                    skills: [
-                        { skill: "Lock On", icon: "locked on.png", description: "Increase your accuracy or precision by one multiplied by skill level." }
-                    ]
-                },
-                Pilot: {
-                    skills: [
-                        { skill: "Ship Call", icon: "shipcall.png", description: "If you have one, you can pilot any ship. After activation, wait one full turn rotation for the ship registered to you." }
-                    ]
-                },
-                Medic: {
-                    passive: "Effective Dosage",
-                    passiveIcon: "effectivedosage.png",
-                    passiveDescription: "Your health items do twice the effects.",
-                    skills: [
-                        { skill: "Medical Experiment", icon: "medicalexperiment.png", description: "You can mix ingredients for new item effects." }
-                    ]
-                },
-                Swordsman: {
-                    passive: "Sheath",
-                    passiveIcon: "sheath.png",
-                    passiveDescription: "Gains +1 item slot specifically for swords only.",
-                    skills: [
-                        { skill: "Footwork", icon: "footwork.png", description: "Gains additional stealth points on use. Requires Sword." }
-                    ]
-                },
-                Brawler: {
-                    passive: "Bloodsport",
-                    passiveIcon: "bloodsport.png",
-                    passiveDescription: "In battle domes, you earn twice the amount of credits when winning a fight.",
-                    skills: [
-                        { skill: "Ambush", icon: "ambush.png", description: "On unexpected targets, the first hit will be 5x the result of a d20." }
-                    ]
-                }
-            };
-
-            // Get the selected class traits
-            const selectedClass = classTraits[className] || { passive: "", passiveIcon: "", passiveDescription: "", skills: [] };
+            const statsBox = document.querySelector('.stats-box');
+            const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className) || {};
 
             // Remove any existing passive trait display
             const existingPassive = statsBox.querySelector('.passive-trait');
@@ -931,7 +853,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
             }
 
             // Add the passive trait inline with skills
-            if (selectedClass.passive) {
+            if (cls.passive) {
                 const passiveTraitButton = document.createElement('button');
                 passiveTraitButton.className = 'passive-trait';
                 passiveTraitButton.style.display = 'inline-flex';
@@ -942,8 +864,8 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 passiveTraitButton.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${selectedClass.passiveIcon}`;
-                passiveIcon.alt = selectedClass.passive;
+                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${cls.passiveIcon}`;
+                passiveIcon.alt = cls.passive;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
 
@@ -951,7 +873,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
                 // Add click event to show modal with passive trait details
                 passiveTraitButton.addEventListener('click', () => {
-                    showModal(selectedClass.passive, selectedClass.passiveIcon, selectedClass.passiveDescription, true);
+                    showModal(cls.passive, cls.passiveIcon, cls.passiveDescription, true);
                 });
 
                 const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
@@ -963,7 +885,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
             existingSkills.forEach(skill => skill.remove());
 
             // Add skill buttons for the selected class
-            selectedClass.skills.forEach(skill => {
+            cls.skills.forEach(skill => {
                 const skillButton = document.createElement('button');
                 skillButton.className = 'skill-button';
                 skillButton.style.display = 'inline-flex';
@@ -996,42 +918,21 @@ Action Icons: ${JSON.stringify(actionIcons)}
         }
 
         function updateActionSlotH() {
-            // Show slot H if class is "Artillery Specialist" or has "Holster" passive
-            // Show slot S if class is "Swordsman" or has "Sheath" passive
+            // Get selected class object from campaign data
             const className = document.getElementById('class').value;
-            let hasHolsterPassive = false;
-            let hasSheathPassive = false;
+            const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
 
-            // Check for passive trait "Holster" or "Sheath" in the stats box
-            const statsBox = document.querySelector('.stats-box');
-            const passiveTraitButton = statsBox.querySelector('.passive-trait');
-            if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
-                const alt = passiveTraitButton.querySelector('img').alt;
-                if (alt && alt.toLowerCase() === 'holster') {
-                    hasHolsterPassive = true;
-                }
-                if (alt && alt.toLowerCase() === 'sheath') {
-                    hasSheathPassive = true;
-                }
-            }
-
-            // Show or hide the H/S slot and set its label
+            // Find the 4th action slot (index 3)
             const actionSlots = document.querySelectorAll('.actions .action-slot');
             if (actionSlots.length === 4) {
                 const hSlot = actionSlots[3];
-                if (className === 'Artillery Specialist' || hasHolsterPassive) {
+                if (cls && cls.AS) {
                     hSlot.style.display = 'flex';
-                    hSlot.textContent = 'H';
-                } else if (className === 'Swordsman' || hasSheathPassive) {
-                    hSlot.style.display = 'flex';
-                    hSlot.textContent = 'S';
+                    hSlot.textContent = cls.AS;
                 } else {
                     hSlot.style.display = 'none';
                     hSlot.textContent = 'H'; // Reset to default if hidden
-                }
-                // Remove any background image if slot is hidden
-                if (hSlot.style.display === 'none') {
-                    hSlot.style.backgroundImage = '';
+                    hSlot.style.backgroundImage = ''; // Remove icon if hidden
                 }
             }
         }
@@ -1695,6 +1596,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 img.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/${name}`;
                 img.alt = name.replace('.png','');
                 img.style.width = "70px";
+
                 img.style.height = (name === "air.png") ? "108px" : "70px";
                 img.style.borderRadius = "0%";
                 img.style.background = "none";
@@ -1890,6 +1792,25 @@ document.getElementById('notepadModal').onselectstart = function() { return fals
         document.body.style.userSelect = "";
     });
 })();
+
+function populateDropdowns() {
+    // Populate Race
+    const raceSelect = document.getElementById('race');
+    raceSelect.innerHTML = '<option value="">Select Race</option>';
+    window.D20_CAMPAIGN_DATA.races.forEach(race => {
+        raceSelect.innerHTML += `<option value="${race.name}">${race.name}</option>`;
+    });
+
+    // Populate Class
+    const classSelect = document.getElementById('class');
+    classSelect.innerHTML = '<option value="">Select Class</option>';
+    window.D20_CAMPAIGN_DATA.classes.forEach(cls => {
+        classSelect.innerHTML += `<option value="${cls.name}">${cls.name}</option>`;
+    });
+}
+
+// Call this on page load
+populateDropdowns();
     </script>
 </body>
 </html>
