@@ -793,14 +793,13 @@ Action Icons: ${JSON.stringify(actionIcons)}
             const statsBox = document.querySelector('.stats-box');
             const race = window.D20_CAMPAIGN_DATA.races.find(r => r.name === raceName) || {};
 
-            // Remove any existing race passive trait display
-            const existingPassive = statsBox.querySelector('.race-passive-trait');
-            if (existingPassive) {
-                existingPassive.remove();
-            }
+            // Remove any existing race trait display
+            const existingTrait = statsBox.querySelector('.race-passive-trait');
+            if (existingTrait) existingTrait.remove();
 
-            // Add the passive trait or skill inline with skills
-            if (race.passive || race.skill) {
+            // Add the passive or skill trait if present
+            let trait = race.passive || race.skill;
+            if (trait) {
                 const traitCard = document.createElement('div');
                 traitCard.className = 'race-passive-trait';
                 traitCard.style.display = 'inline-flex';
@@ -809,23 +808,26 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 traitCard.style.cursor = 'pointer';
 
                 const traitIcon = document.createElement('img');
-                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/${race.passive ? 'passiveicons' : 'skillicons'}/${race.icon}`;
-                traitIcon.alt = race.passive || race.skill;
+                // Use type to determine subfolder
+                let subfolder = '';
+                if (trait.type === 'race-passive') subfolder = 'raceicons/passiveicons/';
+                else if (trait.type === 'race-skill') subfolder = 'raceicons/skillicons/';
+                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/${subfolder}${trait.icon}`;
+                traitIcon.alt = trait.name;
                 traitIcon.style.width = '50px';
                 traitIcon.style.height = '50px';
 
                 traitCard.appendChild(traitIcon);
 
-                // Add click event to show modal with trait details
+                // Show modal with all info from JS file
                 traitCard.addEventListener('click', () => {
-                    showModal(race.passive || race.skill, race.icon, race.description, true);
+                    showModal(trait.name, trait.icon, trait.description, trait.type);
                 });
 
                 const exportButtonRow = statsBox.querySelector('.button-row');
                 statsBox.insertBefore(traitCard, exportButtonRow);
             }
 
-            // --- Show/hide slot H if needed ---
             updateActionSlotH();
         }
 
@@ -836,36 +838,33 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
             // Remove any existing passive trait display
             const existingPassive = statsBox.querySelector('.passive-trait');
-            if (existingPassive) {
-                existingPassive.remove();
-            }
+            if (existingPassive) existingPassive.remove();
 
-            // Add the passive trait inline with skills
+            // Add the passive trait if present
             if (cls.passive) {
                 const passiveTraitButton = document.createElement('button');
                 passiveTraitButton.className = 'passive-trait';
                 passiveTraitButton.style.display = 'inline-flex';
                 passiveTraitButton.style.alignItems = 'center';
-                passiveTraitButton.style.marginRight = '5px'; // Reduced margin for closer spacing
+                passiveTraitButton.style.marginRight = '5px';
                 passiveTraitButton.style.background = 'none';
                 passiveTraitButton.style.border = 'none';
                 passiveTraitButton.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${cls.passiveIcon}`;
-                passiveIcon.alt = cls.passive;
+                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${cls.passive.icon}`;
+                passiveIcon.alt = cls.passive.name;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
 
                 passiveTraitButton.appendChild(passiveIcon);
 
-                // Add click event to show modal with passive trait details
                 passiveTraitButton.addEventListener('click', () => {
-                    showModal(cls.passive, cls.passiveIcon, cls.passiveDescription, true);
+                    showModal(cls.passive.name, cls.passive.icon, cls.passive.description, cls.passive.type);
                 });
 
-                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
-                statsBox.insertBefore(passiveTraitButton, exportButtonRow); // Insert above the button row
+                const exportButtonRow = statsBox.querySelector('.button-row');
+                statsBox.insertBefore(passiveTraitButton, exportButtonRow);
             }
 
             // Remove any existing skill buttons
@@ -873,35 +872,35 @@ Action Icons: ${JSON.stringify(actionIcons)}
             existingSkills.forEach(skill => skill.remove());
 
             // Add skill buttons for the selected class
-            cls.skills.forEach(skill => {
-                const skillButton = document.createElement('button');
-                skillButton.className = 'skill-button';
-                skillButton.style.display = 'inline-flex';
-                skillButton.style.alignItems = 'center';
-                skillButton.style.marginRight = '5px'; // Reduced margin for closer spacing
-                skillButton.style.background = 'none';
-                skillButton.style.border = 'none';
-                skillButton.style.cursor = 'pointer';
+            if (cls.skills) {
+                cls.skills.forEach(skill => {
+                    const skillButton = document.createElement('button');
+                    skillButton.className = 'skill-button';
+                    skillButton.style.display = 'inline-flex';
+                    skillButton.style.alignItems = 'center';
+                    skillButton.style.marginRight = '5px';
+                    skillButton.style.background = 'none';
+                    skillButton.style.border = 'none';
+                    skillButton.style.cursor = 'pointer';
 
-                const skillIcon = document.createElement('img');
-                skillIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/${skill.icon}`;
-                skillIcon.alt = skill.skill;
-                skillIcon.style.width = '50px';
-                skillIcon.style.height = '50px';
-                skillIcon.style.marginRight = '5px'; // Reduced margin for closer spacing
+                    const skillIcon = document.createElement('img');
+                    skillIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/${skill.icon}`;
+                    skillIcon.alt = skill.name;
+                    skillIcon.style.width = '50px';
+                    skillIcon.style.height = '50px';
+                    skillIcon.style.marginRight = '5px';
 
-                skillButton.appendChild(skillIcon);
+                    skillButton.appendChild(skillIcon);
 
-                // Add click event to show modal with skill details
-                skillButton.addEventListener('click', () => {
-                    showModal(skill.skill, skill.icon, skill.description, false);
+                    skillButton.addEventListener('click', () => {
+                        showModal(skill.name, skill.icon, skill.description, skill.type);
+                    });
+
+                    const exportButtonRow = statsBox.querySelector('.button-row');
+                    statsBox.insertBefore(skillButton, exportButtonRow);
                 });
+            }
 
-                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
-                statsBox.insertBefore(skillButton, exportButtonRow); // Insert above the button row
-            });
-
-            // --- Show/hide slot H if needed ---
             updateActionSlotH();
         }
 
