@@ -814,9 +814,9 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 const traitIcon = document.createElement('img');
                 // Use type to determine subfolder
                 let subfolder = '';
-                if (trait.type === 'race-passive') subfolder = 'raceicons/passiveicons/';
-                else if (trait.type === 'race-skill') subfolder = 'raceicons/skillicons/';
-                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/${subfolder}${trait.icon}`;
+                if (trait.type === 'race-passive') subfolder = 'race-passive/';
+                else if (trait.type === 'race-skill') subfolder = 'race-skill/';
+                traitIcon.src = `icons/${trait.icon}`;
                 traitIcon.alt = trait.name;
                 traitIcon.style.width = '50px';
                 traitIcon.style.height = '50px';
@@ -856,7 +856,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 passiveTraitButton.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${cls.passive.icon}`;
+                passiveIcon.src = `icons/${cls.passive.icon}`;
                 passiveIcon.alt = cls.passive.name;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
@@ -888,7 +888,7 @@ Action Icons: ${JSON.stringify(actionIcons)}
                     skillButton.style.cursor = 'pointer';
 
                     const skillIcon = document.createElement('img');
-                    skillIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/${skill.icon}`;
+                    skillIcon.src = `icons/${skill.icon}`;
                     skillIcon.alt = skill.name;
                     skillIcon.style.width = '50px';
                     skillIcon.style.height = '50px';
@@ -944,13 +944,13 @@ Action Icons: ${JSON.stringify(actionIcons)}
             const basePath = "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/";
             let subfolder = "";
             switch (type) {
-                case "class-skill": subfolder = "classicons/skillicons/"; break;
-                case "race-skill": subfolder = "raceicons/skillicons/"; break;
-                case "class-passive": subfolder = "classicons/passiveicons/"; break;
-                case "race-passive": subfolder = "raceicons/passiveicons/"; break;
+                case "class-skill": subfolder = "class-skill/"; break;
+                case "race-skill": subfolder = "race-skill/"; break;
+                case "class-passive": subfolder = "class-passive/"; break;
+                case "race-passive": subfolder = "race-passive/"; break;
                 default: subfolder = ""; break;
             }
-            const iconUrl = basePath + subfolder + icon;
+            const iconUrl = `icons/${icon}`;
 
             // Create the modal container
             const modal = document.createElement('div');
