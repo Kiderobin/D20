@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D20</title> <!-- Updated tab name -->
     <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Permanent Marker', cursive;
             background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
             color: #f0f0f0;
             margin: 0;
@@ -198,7 +199,6 @@
 
         .close-button {
             position: absolute;
-            top: 10px;
             right: 15px;
             font-size: 24px;
             font-weight: bold;
@@ -276,11 +276,65 @@
             max-width: 95vw;
             box-sizing: border-box;
         }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            color: #f0f0f0;
+            font-size: 2.5em;
+            font-family: Arial, sans-serif;
+            transition: opacity 0.5s;
+        }
+
+        #loadingOverlay div {
+            text-align: center;
+            margin-top: 18px;
+        }
     </style>
     <!-- Add in your <head> or before your main <script> -->
-    <script src="OneTimeGo.js"></script>
+    <script src="data.js"></script>
 </head>
 <body>
+    <div id="loadingOverlay" style="
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100vw; height: 100vh;
+        background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5000;
+        color: #f0f0f0;
+        font-size: 2.5em;
+        font-family: Arial, sans-serif;
+        transition: opacity 0.5s;
+    ">
+        <div>
+            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="Loading..." style="width:100px; height:100px; display:block; margin:auto;">
+            <div style="text-align:center; margin-top:18px;">Loading...</div>
+        </div>
+        <div style="
+            position: absolute;
+            bottom: 18px;
+            right: 32px;
+            color: #f0f0f0;
+            font-family: 'Permanent Marker', Arial, sans-serif;
+            font-size: 2.1rem;
+            opacity: 0.7;
+            letter-spacing: 1px;
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 2px 2px 6px #000;
+        ">
+            ScareTheVoices
+        </div>
+    </div>
     <div class="character-card">
         <!-- Replace the contents of .stats-box with this cleaner, grouped layout -->
         <div class="stats-box">
@@ -590,6 +644,7 @@
             const nameField = document.getElementById('characterName').value;
             const nameDiv = document.querySelector('.character-name');
             nameDiv.textContent = nameField || 'Character Name';
+            saveCharacterToLocal();
         }
 
         function updateStats() {
@@ -690,21 +745,22 @@ Currency: ${currency}
 Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
 Affinity Icon: ${affinityIcon}
 Action Icons: ${JSON.stringify(actionIcons)}
+Notepad: ${document.getElementById('notepadArea') ? encodeURIComponent(document.getElementById('notepadArea').value) : ""}
 `.trim();
 
-            if (portraitData) {
-                exportData += `\nPortrait Image: ${portraitData}`;
-            }
-            if (exportMat && cardBgData) {
-                exportData += `\nCard Background: ${cardBgData}`;
-            }
+    if (portraitData) {
+        exportData += `\nPortrait Image: ${portraitData}`;
+    }
+    if (exportMat && cardBgData) {
+        exportData += `\nCard Background: ${cardBgData}`;
+    }
 
-            navigator.clipboard.writeText(exportData).then(() => {
-                alert(`${characterName || "Character"} has been saved to the clipboard`);
-            }).catch(err => {
-                console.error('Failed to save character: ', err);
-            });
-        }
+    navigator.clipboard.writeText(exportData).then(() => {
+        alert(`${characterName || "Character"} has been saved to the clipboard`);
+    }).catch(err => {
+        console.error('Failed to save character: ', err);
+    });
+}
 
         function pasteCode() {
             navigator.clipboard.readText().then((text) => {
@@ -782,8 +838,18 @@ Action Icons: ${JSON.stringify(actionIcons)}
                     cardBgData = data['Card Background'];
                 }
 
+                // Handle Notepad
+                if (typeof data['Notepad'] !== 'undefined') {
+                    const note = decodeURIComponent(data['Notepad']);
+                    if (document.getElementById('notepadArea')) {
+                        document.getElementById('notepadArea').value = note;
+                        localStorage.setItem('d20notepad', note);
+                    }
+                }
+
                 updateName();
                 updateStats();
+                saveCharacterToLocal(); // <-- Add this line to save after pasting!
             }).catch(err => {
                 console.error('Read clipboard: ', err);
                 // Use the pasted character name if available
@@ -798,12 +864,15 @@ Action Icons: ${JSON.stringify(actionIcons)}
             const race = window.D20_CAMPAIGN_DATA.races.find(r => r.name === raceName) || {};
 
             // Remove any existing race trait display
-            const existingTrait = statsBox.querySelector('.race-passive-trait');
-            if (existingTrait) existingTrait.remove();
+            const existingTraits = statsBox.querySelectorAll('.race-passive-trait, .race-skill-button');
+            existingTraits.forEach(trait => trait.remove());
 
-            // Add the passive or skill trait if present
-            let trait = race.passive || race.skill;
-            if (trait) {
+            // Handle passives (array or single)
+            let passives = [];
+            if (Array.isArray(race.passives)) passives = race.passives;
+            else if (race.passive) passives = [race.passive];
+
+            passives.forEach(trait => {
                 const traitCard = document.createElement('div');
                 traitCard.className = 'race-passive-trait';
                 traitCard.style.display = 'inline-flex';
@@ -812,10 +881,6 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 traitCard.style.cursor = 'pointer';
 
                 const traitIcon = document.createElement('img');
-                // Use type to determine subfolder
-                let subfolder = '';
-                if (trait.type === 'race-passive') subfolder = 'race-passive/';
-                else if (trait.type === 'race-skill') subfolder = 'race-skill/';
                 traitIcon.src = `icons/${trait.icon}`;
                 traitIcon.alt = trait.name;
                 traitIcon.style.width = '50px';
@@ -823,14 +888,44 @@ Action Icons: ${JSON.stringify(actionIcons)}
 
                 traitCard.appendChild(traitIcon);
 
-                // Show modal with all info from JS file
                 traitCard.addEventListener('click', () => {
                     showModal(trait.name, trait.icon, trait.description, trait.type);
                 });
 
                 const exportButtonRow = statsBox.querySelector('.button-row');
                 statsBox.insertBefore(traitCard, exportButtonRow);
-            }
+            });
+
+            // Handle skills (array or single)
+            let skills = [];
+            if (Array.isArray(race.skills)) skills = race.skills;
+            else if (race.skill) skills = [race.skill];
+
+            skills.forEach(skill => {
+                const skillButton = document.createElement('button');
+                skillButton.className = 'race-skill-button';
+                skillButton.style.display = 'inline-flex';
+                skillButton.style.alignItems = 'center';
+                skillButton.style.marginRight = '5px';
+                skillButton.style.background = 'none';
+                skillButton.style.border = 'none';
+                skillButton.style.cursor = 'pointer';
+
+                const skillIcon = document.createElement('img');
+                skillIcon.src = `icons/${skill.icon}`;
+                skillIcon.alt = skill.name;
+                skillIcon.style.width = '50px';
+                skillIcon.style.height = '50px';
+
+                skillButton.appendChild(skillIcon);
+
+                skillButton.addEventListener('click', () => {
+                    showModal(skill.name, skill.icon, skill.description, skill.type);
+                });
+
+                const exportButtonRow = statsBox.querySelector('.button-row');
+                statsBox.insertBefore(skillButton, exportButtonRow);
+            });
 
             updateActionSlotH();
         }
@@ -841,11 +936,15 @@ Action Icons: ${JSON.stringify(actionIcons)}
             const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className) || {};
 
             // Remove any existing passive trait display
-            const existingPassive = statsBox.querySelector('.passive-trait');
-            if (existingPassive) existingPassive.remove();
+            const existingPassives = statsBox.querySelectorAll('.passive-trait');
+            existingPassives.forEach(passive => passive.remove());
 
-            // Add the passive trait if present
-            if (cls.passive) {
+            // Add all passive traits if present (array or single)
+            let passives = [];
+            if (Array.isArray(cls.passives)) passives = cls.passives;
+            else if (cls.passive) passives = [cls.passive];
+
+            passives.forEach(passiveTrait => {
                 const passiveTraitButton = document.createElement('button');
                 passiveTraitButton.className = 'passive-trait';
                 passiveTraitButton.style.display = 'inline-flex';
@@ -856,20 +955,20 @@ Action Icons: ${JSON.stringify(actionIcons)}
                 passiveTraitButton.style.cursor = 'pointer';
 
                 const passiveIcon = document.createElement('img');
-                passiveIcon.src = `icons/${cls.passive.icon}`;
-                passiveIcon.alt = cls.passive.name;
+                passiveIcon.src = `icons/${passiveTrait.icon}`;
+                passiveIcon.alt = passiveTrait.name;
                 passiveIcon.style.width = '50px';
                 passiveIcon.style.height = '50px';
 
                 passiveTraitButton.appendChild(passiveIcon);
 
                 passiveTraitButton.addEventListener('click', () => {
-                    showModal(cls.passive.name, cls.passive.icon, cls.passive.description, cls.passive.type);
+                    showModal(passiveTrait.name, passiveTrait.icon, passiveTrait.description, passiveTrait.type);
                 });
 
                 const exportButtonRow = statsBox.querySelector('.button-row');
                 statsBox.insertBefore(passiveTraitButton, exportButtonRow);
-            }
+            });
 
             // Remove any existing skill buttons
             const existingSkills = statsBox.querySelectorAll('.skill-button');
@@ -1807,6 +1906,92 @@ function populateDropdowns() {
 
 // Call this on page load
 populateDropdowns();
+
+window.addEventListener('DOMContentLoaded', function() {
+    populateDropdowns();
+    loadCharacterFromLocal();
+    setTimeout(function() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
+        }
+    }, 2000);
+});
+
+function saveCharacterToLocal() {
+    const data = {
+        characterName: document.getElementById('characterName').value || '',
+        level: document.getElementById('level').value || '',
+        race: document.getElementById('race').value || '',
+        className: document.getElementById('class').value || '',
+        currency: document.getElementById('currency').value || '',
+        affinityChecked: document.getElementById('affinityCheckbox').checked,
+        selectedAffinity: window.selectedAffinity || "none.png",
+        portraitImage: document.getElementById('portraitImage').src || '',
+        cardBgData: window.cardBgData || '',
+        actionIcons: Array.from(document.querySelectorAll('.actions .action-slot')).map(slot => {
+            let bg = slot.style.backgroundImage;
+            if (bg && bg.startsWith('url(')) {
+                return bg.slice(5, -2);
+            } else {
+                return slot.textContent.trim();
+            }
+        })
+    };
+    localStorage.setItem('d20character', JSON.stringify(data));
+}
+
+function loadCharacterFromLocal() {
+    const data = JSON.parse(localStorage.getItem('d20character') || '{}');
+    if (!data || !Object.keys(data).length) return;
+    if (typeof data.characterName !== 'undefined') document.getElementById('characterName').value = data.characterName;
+    if (typeof data.level !== 'undefined') document.getElementById('level').value = data.level;
+    if (typeof data.race !== 'undefined') {
+        document.getElementById('race').value = data.race;
+        updateRace();
+    }
+    if (typeof data.className !== 'undefined') {
+        document.getElementById('class').value = data.className;
+        updateClass();
+    }
+    if (typeof data.currency !== 'undefined') document.getElementById('currency').value = data.currency;
+    if (typeof data.affinityChecked !== 'undefined') {
+        document.getElementById('affinityCheckbox').checked = data.affinityChecked;
+        affinityBtn.style.display = data.affinityChecked ? 'block' : 'none';
+    }
+    if (typeof data.selectedAffinity !== 'undefined') {
+        window.selectedAffinity = data.selectedAffinity;
+        updateAffinityBtn();
+    }
+    if (typeof data.portraitImage !== 'undefined' && data.portraitImage.startsWith('data:image')) {
+        document.getElementById('portraitImage').src = data.portraitImage;
+        document.getElementById('modalPortraitImage').src = data.portraitImage;
+    }
+    if (typeof data.cardBgData !== 'undefined' && data.cardBgData.startsWith('data:image')) {
+        document.querySelector('.character-card').style.backgroundImage = `url('${data.cardBgData}')`;
+        document.querySelector('.character-card').style.backgroundSize = 'cover';
+        document.querySelector('.character-card').style.backgroundPosition = 'center';
+        window.cardBgData = data.cardBgData;
+    }
+    if (Array.isArray(data.actionIcons)) {
+        const actionSlots = document.querySelectorAll('.actions .action-slot');
+        actionSlots.forEach((slot, i) => {
+            const icon = data.actionIcons[i];
+            if (icon && icon.startsWith('http')) {
+                slot.style.backgroundImage = `url('${icon}')`;
+                slot.style.backgroundSize = 'cover';
+                slot.style.backgroundPosition = 'center';
+                slot.textContent = '';
+            } else {
+                slot.style.backgroundImage = '';
+                slot.textContent = icon || (i === 3 ? 'H' : (i + 1).toString());
+            }
+        });
+    }
+    updateName();
+    updateStats();
+}
     </script>
 </body>
 </html>
