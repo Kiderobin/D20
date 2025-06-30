@@ -1010,6 +1010,78 @@ Notepad: ${document.getElementById('notepadArea') ? encodeURIComponent(document.
                 });
             }
 
+            // --- Subclass icon logic ---
+            // Remove any existing subclass icons
+            const existingSubclassIcons = statsBox.querySelectorAll('.subclass-icon, .subclass-skill-button');
+            existingSubclassIcons.forEach(el => el.remove());
+
+            const subclassName = document.getElementById('subclass')?.value;
+            if (subclassName && Array.isArray(cls.subclasses)) {
+                const sub = cls.subclasses.find(s => s.name === subclassName);
+                if (sub) {
+                    // Subclass passives
+                    let subPassives = [];
+                    if (Array.isArray(sub.passives)) subPassives = sub.passives;
+                    else if (sub.passive) subPassives = [sub.passive];
+
+                    subPassives.forEach(passiveTrait => {
+                        const passiveTraitButton = document.createElement('button');
+                        passiveTraitButton.className = 'subclass-icon';
+                        passiveTraitButton.style.display = 'inline-flex';
+                        passiveTraitButton.style.alignItems = 'center';
+                        passiveTraitButton.style.marginRight = '5px';
+                        passiveTraitButton.style.background = 'none';
+                        passiveTraitButton.style.border = 'none';
+                        passiveTraitButton.style.cursor = 'pointer';
+
+                        const passiveIcon = document.createElement('img');
+                        passiveIcon.src = `icons/${passiveTrait.icon}`;
+                        passiveIcon.alt = passiveTrait.name;
+                        passiveIcon.style.width = '50px';
+                        passiveIcon.style.height = '50px';
+
+                        passiveTraitButton.appendChild(passiveIcon);
+
+                        passiveTraitButton.addEventListener('click', () => {
+                            showModal(passiveTrait.name, passiveTrait.icon, passiveTrait.description, passiveTrait.type);
+                        });
+
+                        const exportButtonRow = statsBox.querySelector('.button-row');
+                        statsBox.insertBefore(passiveTraitButton, exportButtonRow);
+                    });
+
+                    // Subclass skills
+                    if (sub.skills) {
+                        sub.skills.forEach(skill => {
+                            const skillButton = document.createElement('button');
+                            skillButton.className = 'subclass-skill-button';
+                            skillButton.style.display = 'inline-flex';
+                            skillButton.style.alignItems = 'center';
+                            skillButton.style.marginRight = '5px';
+                            skillButton.style.background = 'none';
+                            skillButton.style.border = 'none';
+                            skillButton.style.cursor = 'pointer';
+
+                            const skillIcon = document.createElement('img');
+                            skillIcon.src = `icons/${skill.icon}`;
+                            skillIcon.alt = skill.name;
+                            skillIcon.style.width = '50px';
+                            skillIcon.style.height = '50px';
+                            skillIcon.style.marginRight = '5px';
+
+                            skillButton.appendChild(skillIcon);
+
+                            skillButton.addEventListener('click', () => {
+                                showModal(skill.name, skill.icon, skill.description, skill.type);
+                            });
+
+                            const exportButtonRow = statsBox.querySelector('.button-row');
+                            statsBox.insertBefore(skillButton, exportButtonRow);
+                        });
+                    }
+                }
+            }
+
             updateActionSlotH();
         }
 
@@ -2036,11 +2108,8 @@ document.getElementById('level').addEventListener('input', updateSubclassDropdow
 
 // Optional: handle subclass selection (for future use)
 function updateSubclass() {
-    // You can add logic here to display subclass passives/skills if needed
-    // Example:
-    // const className = document.getElementById('class').value;
-    // const subclassName = document.getElementById('subclass').value;
-    // ...
+    // Refresh class display to show subclass icons and skills
+    updateClass();
 }
 
 // --- END Subclass Dropdown Logic ---
