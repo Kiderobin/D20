@@ -355,6 +355,12 @@
             <select id="class" onchange="updateClass()">
                 <option value="">Select Class</option>
             </select><br>
+            <!-- Subclass Dropdown (hidden by default) -->
+            <div id="subclassContainer" style="display:none;">
+                <select id="subclass" onchange="updateSubclass()" style="margin-top:10px;">
+                    <option value="">Select Subclass</option>
+                </select>
+            </div>
             <div class="button-row">
                 <button onclick="exportCode()" style="margin-top: 10px; padding: 10px; background: #533663; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Export Code</button>
                 <button onclick="pasteCode()" style="margin-top: 10px; padding: 10px; background: #3c763d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Paste Code</button>
@@ -1642,6 +1648,7 @@ Notepad: ${document.getElementById('notepadArea') ? encodeURIComponent(document.
         ];
 
         // Add Affinity button to portrait (top right corner)
+
         const portraitDiv = document.querySelector('.portrait');
         const affinityBtn = document.getElementById('affinityBtn');
         portraitDiv.style.position = 'relative';
@@ -1910,6 +1917,7 @@ populateDropdowns();
 window.addEventListener('DOMContentLoaded', function() {
     populateDropdowns();
     loadCharacterFromLocal();
+    updateSubclassDropdown();
     setTimeout(function() {
         const overlay = document.getElementById('loadingOverlay');
         if (overlay) {
@@ -1992,6 +2000,50 @@ function loadCharacterFromLocal() {
     updateName();
     updateStats();
 }
+
+// --- Subclass Dropdown Logic ---
+
+function updateSubclassDropdown() {
+    const className = document.getElementById('class').value;
+    const level = parseInt(document.getElementById('level').value, 10) || 0;
+    const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
+    const subclassContainer = document.getElementById('subclassContainer');
+    const subclassSelect = document.getElementById('subclass');
+    subclassSelect.innerHTML = '<option value="">Select Subclass</option>';
+
+    if (
+        cls &&
+        Array.isArray(cls.subclasses) &&
+        cls.subclasses.length > 0 &&
+        typeof cls.subclasslevel === 'number' &&
+        level >= cls.subclasslevel
+    ) {
+        cls.subclasses.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub.name;
+            opt.textContent = sub.name;
+            subclassSelect.appendChild(opt);
+        });
+        subclassContainer.style.display = '';
+    } else {
+        subclassContainer.style.display = 'none';
+    }
+}
+
+// Call this whenever class or level changes
+document.getElementById('class').addEventListener('change', updateSubclassDropdown);
+document.getElementById('level').addEventListener('input', updateSubclassDropdown);
+
+// Optional: handle subclass selection (for future use)
+function updateSubclass() {
+    // You can add logic here to display subclass passives/skills if needed
+    // Example:
+    // const className = document.getElementById('class').value;
+    // const subclassName = document.getElementById('subclass').value;
+    // ...
+}
+
+// --- END Subclass Dropdown Logic ---
     </script>
 </body>
 </html>
