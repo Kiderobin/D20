@@ -538,6 +538,12 @@
                     <input type="checkbox" id="exportMatCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
                     <span style="margin-left: 4px;">Export Mat</span>
                 </label>
+                <!-- Add this inside the settings panel, after the Export Mat setting checkbox -->
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
+                    <span style="margin-right: 10px;">Volume</span>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1" style="flex:1;">
+                    <span id="volumeValue" style="margin-left: 10px;">100%</span>
+                </label>
             </div>
         </div>
     </div>
@@ -748,7 +754,7 @@ Character Name: ${characterName}
 Level: ${level}
 Race: ${race}
 Class: ${className}
-Subclass: ${subclass}   // <-- Add this line
+Subclass: ${subclass}
 Currency: ${currency}
 Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
 Affinity Icon: ${affinityIcon}
@@ -1100,16 +1106,26 @@ function updateActionSlotH() {
     const className = document.getElementById('class').value;
     const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
 
+    // Get selected subclass if any
+    const subclassName = document.getElementById('subclass')?.value;
+    let sub = null;
+    if (cls && subclassName && Array.isArray(cls.subclasses)) {
+        sub = cls.subclasses.find(s => s.name === subclassName);
+    }
+
     const actionSlots = document.querySelectorAll('.actions .action-slot');
     if (actionSlots.length === 4) {
         const hSlot = actionSlots[3];
         let asLabel = null;
-        if (cls && cls.passive && cls.passive.AS) {
+
+        // Check subclass passive AS first
+        if (sub && sub.passive && sub.passive.AS) {
+            asLabel = sub.passive.AS;
+        } else if (cls && cls.passive && cls.passive.AS) {
             asLabel = cls.passive.AS;
         } else if (cls && cls.AS) {
             asLabel = cls.AS;
         } else if (cls && Array.isArray(cls.skills)) {
-            // Check each skill for AS property
             for (const skill of cls.skills) {
                 if (skill.AS) {
                     asLabel = skill.AS;
@@ -1631,6 +1647,7 @@ const imageList = [
             if (!selectedSlot) return;
             if (e.clipboardData && e.clipboardData.items) {
                 for (let i = 0; i < e.clipboardData.items.length; i++) {
+                   
                     const item = e.clipboardData.items[i];
                     if (item.type.indexOf('image') !== -1) {
                         const file = item.getAsFile();
@@ -1673,22 +1690,30 @@ const imageList = [
                 if (selectedSlot.classList.contains('action-slot')) {
                     const slotIndex = Array.from(selectedSlot.parentElement.children).indexOf(selectedSlot) + 1;
                     if (slotIndex === 4) {
-                        // For the last slot, check if Swordsman or Sheath passive is active
+                        // For the last slot, use the correct AS label from class/subclass
                         const className = document.getElementById('class').value;
-                        let hasSheathPassive = false;
-                        const statsBox = document.querySelector('.stats-box');
-                        const passiveTraitButton = statsBox.querySelector('.passive-trait');
-                        if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
-                            const alt = passiveTraitButton.querySelector('img').alt;
-                            if (alt && alt.toLowerCase() === 'sheath') {
-                                hasSheathPassive = true;
+                        const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
+                        const subclassName = document.getElementById('subclass')?.value;
+                        let sub = null;
+                        if (cls && subclassName && Array.isArray(cls.subclasses)) {
+                            sub = cls.subclasses.find(s => s.name === subclassName);
+                        }
+                        let asLabel = null;
+                        if (sub && sub.passive && sub.passive.AS) {
+                            asLabel = sub.passive.AS;
+                        } else if (cls && cls.passive && cls.passive.AS) {
+                            asLabel = cls.passive.AS;
+                        } else if (cls && cls.AS) {
+                            asLabel = cls.AS;
+                        } else if (cls && Array.isArray(cls.skills)) {
+                            for (const skill of cls.skills) {
+                                if (skill.AS) {
+                                    asLabel = skill.AS;
+                                    break;
+                                }
                             }
                         }
-                        if (className === 'Swordsman' || hasSheathPassive) {
-                            selectedSlot.textContent = 'S';
-                        } else {
-                            selectedSlot.textContent = 'H';
-                        }
+                        selectedSlot.textContent = asLabel || 'H';
                     } else {
                         selectedSlot.textContent = slotIndex.toString();
                     }
@@ -2124,6 +2149,37 @@ function updateSubclass() {
 }
 
 // --- END Subclass Dropdown Logic ---
+
+const volumeSlider = document.getElementById('volumeSlider');
+const volumeValue = document.getElementById('volumeValue');
+const allAudio = [
+    document.getElementById('diceSound'),
+    document.getElementById('rulebookSound')
+    // Add more audio elements here if needed
+];
+
+function setAllAudioVolume(vol) {
+    allAudio.forEach(audio => {
+        if (audio) audio.volume = vol;
+    });
+}
+
+if (volumeSlider) {
+    volumeSlider.addEventListener('input', function() {
+        setAllAudioVolume(this.value);
+        volumeValue.textContent = Math.round(this.value * 100) + "%";
+        localStorage.setItem('d20_volume', this.value);
+    });
+    // Load saved volume
+    const savedVol = localStorage.getItem('d20_volume');
+    if (savedVol !== null) {
+        volumeSlider.value = savedVol;
+        setAllAudioVolume(savedVol);
+        volumeValue.textContent = Math.round(savedVol * 100) + "%";
+    } else {
+        setAllAudioVolume(1);
+    }
+}
     </script>
 </body>
 </html>
