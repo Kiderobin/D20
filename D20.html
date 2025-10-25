@@ -412,7 +412,7 @@
         <div class="stats-box">
             <input type="text" placeholder="Character Name" id="characterName" oninput="updateName()"><br>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="number" placeholder="Level" id="level" oninput="updateStats()" style="width: 40%;">
+                <input type="number" placeholder="Level" id="level" min="1" oninput="updateStats()" style="width: 40%;">
                 <div style="position: relative; flex: 1; min-width: 0;">
                     <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 22px; color: #533663; pointer-events: none;">$</span>
                     <input type="number" placeholder="Currency" id="currency" min="0" oninput="updateStats()" style="padding-left: 28px; width: 76%; min-width: 0;">
@@ -1963,7 +1963,7 @@ let maxHP = 100;
 let lastMaxHP = 100; // Add this to track the previous maxHP
 
 function updateHealthBar() {
-    const level = parseInt(document.getElementById("level").value) || 1;
+    const level = Math.max(1, parseInt(document.getElementById("level").value) || 1);
     const newMaxHP = level * 20;
 
     // Calculate and maintain the percentage when maxHP changes
