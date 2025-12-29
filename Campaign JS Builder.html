@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>D20 - Campaign JS Builder</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
+	<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+	<style>
+		/* ...theme derived from GG.html... */
+		body{font-family:'Permanent Marker',cursive;background:linear-gradient(to bottom,#3a3a3a,#1e1e1e);color:#f0f0f0;margin:0;padding:20px}
+		.container{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+		.card{background:linear-gradient(to bottom,#4b4b4b,#2f2f2f);border-radius:12px;padding:14px;border:2px solid #676767;box-shadow:0 6px 18px rgba(0,0,0,.6)}
+		h2{margin:6px 0 12px 0}
+		label{display:block;font-size:14px;margin-top:8px}
+		input[type="text"],input[type="number"],textarea,select{width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #676767;background:#1e1e1e;color:#fff;font-size:14px}
+		.inline{display:flex;gap:8px;align-items:center}
+		.btn{background:#533663;color:#fff;padding:8px 12px;border-radius:6px;border:none;cursor:pointer}
+		.btn.warn{background:#ff4d4d}
+		.small{padding:6px 8px;font-size:13px}
+		.list{max-height:300px;overflow:auto;border:1px dashed #676767;padding:6px;border-radius:6px}
+		.entry{background:rgba(0,0,0,0.12);padding:8px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+		.entry .meta{font-size:13px;color:#ddd}
+		.preview{grid-column:span 2;margin-top:12px}
+		.codebox{width:100%;height:260px;padding:8px;background:#111;border-radius:6px;color:#dcdcdc;font-family:monospace;resize:vertical;overflow:auto}
+		.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+		.note{font-size:12px;color:#bbb;margin-top:8px}
+	</style>
+</head>
+<body>
+	<div style="max-width:1200px;margin:0 auto;">
+		<h1 style="text-align:center;margin-bottom:12px">D20 Campaign JS Builder</h1>
+		<div class="container">
+			<!-- RACES -->
+			<div class="card">
+				<h2>Races</h2>
+				<div class="inline">
+					<input id="raceName" type="text" placeholder="New race name">
+					<button class="btn small" onclick="addRace()">Add</button>
+				</div>
+				<div class="list" id="raceList"></div>
+
+				<hr style="border:none;border-top:1px solid #666;margin:10px 0">
+				<h3>Edit Race</h3>
+				<div id="raceEditor" style="display:none">
+					<label>Name<input id="editRaceName" type="text"></label>
+					<!-- Passive -->
+					<label>Passive (optional name/icon/type/description)</label>
+					<div class="inline" style="gap:6px">
+						<input id="racePassiveName" type="text" placeholder="Passive name">
+						<input id="racePassiveIcon" type="text" placeholder="icon.png">
+					</div>
+					<textarea id="racePassiveDesc" placeholder="description" rows="2"></textarea>
+					<button class="btn small" onclick="upsertRacePassive()">Save Passive</button>
+					<!-- Skills -->
+					<label style="margin-top:8px">Add Skill</label>
+					<div class="inline">
+						<input id="raceSkillName" type="text" placeholder="Skill name">
+						<input id="raceSkillIcon" type="text" placeholder="icon.png">
+					</div>
+					<textarea id="raceSkillDesc" placeholder="description" rows="2"></textarea>
+					<div class="controls">
+						<button class="btn small" onclick="addRaceSkill()">Add Skill</button>
+						<button class="btn small warn" onclick="clearRaceEditor()">Clear</button>
+					</div>
+					<div class="note">Click items in the list to edit. Remove an entry with its Remove button.</div>
+				</div>
+			</div>
+
+			<!-- CLASSES -->
+			<div class="card">
+				<h2>Classes</h2>
+				<div class="inline">
+					<input id="className" type="text" placeholder="New class name">
+					<input id="classSubclassLevel" type="number" placeholder="subclass level" style="width:120px">
+					<button class="btn small" onclick="addClass()">Add</button>
+				</div>
+				<div class="list" id="classList"></div>
+
+				<hr style="border:none;border-top:1px solid #666;margin:10px 0">
+				<h3>Edit Class</h3>
+				<div id="classEditor" style="display:none">
+					<label>Name<input id="editClassName" type="text"></label>
+					<label>Subclass Level<input id="editClassSubLevel" type="number"></label>
+
+					<!-- Class Passive -->
+					<label style="margin-top:6px">Class Passive</label>
+					<div class="inline">
+						<input id="classPassiveName" type="text" placeholder="Passive name">
+						<input id="classPassiveIcon" type="text" placeholder="icon.png">
+						<input id="classPassiveAS" type="text" placeholder="AS (optional)" style="width:110px">
+					</div>
+					<textarea id="classPassiveDesc" placeholder="description" rows="2"></textarea>
+					<button class="btn small" onclick="upsertClassPassive()">Save Passive</button>
+
+					<!-- Class Skills -->
+					<label style="margin-top:8px">Add Skill</label>
+					<div class="inline">
+						<input id="classSkillName" type="text" placeholder="Skill name">
+						<input id="classSkillIcon" type="text" placeholder="icon.png">
+					</div>
+					<textarea id="classSkillDesc" placeholder="description" rows="2"></textarea>
+					<div class="controls">
+						<button class="btn small" onclick="addClassSkill()">Add Skill</button>
+					</div>
+
+					<!-- Subclasses -->
+					<hr style="border:none;border-top:1px solid #666;margin:10px 0">
+					<h4>Subclasses</h4>
+					<div class="inline">
+						<input id="subName" type="text" placeholder="Subclass name">
+						<button class="btn small" onclick="addSubclass()">Add Subclass</button>
+					</div>
+					<div id="subEditArea" style="margin-top:8px"></div>
+					<div class="note">Select subclass from the class list to edit its passive/skills.</div>
+				</div>
+			</div>
+
+			<!-- PREVIEW / IMPORT / EXPORT -->
+			<div class="card preview" style="grid-column:span 2">
+				<h2>Preview & Export</h2>
+				<div style="display:flex;gap:8px">
+					<button class="btn" onclick="exportToClipboard()">Export (Copy JS)</button>
+					<button class="btn" onclick="downloadFile()">Download .js</button>
+					<button class="btn warn" onclick="clearAll()">Clear All</button>
+				</div>
+				<label style="margin-top:10px">Generated JS Preview</label>
+				<textarea id="preview" readonly class="codebox"></textarea>
+				<div class="note">The export copies a JS file string: window.D20_CAMPAIGN_DATA = {...}; — ready to use as your data.js</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// In-memory data
+		let dataModel = { races: [], classes: [] };
+		let selectedRaceIndex = null;
+		let selectedClassIndex = null;
+		let selectedSubclassIndex = null;
+
+		// Utilities
+		function renderLists() {
+			// Races
+			const rl = document.getElementById('raceList');
+			rl.innerHTML = '';
+			dataModel.races.forEach((r, i) => {
+				const div = document.createElement('div');
+				div.className = 'entry';
+				div.innerHTML = `<div><div style="font-weight:bold">${r.name}</div><div class="meta">${r.passive ? r.passive.name || '' : ''} ${r.skills ? '| ' + r.skills.map(s=>s.name).join(', ') : ''}</div></div>
+					<div style="display:flex;gap:6px">
+						<button class="small btn" onclick="editRace(${i})">Edit</button>
+						<button class="small btn warn" onclick="removeRace(${i})">Remove</button>
+					</div>`;
+				rl.appendChild(div);
+			});
+
+			// Classes
+			const cl = document.getElementById('classList');
+			cl.innerHTML = '';
+			dataModel.classes.forEach((c, i) => {
+				const div = document.createElement('div');
+				div.className = 'entry';
+				div.innerHTML = `<div><div style="font-weight:bold">${c.name}</div><div class="meta">sub lvl:${c.subclasslevel||0} | ${c.passive?c.passive.name:''} | ${c.skills?c.skills.map(s=>s.name).join(', '):''}</div></div>
+					<div style="display:flex;gap:6px">
+						<button class="small btn" onclick="editClass(${i})">Edit</button>
+						<button class="small btn warn" onclick="removeClass(${i})">Remove</button>
+					</div>`;
+				cl.appendChild(div);
+			});
+			updatePreview();
+		}
+
+		// RACE functions
+		function addRace() {
+			const name = document.getElementById('raceName').value.trim();
+			if(!name) return alert('Enter race name');
+			dataModel.races.push({ name, /* passive: null, skills: [] */ });
+			document.getElementById('raceName').value = '';
+			renderLists();
+		}
+		function editRace(i) {
+			selectedRaceIndex = i;
+			const r = dataModel.races[i];
+			document.getElementById('raceEditor').style.display = '';
+			document.getElementById('editRaceName').value = r.name || '';
+			document.getElementById('racePassiveName').value = r.passive?.name || '';
+			document.getElementById('racePassiveIcon').value = r.passive?.icon || '';
+			document.getElementById('racePassiveDesc').value = r.passive?.description || '';
+			document.getElementById('raceSkillName').value = '';
+			document.getElementById('raceSkillIcon').value = '';
+			document.getElementById('raceSkillDesc').value = '';
+			// show its skills (simple) — remove any previous list first to avoid duplicates
+			const existing = document.getElementById('raceSkillsList'); if(existing) existing.remove();
+			if (r.skills && r.skills.length) {
+				const skList = r.skills.map((s,idx)=>`<div style="margin-top:6px" class="entry"><div><strong>${s.name}</strong><div class="meta">${s.description||''}</div></div><div><button class="small btn warn" onclick="removeRaceSkill(${idx})">Remove</button></div></div>`).join('');
+				document.getElementById('raceEditor').querySelector('.note').insertAdjacentHTML('beforebegin','<div id="raceSkillsList">'+skList+'</div>');
+			}
+		}
+		function removeRace(i) { if(!confirm('Remove race?')) return; dataModel.races.splice(i,1); clearRaceEditor(); renderLists(); }
+		function clearRaceEditor() { selectedRaceIndex = null; document.getElementById('raceEditor').style.display='none'; const existing = document.getElementById('raceSkillsList'); if(existing) existing.remove(); }
+		function upsertRacePassive() {
+			if(selectedRaceIndex===null) return alert('Select a race first');
+			const r = dataModel.races[selectedRaceIndex];
+			const name = document.getElementById('racePassiveName').value.trim();
+			const icon = document.getElementById('racePassiveIcon').value.trim() || '';
+			const type = 'race-passive'; // auto-assigned
+			const desc = document.getElementById('racePassiveDesc').value.trim() || '';
+			if(!name && !desc) { r.passive = null; } else { r.passive = { name, icon, type, description: desc }; }
+			renderLists();
+		}
+		function addRaceSkill() {
+			if(selectedRaceIndex===null) return alert('Select a race first');
+			const r = dataModel.races[selectedRaceIndex];
+			r.skills = r.skills||[];
+			const name = document.getElementById('raceSkillName').value.trim(); if(!name) return alert('skill name required');
+			const icon = document.getElementById('raceSkillIcon').value.trim()||'';
+			const type = 'race-skill'; // auto-assigned
+			const desc = document.getElementById('raceSkillDesc').value.trim()||'';
+			r.skills.push({ name, icon, type, description: desc });
+			document.getElementById('raceSkillName').value=''; document.getElementById('raceSkillIcon').value=''; document.getElementById('raceSkillDesc').value='';
+			editRace(selectedRaceIndex);
+			renderLists();
+		}
+		function removeRaceSkill(idx) { const r = dataModel.races[selectedRaceIndex]; if(!r) return; r.skills.splice(idx,1); editRace(selectedRaceIndex); renderLists(); }
+
+		// CLASS functions
+		function addClass() {
+			const name = document.getElementById('className').value.trim();
+			const lvl = parseInt(document.getElementById('classSubclassLevel').value,10) || undefined;
+			if(!name) return alert('Enter class name');
+			dataModel.classes.push({ name, subclasslevel: lvl, /* passive:null, skills:[], subclasses:[] */ });
+			document.getElementById('className').value=''; document.getElementById('classSubclassLevel').value='';
+			renderLists();
+		}
+		function editClass(i) {
+			selectedClassIndex = i; selectedSubclassIndex = null;
+			const c = dataModel.classes[i];
+			document.getElementById('classEditor').style.display='';
+			document.getElementById('editClassName').value = c.name||'';
+			document.getElementById('editClassSubLevel').value = c.subclasslevel||'';
+			document.getElementById('classPassiveName').value = c.passive?.name||'';
+			document.getElementById('classPassiveIcon').value = c.passive?.icon||'';
+			document.getElementById('classPassiveAS').value = c.passive?.AS||'';
+			document.getElementById('classPassiveDesc').value = c.passive?.description||'';
+			// draw class skills
+			const existing = document.getElementById('classEditor').querySelector('.classSkillList');
+			if(existing) existing.remove();
+			if(c.skills && c.skills.length) {
+				const listHtml = c.skills.map((s,idx)=>`<div class="entry"><div><strong>${s.name}</strong><div class="meta">${s.description||''}</div></div><div><button class="small btn warn" onclick="removeClassSkill(${idx})">Remove</button></div></div>`).join('');
+				document.getElementById('classEditor').insertAdjacentHTML('afterbegin','<div class="classSkillList" style="margin-bottom:8px">'+listHtml+'</div>');
+			}
+			// subclasses list
+			renderSubclassesForEdit();
+		}
+		function removeClass(i) { if(!confirm('Remove class?')) return; dataModel.classes.splice(i,1); clearClassEditor(); renderLists(); }
+		function clearClassEditor() { selectedClassIndex = null; document.getElementById('classEditor').style.display='none'; document.getElementById('subEditArea').innerHTML=''; }
+		function upsertClassPassive() {
+			if(selectedClassIndex===null) return alert('Select a class first');
+			const c = dataModel.classes[selectedClassIndex];
+			const name = document.getElementById('classPassiveName').value.trim();
+			const icon = document.getElementById('classPassiveIcon').value.trim()||'';
+			const AS = document.getElementById('classPassiveAS').value.trim()||undefined;
+			const desc = document.getElementById('classPassiveDesc').value.trim()||'';
+			if(!name && !desc) c.passive = null;
+			else { c.passive = { name, icon, type: 'class-passive', AS, description: desc }; } // use class-passive
+			renderLists();
+		}
+		function addClassSkill() {
+			if(selectedClassIndex===null) return alert('Select a class first');
+			const c = dataModel.classes[selectedClassIndex];
+			c.skills = c.skills || [];
+			const name = document.getElementById('classSkillName').value.trim(); if(!name) return alert('skill name required');
+			const icon = document.getElementById('classSkillIcon').value.trim()||'';
+			const type = 'class-skill'; // auto-assigned
+			const desc = document.getElementById('classSkillDesc').value.trim()||'';
+			c.skills.push({ name, icon, type, description: desc });
+			document.getElementById('classSkillName').value=''; document.getElementById('classSkillIcon').value=''; document.getElementById('classSkillDesc').value='';
+			editClass(selectedClassIndex);
+			renderLists();
+		}
+		function removeClassSkill(idx) { const c = dataModel.classes[selectedClassIndex]; if(!c) return; c.skills.splice(idx,1); editClass(selectedClassIndex); renderLists(); }
+
+		// Subclasses
+		function addSubclass() {
+			if(selectedClassIndex===null) return alert('Select a class first');
+			const c = dataModel.classes[selectedClassIndex];
+			c.subclasses = c.subclasses||[];
+			const name = document.getElementById('subName').value.trim();
+			if(!name) return alert('name required');
+			c.subclasses.push({ name });
+			document.getElementById('subName').value='';
+			renderSubclassesForEdit();
+			renderLists();
+		}
+		function renderSubclassesForEdit() {
+			const area = document.getElementById('subEditArea'); area.innerHTML='';
+			if(selectedClassIndex===null) return;
+			const subs = dataModel.classes[selectedClassIndex].subclasses||[];
+			if(!subs.length) { area.innerHTML='<div class="note">No subclasses yet</div>'; return; }
+			subs.forEach((s,i)=>{
+				const div = document.createElement('div');
+				div.className='entry';
+				div.innerHTML = `<div><strong>${s.name}</strong><div class="meta">${s.passive?.name||''} | ${s.skills? s.skills.map(x=>x.name).join(', '):''}</div></div>
+					<div style="display:flex;gap:6px">
+						<button class="small btn" onclick="editSubclass(${i})">Edit</button>
+						<button class="small btn warn" onclick="removeSubclass(${i})">Remove</button>
+					</div>`;
+				area.appendChild(div);
+			});
+		}
+		function editSubclass(idx) {
+			selectedSubclassIndex = idx;
+			const s = dataModel.classes[selectedClassIndex].subclasses[idx];
+			const area = document.getElementById('subEditArea');
+			area.innerHTML = `<div style="margin-top:8px">
+				<label>Subclass Name<input id="editSubName" value="${s.name}" type="text"></label>
+				<label style="margin-top:6px">Passive</label>
+				<div class="inline">
+					<input id="editSubPassiveName" type="text" placeholder="name" value="${s.passive?.name||''}">
+					<input id="editSubPassiveIcon" type="text" placeholder="icon.png" value="${s.passive?.icon||''}">
+					<input id="editSubPassiveAS" type="text" placeholder="AS" value="${s.passive?.AS||''}" style="width:90px">
+				</div>
+				<textarea id="editSubPassiveDesc" rows="2" placeholder="description">${s.passive?.description||''}</textarea>
+				<button class="btn small" onclick="saveSubclass()">Save Subclass</button>
+				<hr style="border:none;border-top:1px solid #666;margin:8px 0">
+				<label>Add Skill</label>
+				<div class="inline">
+					<input id="subSkillName" placeholder="name" type="text">
+					<input id="subSkillIcon" placeholder="icon.png" type="text">
+				</div>
+				<textarea id="subSkillDesc" rows="2" placeholder="description"></textarea>
+				<div class="controls">
+					<button class="btn small" onclick="addSubclassSkill()">Add Skill</button>
+				</div>
+				<div id="subSkillsList" style="margin-top:8px">${s.skills? s.skills.map((sk,ii)=>`<div class="entry"><div><strong>${sk.name}</strong><div class="meta">${sk.description||''}</div></div><div><button class="small btn warn" onclick="removeSubclassSkill(${ii})">Remove</button></div></div>`).join('') : '<div class="note">No skills</div>'}</div>
+			</div>`;
+		}
+		function saveSubclass() {
+			const s = dataModel.classes[selectedClassIndex].subclasses[selectedSubclassIndex];
+			s.name = document.getElementById('editSubName').value.trim();
+			const pn = document.getElementById('editSubPassiveName').value.trim();
+			const pi = document.getElementById('editSubPassiveIcon').value.trim();
+			const pas = document.getElementById('editSubPassiveAS').value.trim();
+			const pd = document.getElementById('editSubPassiveDesc').value.trim();
+			if(!pn && !pd) s.passive = null; else s.passive = { name: pn, icon: pi, AS: pas||undefined, type: 'class-sub-passive', description: pd};
+			renderSubclassesForEdit(); editClass(selectedClassIndex); renderLists();
+		}
+		function removeSubclass(i){ if(!confirm('Remove subclass?')) return; dataModel.classes[selectedClassIndex].subclasses.splice(i,1); renderSubclassesForEdit(); editClass(selectedClassIndex); renderLists(); }
+		function addSubclassSkill(){ const s = dataModel.classes[selectedClassIndex].subclasses[selectedSubclassIndex]; s.skills = s.skills||[]; const name = document.getElementById('subSkillName').value.trim(); if(!name) return alert('name required'); const icon = document.getElementById('subSkillIcon').value.trim()||''; const type = 'class-sub-skill'; const desc = document.getElementById('subSkillDesc').value.trim()||''; s.skills.push({name,icon,type,description:desc}); editSubclass(selectedSubclassIndex); renderLists(); }
+		function removeSubclassSkill(idx){ const s = dataModel.classes[selectedClassIndex].subclasses[selectedSubclassIndex]; s.skills.splice(idx,1); editSubclass(selectedSubclassIndex); renderLists(); }
+
+		// EXPORT / IMPORT / PREVIEW
+		function updatePreview() {
+			// Clean model: remove undefined/empty arrays/empty objects
+			function clean(v) {
+				if (v === undefined) return undefined;
+				if (v === null) return null;
+				if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') return v;
+				if (Array.isArray(v)) {
+					const arr = v.map(clean).filter(x => x !== undefined);
+					return arr.length ? arr : undefined;
+				}
+				if (typeof v === 'object') {
+					const out = {};
+					Object.keys(v).forEach(k => {
+						const val = clean(v[k]);
+						if (val !== undefined) out[k] = val;
+					});
+					return Object.keys(out).length ? out : undefined;
+				}
+				return undefined;
+			}
+			const cleaned = clean(dataModel) || {};
+			// JS serializer: keys unquoted when valid identifiers, strings quoted
+			function serializeJS(val, indent = 0) {
+				const pad = (n) => ' '.repeat(n);
+				const nextIndent = indent + 4;
+				if (val === null) return 'null';
+				if (typeof val === 'string') return JSON.stringify(val);
+				if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+				if (Array.isArray(val)) {
+					if (val.length === 0) return '[]';
+					const items = val.map(v => serializeJS(v, nextIndent)).join(',\n' + pad(nextIndent));
+					return '[\n' + pad(nextIndent) + items + '\n' + pad(indent) + ']';
+				}
+				if (typeof val === 'object') {
+					const keys = Object.keys(val);
+					if (keys.length === 0) return '{}';
+					const parts = keys.map(k => {
+						const keyIsIdent = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(k);
+						const keyOut = keyIsIdent ? k : JSON.stringify(k);
+						return pad(nextIndent) + keyOut + ': ' + serializeJS(val[k], nextIndent);
+					});
+					return '{\n' + parts.join(',\n') + '\n' + pad(indent) + '}';
+				}
+				return 'undefined';
+			}
+			const content = 'window.D20_CAMPAIGN_DATA = ' + serializeJS(cleaned, 0) + ';';
+			document.getElementById('preview').value = content;
+		}
+		// replacer: remove undefined, clean empty arrays/objects
+		function replacer(key, value) {
+			if (value === undefined) return undefined;
+			// Remove empty arrays and empty objects
+			if (Array.isArray(value) && value.length === 0) return undefined;
+			if (value && typeof value === 'object' && Object.keys(value).length === 0) return undefined;
+			return value;
+		}
+		function exportToClipboard() {
+			updatePreview();
+			const txt = document.getElementById('preview').value;
+			navigator.clipboard.writeText(txt).then(()=>alert('Copied to clipboard'));
+		}
+		function downloadFile() {
+			updatePreview();
+			const blob = new Blob([document.getElementById('preview').value], {type:'text/javascript'});
+			const a = document.createElement('a');
+			a.href = URL.createObjectURL(blob);
+			a.download = 'data.js';
+			document.body.appendChild(a); a.click(); a.remove();
+		}
+
+		function clearAll() { if(!confirm('Clear all data?')) return; dataModel = { races: [], classes: [] }; renderLists(); document.getElementById('preview').value=''; }
+
+		// keep live preview updated on small changes (periodic)
+		setInterval(updatePreview, 700);
+
+		// Initial render
+		renderLists();
+	</script>
+</body>
+</html>
