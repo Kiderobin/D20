@@ -1,0 +1,542 @@
+window.D20_CAMPAIGN_DATA = {
+	races: [
+		{
+			name: "Human",
+            passive: {
+                name: "Versatile",
+                icon: "human-pyramid.png",
+                type: "race-passive",
+                description: "Gain +1 to any two different skill checks of your choice."
+            }
+		},
+		{
+			name: "Droid",
+			skills: [
+				{
+					name: "Connect",
+					icon: "connect.png",
+					type: "race-skill",
+					description: "Can interface with machines and digital systems."
+				}
+			]
+		},
+		{
+			name: "Nomad",
+			passive: {
+				name: "Scavenger",
+				icon: "scavenger.png",
+				type: "race-passive",
+			 	description: "Nomads find useful materials more often when scavenging."
+			},
+			skills: [
+				{
+					name: "Trail Sense",
+					icon: "trailsense.png",
+					type: "race-skill",
+					description: "You can track or find shelter faster when traveling between locations."
+				}
+			]
+		},
+		{
+			name: "Mutant",
+			passive: {
+				name: "Unstable Gift",
+				icon: "unstable.png",
+				type: "race-passive",
+				description: "Mutant abilities produce unpredictable side effects; GM will call for a d20."
+			},
+			skills: [
+				{
+					name: "Mutation Burst",
+					icon: "mutationburst.png",
+					type: "race-skill",
+					description: "Unleash a mutation effect; potency and side-effects are resolved with a d20."
+				}
+			]
+		},
+		{
+			name: "Voidborn",
+			passive: {
+				name: "Starless Resilience",
+				icon: "voidborn.png",
+				type: "race-passive",
+				description: "Voidborn resist certain psychic effects and gain benefits near void anomalies."
+			},
+			skills: [
+				{
+					name: "Null Pulse",
+					icon: "nullpulse.png",
+					type: "race-skill",
+					description: "Emit a short pulse that disrupts simple electronics and weaker blessings."
+				}
+			]
+		},
+		{
+			name: "Nebulon",
+			passive: {
+				name: "Nebula Cloak",
+				icon: "nebulon.png",
+				type: "race-passive",
+				description: "Nebulons blend with interstellar gas and stealth systems more effectively."
+			},
+			skills: [
+				{
+					name: "Gasform",
+					icon: "gasform.png",
+					type: "race-skill",
+					description: "Temporarily reduce physical presence to slip past sensors and guards."
+				}
+			]
+		},
+		{
+			name: "Aegis",
+			passive: {
+				name: "Shieldborn",
+				icon: "aegis.png",
+				type: "race-passive",
+				description: "Aegis have natural resistance to energy damage and system shocks."
+			},
+			skills: [
+				{
+					name: "Fortify",
+					icon: "fortify.png",
+					type: "race-skill",
+					description: "Temporarily bolster shields or armor for a brief duration."
+				}
+			]
+		}
+	],
+	classes: [
+		{
+			name: "Mechanic",
+            subclasslevel: 10,
+			passive: {
+				name: "Machine Maintenance",
+				icon: "maintenance.png",
+				type: "class-passive",
+				description: "Be able to work at a workbench and run maintenance on ships or machinery."
+			},
+			skills: [
+				{
+					name: "Config",
+					icon: "config.png",
+					type: "class-skill",
+					description: "If you have a tool bag, you can modify weapons and gear on the go by equipping artifacts on them."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Artillery Specialist",
+			subclasslevel: 10,
+			passive: {
+				name: "Holster",
+				icon: "holster.png",
+				type: "class-passive",
+				AS: "H",
+				description: "Gains +1 item slot specifically for firearms only. Dual pistols count as one item. Requires Firearms."
+			},
+			skills: [
+				{
+					name: "Lock On",
+					icon: "locked on.png",
+					type: "class-skill",
+					description: "Increase your accuracy or precision by one multiplied by skill level."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					subclasslevel: 10,
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					subclasslevel: 10,
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Pilot",
+			subclasslevel: 10,
+			skills: [
+				{
+					name: "Ship Call",
+					icon: "shipcall.png",
+					type: "class-skill",
+					description: "If you have one, you can pilot any Ship/Mecha. After activation, wait one full turn rotation for the ship/Mecha registered to you to come to your location."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Medic",
+			subclasslevel: 10,
+			passive: {
+				name: "Effective Dosage",
+				icon: "effectivedosage.png",
+				type: "class-passive",
+				description: "Your health items do twice the effects."
+			},
+			skills: [
+				{
+					name: "Medical Experiment",
+					icon: "medicalexperiment.png",
+					type: "class-skill",
+					description: "You can mix ingredients for new item effects."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Swordsman",
+			subclasslevel: 10,
+			passive: {
+				name: "Sheath",
+				icon: "sheath.png",
+				type: "class-passive",
+				AS: "S",
+				description: "Gains +1 item slot specifically for swords only."
+			},
+			skills: [
+				{
+					name: "Footwork",
+					icon: "footwork.png",
+					type: "class-skill",
+					description: "Gains additional stealth points on use. Requires Sword."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Brawler",
+			subclasslevel: 10,
+			passive: {
+				name: "Bloodsport",
+				icon: "bloodsport.png",
+				type: "class-passive",
+				description: "In battle domes, you earn twice the amount of credits when winning a fight."
+			},
+			skills: [
+				{
+					name: "Ambush",
+					icon: "ambush.png",
+					type: "class-skill",
+					description: "On unexpected targets, the first hit will be 5x the result of a d20."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+						 name: "Brother's Gift",
+						 icon: "brothersgift.png",
+						 type: "subclass-skill",
+						 description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Scout",
+			subclasslevel: 10,
+			passive: {
+				name: "Trailblazer",
+				icon: "trailblazer.png",
+				type: "class-passive",
+				description: "Scouts move quickly and spot hidden dangers more readily."
+			},
+			skills: [
+				{
+					name: "Quick Recon",
+					icon: "recon.png",
+					type: "class-skill",
+					description: "Perform a fast reconnaissance sweep to reveal traps or enemies."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		},
+		{
+			name: "Mystic",
+			subclasslevel: 10,
+			passive: {
+				name: "Arcane Attunement",
+				icon: "arcane.png",
+				type: "class-passive",
+				description: "Mystics have an easier time channeling starlight and other arcana."
+			},
+			skills: [
+				{
+					name: "Channel",
+					icon: "channel.png",
+					type: "class-skill",
+					description: "Focus starlight energy into a ranged or area effect. Potency determined by a d20 roll."
+				}
+			],
+			subclasses: [
+				{
+					name: "Blessed",
+					skills: [
+						{
+							name: "Mother's Gift",
+							icon: "mothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Symphony to call upon your Starlight Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Symphony Act",
+						icon: "Symphonyact.png",
+						type: "subclass-passive",
+						description: "Symphony Act is a GM Given description."
+					}
+				},
+				{
+					name: "Cursed",
+					skills: [
+						{
+							name: "Brother's Gift",
+							icon: "brothersgift.png",
+							type: "subclass-skill",
+							description: "when you use your gift you hear your Requiem to call upon your Oblivion Blade This weapon doesn't take an Inventory slot."
+						}
+					],
+					passive: {
+						name: "Requiem Act",
+						icon: "brotherscurse.png",
+						type: "subclass-passive",
+						description: "Requiem Act is a GM Given description."
+					}
+				}
+			]
+		}
+		
+	]
+};
