@@ -1,3 +1,13 @@
+const campaignRegistry = [
+    {
+        name: "Starlight Symphony",
+        folder: "Starlight Symphony",
+        description: "An epic musical adventure across the cosmos",
+        Banner: "images/campaigns/starlight_symphony/banner.png",
+    }
+    // Add more campaigns here
+];
+
 // Campaign Information
 const campaignInfo = {
     title: "Starlight Symphony",
