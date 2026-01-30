@@ -1,45 +1,28 @@
-const campaignRegistry = [
-    {
-        name: "Starlight Symphony",
-        folder: "Starlight Symphony",
-        description: "An epic musical adventure across the cosmos",
-        Banner: "images/campaigns/starlight_symphony/banner.png",
-    }
-    // Add more campaigns here
-];
-
 // Campaign Information
 const campaignInfo = {
     title: "Starlight Symphony",
-    subtitle: "An Epic Musical Adventure",
-    description: "Embark on a cosmic journey where music shapes reality and harmony must be restored across the stars.",
+    subtitle: "An Adventure where criminal misfits must save the universe.",
+    description: "Embark on a cosmic journey where creation and destructon clash across the stars.",
     
     // Campaign Details
     campaignLevel: "5-20",
     players: "3-6",
-    duration: "20+ sessions",
-    difficulty: "Medium",
+    duration: "1+ sessions",
     
     // Story Overview
     story: `
         <h3>📖 Campaign Overview</h3>
-        <p>In the vast cosmos, music is more than art—it's the fundamental force that holds reality together. 
-        The Starlight Symphony, an ancient cosmic orchestra, has maintained universal harmony for eons. 
-        But now, the music is fading, and chaos threatens to consume the stars.</p>
-        
-        <p>As chosen heroes, you must travel through different celestial realms, each resonating with unique 
-        musical frequencies. Restore the symphony, defeat the Discord that threatens existence, and become 
-        legends sung across the cosmos.</p>
+        <p>Thrown together by fate—and a parole officer—the party finds themselves offered a chance at freedom: work as bounty hunters, and each successful contract will reduce their sentence. Their new home is a battered, bean-stocked ship with only the company of a jaded dispatcher and a quirky, ancient repair bot named Kappa.</p>
+        <p>Their first mission takes them to a sun-soaked beach planet, where the locals speak in endless “dudes” and “radicals,” and their target is a mustachioed volleyball champion with a mysterious, monstrous side. As the crew navigates bizarre food supplies, strange ship noises, and a volleyball tournament, they quickly learn that nothing is as simple as it seems.</p>
+        <p>But the universe holds deeper secrets. After a harrowing contract, the crew’s journey leads them to cosmic revelations: visions of Mother, the universe’s creator, and Brother, a being of darkness born from her. With new knowledge—and new burdens—they press on, knowing their next contract may be their most dangerous yet.</p>
+        <p><strong>Lore:</strong> When Mother created the universe, she conducted an orchestra—the Symphony—that played and brought all things into existence. But from that orchestra also came Requiem. If Symphony creates, Requiem destroys. Brother is the embodiment of Requiem, a force of darkness born as an unintended consequence of the same orchestra that gave birth to the universe itself. Mother did not intentionally create Brother; he is the shadow cast by creation.</p>
     `,
     
     // Key Features
     features: [
-        "🎵 Music-based magic system",
-        "🌟 Multiple cosmic realms to explore",
-        "🎭 Rich NPC interactions and roleplay",
-        "⚔️ Epic boss encounters",
-        "🎨 Custom magical instruments",
-        "📜 Original soundtrack integration"
+        "Epic boss encounters",
+        "Universal Subclasses",
+        "GM Played Sidekick NPCs",
     ],
     
     // Chapters/Arcs
@@ -60,10 +43,6 @@ const campaignInfo = {
     
     // Downloads/Resources
     resources: [
-        {
-            name: "Campaign Guide",
-            link: "#"
-        },
         {
             name: "Play",
             link: "https://kiderobin.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/D20.html"
