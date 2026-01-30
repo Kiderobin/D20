@@ -106,7 +106,10 @@
                     <!-- ...existing code... -->
                 </div>
                 <div class="header-search">
-                    <input type="text" placeholder="Search D20...">
+                    <div style="position:relative;">
+                        <input type="text" id="globalSearchInput" placeholder="Search D20..." autocomplete="off" style="width:100%;">
+                        <div id="searchResultsDropdown" style="display:none;position:absolute;top:110%;left:0;width:100%;background:#fff;z-index:9999;border:1px solid #ddd;border-radius:0 0 6px 6px;box-shadow:0 4px 16px rgba(0,0,0,0.08);max-height:320px;overflow-y:auto;"></div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -148,6 +151,177 @@
             </div>
         </div>
         <script>
+                    // --- Cross-page search bar implementation ---
+                    const SEARCH_PAGES = [
+                        { name: 'Welcome', file: 'D20.html' },
+                        { name: 'Rules', file: 'Rules.html' },
+                        { name: 'Catalog', file: 'Catalog.html' },
+                    ];
+                    const CAMPAIGNS_JS_URL = 'https://kiderobin.github.io/D20/D20%20-%20Website/campaigns.js';
+                    const INDEX_PAGE = 'index.html';
+
+                    async function fetchPageText(url) {
+                        try {
+                            const res = await fetch(url);
+                            const html = await res.text();
+                            const div = document.createElement('div');
+                            div.innerHTML = html;
+                            div.querySelectorAll('script,style').forEach(e=>e.remove());
+                            return div.innerText.replace(/\s+/g,' ').trim();
+                        } catch { return ''; }
+                    }
+
+                    async function fetchCampaigns() {
+                        try {
+                            const res = await fetch(CAMPAIGNS_JS_URL);
+                            const js = await res.text();
+                            const func = new Function(js + '; return campaignRegistry;');
+                            return func();
+                        } catch { return []; }
+                    }
+
+                    async function fetchInfoJs(url) {
+                        try {
+                            const res = await fetch(url);
+                            const js = await res.text();
+                            let campaignInfo = null;
+                            try {
+                                const func = new Function(js + '; return campaignInfo;');
+                                campaignInfo = func();
+                            } catch {}
+                            if (!campaignInfo) return '';
+                            let text = '';
+                            ['title','subtitle','description','story'].forEach(k => { if (campaignInfo[k]) text += ' ' + campaignInfo[k]; });
+                            if (Array.isArray(campaignInfo.features)) text += ' ' + campaignInfo.features.join(' ');
+                            if (Array.isArray(campaignInfo.chapters)) text += ' ' + campaignInfo.chapters.map(c=>c.title+' '+c.description).join(' ');
+                            if (Array.isArray(campaignInfo.resources)) text += ' ' + campaignInfo.resources.map(r=>r.name+' '+r.link).join(' ');
+                            return text.replace(/<[^>]+>/g,' ');
+                        } catch { return ''; }
+                    }
+
+                    let searchIndex = null;
+                    async function buildSearchIndex() {
+                        const [welcome, rules, catalog, campaigns, starlight, ashes] = await Promise.all([
+                            fetchPageText('D20.html'),
+                            fetchPageText('Rules.html'),
+                            fetchPageText('Catalog.html'),
+                            fetchCampaigns(),
+                            fetchInfoJs('https://raw.githubusercontent.com/Kiderobin/D20/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js'),
+                            fetchInfoJs('https://raw.githubusercontent.com/Kiderobin/D20/main/D20-Official%20Campaigns/AshesOfWar/info.js')
+                        ]);
+                        return {
+                            Welcome: { text: welcome, file: 'D20.html' },
+                            Rules: { text: rules, file: 'Rules.html' },
+                            Catalog: { text: catalog, file: 'Catalog.html' },
+                            Campaigns: campaigns, // array
+                            OfficialCampaigns: [
+                                { name: 'Starlight Symphony', text: starlight, infoUrl: 'https://kiderobin.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/info.js' },
+                                { name: 'Ashes Of War', text: ashes, infoUrl: 'https://kiderobin.github.io/D20/D20-Official%20Campaigns/AshesOfWar/info.js' }
+                            ]
+                        };
+                    }
+
+                    function highlightMatch(text, query) {
+                        const re = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')+')','ig');
+                        return text.replace(re, '<mark>$1</mark>');
+                    }
+
+                    async function handleSearchInput(e) {
+                        const query = e.target.value.trim();
+                        const dropdown = document.getElementById('searchResultsDropdown');
+                        if (!searchIndex) searchIndex = await buildSearchIndex();
+                        dropdown.innerHTML = '';
+                        if (!query) { dropdown.style.display = 'none'; return; }
+                        const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+                        const results = [];
+                        // Search campaigns (all fields)
+                        for (const camp of searchIndex.Campaigns) {
+                            const fields = [camp.name, camp.description].filter(Boolean).join(' ').toLowerCase();
+                            if (words.every(w => fields.includes(w))) {
+                                results.push({
+                                    type: 'campaign',
+                                    name: camp.name,
+                                    description: camp.description,
+                                    infoUrl: camp.infoUrl,
+                                    banner: camp.banner
+                                });
+                            }
+                        }
+                        // Search all visible text in each page
+                        for (const key of ['Welcome','Rules','Catalog']) {
+                            const text = searchIndex[key].text.toLowerCase();
+                            if (words.every(w => text.includes(w))) {
+                                const idx = text.indexOf(words[0]);
+                                let preview = searchIndex[key].text.substring(Math.max(0,idx-40), idx+words[0].length+40);
+                                preview = highlightMatch(preview, query);
+                                results.push({
+                                    type: 'page',
+                                    name: key,
+                                    file: searchIndex[key].file,
+                                    preview
+                                });
+                            }
+                        }
+                        // Search all official campaign info.js files
+                        for (const camp of searchIndex.OfficialCampaigns) {
+                            const text = camp.text.toLowerCase();
+                            if (words.every(w => text.includes(w))) {
+                                const idx = text.indexOf(words[0]);
+                                let preview = camp.text.substring(Math.max(0,idx-40), idx+words[0].length+40);
+                                preview = highlightMatch(preview, query);
+                                results.push({
+                                    type: 'official-campaign',
+                                    name: camp.name,
+                                    infoUrl: camp.infoUrl,
+                                    preview
+                                });
+                            }
+                        }
+                        if (results.length === 0) {
+                            dropdown.innerHTML = '<div style="padding:16px;color:#999;">No results found.</div>';
+                        } else {
+                            for (const res of results) {
+                                if (res.type === 'campaign') {
+                                    dropdown.innerHTML += `<div class="search-result-item" style="padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;" tabindex="0" data-info-url="${encodeURIComponent(res.infoUrl)}">
+                                        <img src="${res.banner}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">
+                                        <div><div style="font-weight:600;color:#7b4ba3;">${highlightMatch(res.name,query)}</div><div style="font-size:0.95em;color:#555;">${highlightMatch(res.description||'',query)}</div></div>
+                                    </div>`;
+                                } else if (res.type === 'official-campaign') {
+                                    dropdown.innerHTML += `<div class="search-result-item" style="padding:12px 16px;cursor:pointer;" tabindex="0" data-info-url="${encodeURIComponent(res.infoUrl)}">
+                                        <div style="font-weight:600;color:#7b4ba3;">${highlightMatch(res.name,query)}</div>
+                                        <div style="font-size:0.95em;color:#555;">${res.preview}</div>
+                                    </div>`;
+                                } else {
+                                    dropdown.innerHTML += `<div class="search-result-item" style="padding:12px 16px;cursor:pointer;" tabindex="0" data-file="${res.file}">
+                                        <div style="font-weight:600;color:#7b4ba3;">${res.name}</div>
+                                        <div style="font-size:0.95em;color:#555;">${res.preview}</div>
+                                    </div>`;
+                                }
+                            }
+                        }
+                        dropdown.style.display = 'block';
+                        dropdown.querySelectorAll('.search-result-item').forEach(item => {
+                            item.onclick = function() {
+                                const infoUrl = this.getAttribute('data-info-url');
+                                const file = this.getAttribute('data-file');
+                                if (infoUrl) {
+                                    window.location.href = `index.html?info=${decodeURIComponent(infoUrl)}`;
+                                } else if (file) {
+                                    window.location.href = file + '#search';
+                                }
+                            };
+                            item.onkeydown = function(e) { if (e.key === 'Enter') this.onclick(); };
+                        });
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const input = document.getElementById('globalSearchInput');
+                        const dropdown = document.getElementById('searchResultsDropdown');
+                        input.addEventListener('input', handleSearchInput);
+                        input.addEventListener('focus', function() { if (dropdown.innerHTML) dropdown.style.display = 'block'; });
+                        input.addEventListener('blur', function() { setTimeout(()=>dropdown.style.display='none', 200); });
+                    });
+                    // --- End cross-page search bar ---
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebarNav');
                 sidebar.classList.toggle('active');
