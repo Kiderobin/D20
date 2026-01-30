@@ -1,266 +1,266 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Campaign - D20</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; }
-        html { height: 100%; }
-        body { font-family: 'Permanent Marker', cursive; background: #f8f9fa; color: #333; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        header { width: 100%; background: #2B2B2B; border-bottom: 1px solid #ddd; box-shadow: 0 2px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .header-content { max-width: 100%; margin: 0; padding: 0 20px; display: flex; align-items: center; gap: 20px; height: 60px; }
-        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 0; flex-shrink: 0; }
-        .hamburger span { width: 24px; height: 3px; background: #7b4ba3; border-radius: 2px; transition: all 0.3s; }
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(10px, 10px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
-        header img { width: 48px; height: 48px; flex-shrink: 0; }
-        .header-text { display: flex; align-items: center; gap: 20px; flex: 1; }
-        .header-search { flex: 1; max-width: 300px; }
-        .header-search input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; }
-        .page-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 0;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            position: relative;
-            overflow-x: hidden;
-        }
-        .sidebar-navigation {
-            position: fixed;
-            left: 0;
-            top: 60px;
-            width: 280px;
-            height: calc(100vh - 60px);
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            overflow-y: auto;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            padding: 0 0 20px 0;
-        }
-        .sidebar-navigation.active {
-            transform: translateX(0);
-        }
-        .sidebar-menu-wrapper { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 0; background: #2B2B2B; }
-        .sidebar-section { margin-bottom: 25px; }
-        .sidebar-section:last-child { margin-bottom: 0; }
-        .sidebar-section-title { color: #7b4ba3; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; line-height: 18px; padding: 0 16px 8px 16px; margin: 0; letter-spacing: 0.4px; }
-        .sidebar-menu-list { list-style: none; margin: 0; padding: 0; }
-        .sidebar-menu-list li { margin: 0; }
-        .sidebar-menu-list a { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: #E4E2DD; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
-        .sidebar-menu-list a:hover { background: #f5f5f5; border-left-color: #ff6b9d; color: #7b4ba3; }
-        .main-content {
-            padding: 40px 40px 40px 40px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: block;
-        }
-        .showcase-banner img { width: 100%; max-height: 260px; object-fit: cover; display: block; border-radius: 8px; }
-        .content-body {
-            background: #fff;
-            border-radius: 8px;
-            padding: 40px 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .page-title { font-size: 2.8rem; margin: 0 0 6px 0; color: #7b4ba3; }
-        .page-subtitle { margin: 0 0 20px 0; color: #666; font-size: 1.2rem; }
-        .lead { font-size: 1.1rem; color: #444; margin: 0 0 26px 0; }
-        .features-list { list-style: none; padding: 0; }
-        .features-list li { padding: 12px; background: #f9f5ff; border-radius: 4px; border-left: 3px solid #7b4ba3; margin-bottom: 8px; }
-        .chapter-card { background: linear-gradient(135deg, #f9f5ff, #fff0f7); padding: 20px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #7b4ba3; }
-        .chapter-card h4 { margin: 0 0 8px 0; color: #7b4ba3; }
-        .chapter-card p { margin: 0; color: #666; }
-        .resource-link { display: inline-block; padding: 12px 24px; background: #7b4ba3; color: #fff; text-decoration: none; border-radius: 4px; margin: 8px 8px 8px 0; font-weight: 600; transition: all 0.2s; }
-        .resource-link:hover { background: #ff6b9d; transform: translateY(-2px); }
-        @media (max-width: 900px) {
-            .main-content { padding: 20px; }
-            .header-search { max-width: 150px; }
-            .header-text h1 { font-size: 1.2rem; }
-            .page-layout { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="D20 Logo">
-            <div class="header-text">
-                <!-- ...existing code... -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title id="pageTitle">Campaign - D20</title>
+        <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+        <style>
+            * { box-sizing: border-box; }
+            html { height: 100%; }
+            body { font-family: 'Permanent Marker', cursive; background: #f8f9fa; color: #333; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+            header { width: 100%; background: #2B2B2B; border-bottom: 1px solid #ddd; box-shadow: 0 2px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+            .header-content { max-width: 100%; margin: 0; padding: 0 20px; display: flex; align-items: center; gap: 20px; height: 60px; }
+            .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 0; flex-shrink: 0; }
+            .hamburger span { width: 24px; height: 3px; background: #7b4ba3; border-radius: 2px; transition: all 0.3s; }
+            .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(10px, 10px); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+            header img { width: 48px; height: 48px; flex-shrink: 0; }
+            .header-text { display: flex; align-items: center; gap: 20px; flex: 1; }
+            .header-search { flex: 1; max-width: 300px; }
+            .header-search input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; }
+            .page-layout {
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                gap: 0;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+                position: relative;
+                overflow-x: hidden;
+            }
+            .sidebar-navigation {
+                position: fixed;
+                left: 0;
+                top: 60px;
+                width: 280px;
+                height: calc(100vh - 60px);
+                background: #fff;
+                border-right: 1px solid #e0e0e0;
+                overflow-y: auto;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+                display: flex;
+                flex-direction: column;
+                padding: 0 0 20px 0;
+            }
+            .sidebar-navigation.active {
+                transform: translateX(0);
+            }
+            .sidebar-menu-wrapper { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 0; background: #2B2B2B; }
+            .sidebar-section { margin-bottom: 25px; }
+            .sidebar-section:last-child { margin-bottom: 0; }
+            .sidebar-section-title { color: #7b4ba3; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; line-height: 18px; padding: 0 16px 8px 16px; margin: 0; letter-spacing: 0.4px; }
+            .sidebar-menu-list { list-style: none; margin: 0; padding: 0; }
+            .sidebar-menu-list li { margin: 0; }
+            .sidebar-menu-list a { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: #E4E2DD; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+            .sidebar-menu-list a:hover { background: #f5f5f5; border-left-color: #ff6b9d; color: #7b4ba3; }
+            .main-content {
+                padding: 40px 40px 40px 40px;
+                min-height: 100vh;
+                box-sizing: border-box;
+                display: block;
+            }
+            .showcase-banner img { width: 100%; max-height: 260px; object-fit: cover; display: block; border-radius: 8px; }
+            .content-body {
+                background: #fff;
+                border-radius: 8px;
+                padding: 40px 32px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                max-width: 900px;
+                margin: 0 auto;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .page-title { font-size: 2.8rem; margin: 0 0 6px 0; color: #7b4ba3; }
+            .page-subtitle { margin: 0 0 20px 0; color: #666; font-size: 1.2rem; }
+            .lead { font-size: 1.1rem; color: #444; margin: 0 0 26px 0; }
+            .features-list { list-style: none; padding: 0; }
+            .features-list li { padding: 12px; background: #f9f5ff; border-radius: 4px; border-left: 3px solid #7b4ba3; margin-bottom: 8px; }
+            .chapter-card { background: linear-gradient(135deg, #f9f5ff, #fff0f7); padding: 20px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #7b4ba3; }
+            .chapter-card h4 { margin: 0 0 8px 0; color: #7b4ba3; }
+            .chapter-card p { margin: 0; color: #666; }
+            .resource-link { display: inline-block; padding: 12px 24px; background: #7b4ba3; color: #fff; text-decoration: none; border-radius: 4px; margin: 8px 8px 8px 0; font-weight: 600; transition: all 0.2s; }
+            .resource-link:hover { background: #ff6b9d; transform: translateY(-2px); }
+            @media (max-width: 900px) {
+                .main-content { padding: 20px; }
+                .header-search { max-width: 150px; }
+                .header-text h1 { font-size: 1.2rem; }
+                .page-layout { grid-template-columns: 1fr; }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="D20 Logo">
+                <div class="header-text">
+                    <!-- ...existing code... -->
+                </div>
+                <div class="header-search">
+                    <input type="text" placeholder="Search D20...">
+                </div>
             </div>
-            <div class="header-search">
-                <input type="text" placeholder="Search D20...">
+        </header>
+        <aside class="sidebar-navigation" id="sidebarNav">
+            <div class="sidebar-menu-wrapper">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-title">About D20</h3>
+                    <ul class="sidebar-menu-list">
+                        <li><a href="D20.html">Welcome</a></li>
+                        <li><a href="Rules.html">Rules</a></li>
+                        <li><a href="https://discord.gg/GZrcPgPddC" target="_blank">Discord</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-title">Explore</h3>
+                    <ul class="sidebar-menu-list">
+                        <li><a href="Catalog.html">Catalog</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </header>
-    <aside class="sidebar-navigation" id="sidebarNav">
-        <div class="sidebar-menu-wrapper">
-            <div class="sidebar-section">
-                <h3 class="sidebar-section-title">About D20</h3>
-                <ul class="sidebar-menu-list">
-                    <li><a href="D20.html">Welcome</a></li>
-                    <li><a href="Rules.html">Rules</a></li>
-                    <li><a href="https://discord.gg/GZrcPgPddC" target="_blank">Discord</a></li>
-                </ul>
-            </div>
-            <div class="sidebar-section">
-                <h3 class="sidebar-section-title">Explore</h3>
-                <ul class="sidebar-menu-list">
-                    <li><a href="Catalog.html">Catalog</a></li>
-                </ul>
-            </div>
-        </div>
-    </aside>
-    <div class="main-content">
-        <aside class="showcase-banner">
-            <img id="campaignBanner" alt="Campaign banner">
         </aside>
-        <div class="content-body">
-            <main>
-                <h1 class="page-title" id="campaignTitle">Loading...</h1>
-                <p class="page-subtitle" id="campaignSubtitle"></p>
-                <p id="campaignDescription" class="lead"></p>
-                <div id="storySection"></div>
-                <h3>Key Features</h3>
-                <ul class="features-list" id="featuresList"></ul>
-                <h3>Chapters</h3>
-                <div id="chaptersList"></div>
-                <h3>Resources & Downloads</h3>
-                <div id="resourcesList"></div>
-            </main>
+        <div class="main-content">
+            <aside class="showcase-banner">
+                <img id="campaignBanner" alt="Campaign banner">
+            </aside>
+            <div class="content-body">
+                <main>
+                    <h1 class="page-title" id="campaignTitle">Loading...</h1>
+                    <p class="page-subtitle" id="campaignSubtitle"></p>
+                    <p id="campaignDescription" class="lead"></p>
+                    <div id="storySection"></div>
+                    <h3>Key Features</h3>
+                    <ul class="features-list" id="featuresList"></ul>
+                    <h3>Chapters</h3>
+                    <div id="chaptersList"></div>
+                    <h3>Resources & Downloads</h3>
+                    <div id="resourcesList"></div>
+                </main>
+            </div>
         </div>
-    </div>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebarNav');
-            sidebar.classList.toggle('active');
-            document.getElementById('hamburger').classList.toggle('active');
-        }
-        // Close sidebar when clicking a link on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.sidebar-menu-list a').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 900) {
+        <script>
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebarNav');
+                sidebar.classList.toggle('active');
+                document.getElementById('hamburger').classList.toggle('active');
+            }
+            // Close sidebar when clicking a link on mobile
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.sidebar-menu-list a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 900) {
+                            const sidebar = document.getElementById('sidebarNav');
+                            sidebar.classList.remove('active');
+                            document.getElementById('hamburger').classList.remove('active');
+                        }
+                    });
+                });
+                // Close sidebar when pressing Escape
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
                         const sidebar = document.getElementById('sidebarNav');
                         sidebar.classList.remove('active');
                         document.getElementById('hamburger').classList.remove('active');
                     }
                 });
             });
-            // Close sidebar when pressing Escape
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    const sidebar = document.getElementById('sidebarNav');
-                    sidebar.classList.remove('active');
-                    document.getElementById('hamburger').classList.remove('active');
-                }
-            });
-        });
-        function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-        const infoUrl = getQueryParam('info');
-        if (!infoUrl) {
-            document.getElementById('campaignTitle').textContent = 'No campaign info specified.';
-            document.getElementById('campaignSubtitle').textContent = '';
-            document.getElementById('campaignDescription').textContent = 'Please provide an info.js URL using ?info=...';
-        } else {
-            const parseInfoModule = (source) => {
-                const sanitized = source.replace(/export\s+const\s+/g, 'const ');
-                const wrapper = new Function(`${sanitized}; return { campaignInfo };`);
-                return wrapper();
-            };
-            async function loadCampaignInfo() {
-                const response = await fetch(infoUrl);
-                if (!response.ok) {
-                    throw new Error('Failed to load campaign info');
-                }
-                const source = await response.text();
-                const data = parseInfoModule(source);
-                return data.campaignInfo;
+            function getQueryParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
             }
-            document.addEventListener('DOMContentLoaded', async function() {
-                let campaignInfo;
-                try {
-                    campaignInfo = await loadCampaignInfo();
-                } catch (error) {
-                    document.getElementById('campaignTitle').textContent = 'Campaign Unavailable';
-                    document.getElementById('campaignSubtitle').textContent = '';
-                    document.getElementById('campaignDescription').textContent = 'Unable to load campaign info.';
-                    return;
-                }
-                document.getElementById('pageTitle').textContent = campaignInfo.title + ' - D20';
-                document.getElementById('campaignTitle').textContent = campaignInfo.title;
-                document.getElementById('campaignSubtitle').textContent = campaignInfo.subtitle;
-                document.getElementById('campaignDescription').textContent = campaignInfo.description;
-                const bannerUrl = campaignInfo.banner || '';
-                if (bannerUrl) {
-                    document.getElementById('campaignBanner').src = bannerUrl;
-                } else {
-                    document.getElementById('campaignBanner').style.display = 'none';
-                }
-                document.getElementById('storySection').innerHTML = campaignInfo.story;
-                const featuresList = document.getElementById('featuresList');
-                campaignInfo.features.forEach(feature => {
-                    featuresList.innerHTML += `<li>${feature}</li>`;
-                });
-                const chaptersList = document.getElementById('chaptersList');
-                campaignInfo.chapters.forEach(chapter => {
-                    chaptersList.innerHTML += `
-                        <div class='chapter-card'>
-                            <h4>${chapter.title}</h4>
-                            <p>${chapter.description}</p>
-                        </div>
-                    `;
-                });
-                const resourcesList = document.getElementById('resourcesList');
-                campaignInfo.resources.forEach(resource => {
-                    if (resource.name.toLowerCase().includes('character sheet')) {
-                        // Replace with Play Campaign button
-                        const infoUrl = getQueryParam('info');
-                        let baseUrl = '';
-                        if (infoUrl) {
-                            try {
-                                const url = new URL(infoUrl);
-                                baseUrl = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/'));
-                            } catch (e) {
-                                baseUrl = '';
-                            }
-                        }
-                        const playUrl = baseUrl ? `${baseUrl}/D20.html` : 'D20.html';
-                        resourcesList.innerHTML += `
-                            <a href='${playUrl}' class='resource-link' target='_blank' style='background: linear-gradient(135deg, #7b4ba3, #ff6b9d); color: #fff; font-size: 1.1rem; font-weight: bold;'>
-                                ▶ Play Campaign
-                            </a>
-                        `;
-                    } else {
-                        resourcesList.innerHTML += `
-                            <a href='${resource.link}' class='resource-link' target='_blank'>
-                                ${resource.name}
-                            </a>
-                        `;
+            const infoUrl = getQueryParam('info');
+            if (!infoUrl) {
+                document.getElementById('campaignTitle').textContent = 'No campaign info specified.';
+                document.getElementById('campaignSubtitle').textContent = '';
+                document.getElementById('campaignDescription').textContent = 'Please provide an info.js URL using ?info=...';
+            } else {
+                const parseInfoModule = (source) => {
+                    const sanitized = source.replace(/export\s+const\s+/g, 'const ');
+                    const wrapper = new Function(`${sanitized}; return { campaignInfo };`);
+                    return wrapper();
+                };
+                async function loadCampaignInfo() {
+                    const response = await fetch(infoUrl);
+                    if (!response.ok) {
+                        throw new Error('Failed to load campaign info');
                     }
+                    const source = await response.text();
+                    const data = parseInfoModule(source);
+                    return data.campaignInfo;
+                }
+                document.addEventListener('DOMContentLoaded', async function() {
+                    let campaignInfo;
+                    try {
+                        campaignInfo = await loadCampaignInfo();
+                    } catch (error) {
+                        document.getElementById('campaignTitle').textContent = 'Campaign Unavailable';
+                        document.getElementById('campaignSubtitle').textContent = '';
+                        document.getElementById('campaignDescription').textContent = 'Unable to load campaign info.';
+                        return;
+                    }
+                    document.getElementById('pageTitle').textContent = campaignInfo.title + ' - D20';
+                    document.getElementById('campaignTitle').textContent = campaignInfo.title;
+                    document.getElementById('campaignSubtitle').textContent = campaignInfo.subtitle;
+                    document.getElementById('campaignDescription').textContent = campaignInfo.description;
+                    const bannerUrl = campaignInfo.banner || '';
+                    if (bannerUrl) {
+                        document.getElementById('campaignBanner').src = bannerUrl;
+                    } else {
+                        document.getElementById('campaignBanner').style.display = 'none';
+                    }
+                    document.getElementById('storySection').innerHTML = campaignInfo.story;
+                    const featuresList = document.getElementById('featuresList');
+                    campaignInfo.features.forEach(feature => {
+                        featuresList.innerHTML += `<li>${feature}</li>`;
+                    });
+                    const chaptersList = document.getElementById('chaptersList');
+                    campaignInfo.chapters.forEach(chapter => {
+                        chaptersList.innerHTML += `
+                            <div class='chapter-card'>
+                                <h4>${chapter.title}</h4>
+                                <p>${chapter.description}</p>
+                            </div>
+                        `;
+                    });
+                    const resourcesList = document.getElementById('resourcesList');
+                    campaignInfo.resources.forEach(resource => {
+                        if (resource.name.toLowerCase().includes('character sheet')) {
+                            // Replace with Play Campaign button
+                            const infoUrl = getQueryParam('info');
+                            let playUrl = 'D20.html';
+                            if (infoUrl) {
+                                try {
+                                    const url = new URL(infoUrl);
+                                    // Always use the folder of the info.js file
+                                    playUrl = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/') + 1) + 'D20.html';
+                                } catch (e) {
+                                    playUrl = 'D20.html';
+                                }
+                            }
+                            resourcesList.innerHTML += `
+                                <a href='${playUrl}' class='resource-link' target='_blank' style='background: linear-gradient(135deg, #7b4ba3, #ff6b9d); color: #fff; font-size: 1.1rem; font-weight: bold;'>
+                                    ▶ Play Campaign
+                                </a>
+                            `;
+                        } else {
+                            resourcesList.innerHTML += `
+                                <a href='${resource.link}' class='resource-link' target='_blank'>
+                                    ${resource.name}
+                                </a>
+                            `;
+                        }
+                    });
                 });
-            });
-        }
-    </script>
-</body>
-</html>
+            }
+        </script>
+    </body>
+    </html>
