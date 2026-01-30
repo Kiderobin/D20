@@ -61,22 +61,16 @@ const campaignInfo = {
     // Downloads/Resources
     resources: [
         {
-            name: "Campaign Guide (PDF)",
-            link: "#",
-            type: "pdf"
+            name: "Campaign Guide",
+            link: "#"
         },
         {
-            name: "Character Sheets",
-            link: "#",
-            type: "pdf"
+            name: "Play",
+            link: "https://kiderobin.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/D20.html"
         },
-        {
-            name: "Maps & Handouts",
-            link: "#",
-            type: "zip"
-        }
     ]
 };
 
 window.campaignInfo = campaignInfo;
+
 
