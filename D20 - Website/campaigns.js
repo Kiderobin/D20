@@ -10,7 +10,7 @@ const campaignRegistry = [
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js"
     },
     {
-        name: "Starlight Symphony",
+        name: "Ashes Of War",
         color: "#8a2be2",
         folder: "Starlight Symphony",
         description: "An epic musical adventure across the cosmos",
@@ -19,4 +19,5 @@ const campaignRegistry = [
     }
     // Add more campaigns here
 ];
+
 
