@@ -11,13 +11,14 @@ const campaignRegistry = [
     },
     {
         name: "Ashes Of War",
-        color: "#8a2be2",
-        folder: "Starlight Symphony",
-        description: "An epic musical adventure across the cosmos",
+        color: "#da120b",
+        folder: "AshesOfWar",
+        description: "The Third installment of The Baron Of Flame Story",
         banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/banner.png",
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js"
     }
     // Add more campaigns here
 ];
+
 
 
