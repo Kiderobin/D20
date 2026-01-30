@@ -68,3 +68,5 @@ const campaignInfo = {
         }
     ]
 };
+
+window.campaignInfo = campaignInfo;
