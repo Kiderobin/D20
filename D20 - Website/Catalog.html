@@ -10,16 +10,21 @@
         * {
             box-sizing: border-box;
         }
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Permanent Marker', cursive;
             background: #f8f9fa;
             color: #333;
             margin: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         header {
             width: 100%;
-            background: #fff;
+            background: #2B2B2B;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             position: sticky;
@@ -253,6 +258,7 @@
             max-width: 100%;
             margin: 0;
             padding: 0;
+            flex: 1;
         }
         .sidebar-navigation {
             position: fixed;
@@ -277,6 +283,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding: 20px 0;
+            background: #2B2B2B;
         }
         .sidebar-menu-wrapper::-webkit-scrollbar {
             width: 8px;
@@ -319,7 +326,7 @@
             align-items: center;
             gap: 10px;
             padding: 10px 16px;
-            color: #333;
+            color: #E4E2DD;
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
@@ -333,7 +340,6 @@
         }
         .main-content {
             padding: 20px;
-        }
         }
         .main-content h2 {
             color: #7b4ba3;
@@ -418,6 +424,7 @@
             margin: 0;
             font-size: 0.95rem;
             line-height: 1.5;
+            color: #fff;
         }
         .catalog-item:hover {
             transform: translateY(-3px);
@@ -435,7 +442,7 @@
         .catalog-item p {
             font-size: 0.9rem;
             margin: 0;
-            color: #666;
+            color: #ffffff;
         }
         .coming-soon {
             background: linear-gradient(135deg, rgba(200, 200, 200, 0.1), rgba(150, 150, 150, 0.1));
@@ -496,13 +503,9 @@
             </button>
             <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="D20 Logo">
             <div class="header-text">
-                <h1>D20</h1>
             </div>
             <div class="header-search">
                 <input type="text" placeholder="Search D20...">
-            </div>
-            <div class="header-user">
-                <button>Sign In</button>
             </div>
         </div>
     </header>
@@ -540,33 +543,45 @@
         &copy; 2026 ScareTheVoices &mdash; <a href="https://github.com/Kiderobin/D20">D20 on GitHub</a>
     </div>
 
-    <script src="campaigns.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const catalogGrid = document.getElementById('catalogGrid');
             catalogGrid.innerHTML = '';
 
-            if (!Array.isArray(campaignRegistry) || campaignRegistry.length === 0) {
-                catalogGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No campaigns available yet.</p>';
-                return;
-            }
+            try {
+                // Fetch campaigns.js from GitHub Pages
+                const response = await fetch('https://kiderobin.github.io/D20/D20%20-%20Website/campaigns.js');
+                const jsContent = await response.text();
+                // Execute the JavaScript to get campaignRegistry
+                const func = new Function(jsContent + '; return campaignRegistry;');
+                const campaignRegistry = func();
 
-            campaignRegistry.forEach(campaign => {
+                if (!Array.isArray(campaignRegistry) || campaignRegistry.length === 0) {
+                    catalogGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No campaigns available yet.</p>';
+                    return;
+                }
+
+                campaignRegistry.forEach(campaign => {
                 const card = document.createElement('div');
                 card.className = 'catalog-item';
                 card.innerHTML = `
                     <div class="catalog-item-banner" style="background-image: url('${campaign.banner}');">
                         <div class="catalog-item-content">
-                            <h4 class="catalog-item-title">${campaign.name}</h4>
+                            <h4 class="catalog-item-title" style="color: ${campaign.color || '#fff'};">${campaign.name}</h4>
                             <p class="catalog-item-description">${campaign.description || ''}</p>
                         </div>
                     </div>
                 `;
                 card.onclick = () => {
-                    window.location.href = `Campaigns/${encodeURIComponent(campaign.folder)}/index.html`;
+                    const infoParam = campaign.infoUrl ? `?info=${encodeURIComponent(campaign.infoUrl)}` : '';
+                    window.location.href = `Campaigns/index.html${infoParam}`;
                 };
                 catalogGrid.appendChild(card);
-            });
+                });
+            } catch (error) {
+                console.error('Error loading campaigns:', error);
+                catalogGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">Error loading campaigns. Please try again later.</p>';
+            }
         });
 
         function toggleSidebar() {
