@@ -246,7 +246,16 @@
 
                     // Carousel rendering helpers for your D20_CAMPAIGN_DATA structure
                     function renderRaceCarousel() {
-                        const data = (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.races) || [];
+                        let data = [];
+                        if (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.races) {
+                            data = window.D20_CAMPAIGN_DATA.races;
+                        } else if (window.raceData) {
+                            data = window.raceData.map(r => ({
+                                name: r.name,
+                                passive: r.passives && r.passives.length ? { name: r.passives[0].split(':')[0], description: r.passives[0].split(':').slice(1).join(':').trim(), icon: '' } : null,
+                                skills: r.skills ? r.skills.map(s => ({ name: s.split(':')[0], description: s.split(':').slice(1).join(':').trim(), icon: '' })) : []
+                            }));
+                        }
                         const container = document.getElementById('raceCarousel');
                         if (!Array.isArray(data) || data.length === 0) {
                             container.innerHTML = `<p style='color:#999'>No Race data found.</p>`;
@@ -274,7 +283,17 @@
                     }
 
                     function renderClassCarousel() {
-                        const data = (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.classes) || [];
+                        let data = [];
+                        if (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.classes) {
+                            data = window.D20_CAMPAIGN_DATA.classes;
+                        } else if (window.classData) {
+                            data = window.classData.map(c => ({
+                                name: c.name,
+                                passive: c.passives && c.passives.length ? { name: c.passives[0].split(':')[0], description: c.passives[0].split(':').slice(1).join(':').trim(), icon: '' } : null,
+                                skills: c.skills ? c.skills.map(s => ({ name: s.split(':')[0], description: s.split(':').slice(1).join(':').trim(), icon: '' })) : [],
+                                subclasses: []
+                            }));
+                        }
                         const container = document.getElementById('classCarousel');
                         if (!Array.isArray(data) || data.length === 0) {
                             container.innerHTML = `<p style='color:#999'>No Class data found.</p>`;
