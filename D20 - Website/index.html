@@ -233,11 +233,31 @@
                 });
                 const resourcesList = document.getElementById('resourcesList');
                 campaignInfo.resources.forEach(resource => {
-                    resourcesList.innerHTML += `
-                        <a href='${resource.link}' class='resource-link' target='_blank'>
-                            ${resource.name}
-                        </a>
-                    `;
+                    if (resource.name.toLowerCase().includes('character sheet')) {
+                        // Replace with Play Campaign button
+                        const infoUrl = getQueryParam('info');
+                        let baseUrl = '';
+                        if (infoUrl) {
+                            try {
+                                const url = new URL(infoUrl);
+                                baseUrl = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/'));
+                            } catch (e) {
+                                baseUrl = '';
+                            }
+                        }
+                        const playUrl = baseUrl ? `${baseUrl}/D20.html` : 'D20.html';
+                        resourcesList.innerHTML += `
+                            <a href='${playUrl}' class='resource-link' target='_blank' style='background: linear-gradient(135deg, #7b4ba3, #ff6b9d); color: #fff; font-size: 1.1rem; font-weight: bold;'>
+                                ▶ Play Campaign
+                            </a>
+                        `;
+                    } else {
+                        resourcesList.innerHTML += `
+                            <a href='${resource.link}' class='resource-link' target='_blank'>
+                                ${resource.name}
+                            </a>
+                        `;
+                    }
                 });
             });
         }
