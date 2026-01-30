@@ -10,16 +10,21 @@
         * {
             box-sizing: border-box;
         }
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Permanent Marker', cursive;
             background: #f8f9fa;
             color: #333;
             margin: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         header {
             width: 100%;
-            background: #fff;
+            background: #2B2B2B;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             position: sticky;
@@ -273,6 +278,7 @@
             max-width: 100%;
             margin: 0;
             padding: 0;
+            flex: 1;
         }
         .sidebar-navigation {
             position: fixed;
@@ -297,6 +303,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding: 20px 0;
+            background: #2B2B2B;
         }
         .sidebar-menu-wrapper::-webkit-scrollbar {
             width: 8px;
@@ -339,7 +346,7 @@
             align-items: center;
             gap: 10px;
             padding: 10px 16px;
-            color: #333;
+            color: #E4E2DD;
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
@@ -524,14 +531,11 @@
             </button>
             <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="D20 Logo">
             <div class="header-text">
-                <h1>D20</h1>
+
                 <p>Community-Driven Tabletop RPG Wiki</p>
             </div>
             <div class="header-search">
                 <input type="text" placeholder="Search D20...">
-            </div>
-            <div class="header-user">
-                <button>Sign In</button>
             </div>
         </div>
     </header>
@@ -561,58 +565,15 @@
                     <h2>Welcome to D20</h2>
                     <p>Join a vibrant community creating epic tabletop adventures. Fast-paced, easy-to-learn, endlessly creative.</p>
                     <div class="cta-buttons">
-                        <button class="cta-button primary" onclick="location.href='#catalog'">Explore the Catalog</button>
+                        <button class="cta-button primary" onclick="location.href='Catalog.html'">Explore the Catalog</button>
                         <button class="cta-button secondary" onclick="location.href='#learn'">Learn the Basics</button>
-                    </div>
                 </div>
             </div>
 
             <div class="container">
                 <h2 style="text-align: center; color: #7b4ba3; font-size: 2rem; margin: 30px 20px 30px 20px; padding-bottom: 0;">What's Inside</h2>
                 
-                <div class="featured-grid" style="padding: 0 20px; margin-bottom: 30px;">
-                    <div class="feature-card">
-                        <div class="icon">📖</div>
-                        <h3>Game Rules</h3>
-                        <p>Master the core mechanics and systems that power D20.</p>
-                        <a href="#rules">View Rules</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="icon">👥</div>
-                        <h3>Community</h3>
-                        <p>Connect with Game Masters and players from around the world.</p>
-                        <a href="#community">Join Us</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="icon">🎮</div>
-                        <h3>Catalog</h3>
-                        <p>Browse characters, campaigns, and custom content.</p>
-                        <a href="#catalog">Browse</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="icon">⚡</div>
-                        <h3>Quick Start</h3>
-                        <p>Get up and running with your first game in minutes.</p>
-                        <a href="#quickstart">Get Started</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="icon">🌟</div>
-                        <h3>Featured</h3>
-                        <p>Discover standout campaigns and character creations.</p>
-                        <a href="#featured">Discover</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="icon">🔗</div>
-                        <h3>Resources</h3>
-                        <p>Find tools, templates, and guides for Game Masters.</p>
-                        <a href="#resources">Explore</a>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
