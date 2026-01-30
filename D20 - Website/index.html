@@ -144,10 +144,25 @@
                     <div id="chaptersList"></div>
                     <h3>Resources & Downloads</h3>
                     <div id="resourcesList"></div>
+                    <h3>Races</h3>
+                    <div id="raceCarousel" class="carousel-container"></div>
+                    <h3>Classes</h3>
+                    <div id="classCarousel" class="carousel-container"></div>
                 </main>
             </div>
         </div>
         <script>
+            // Helper to dynamically load a JS file
+            function loadScript(url) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = url;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            }
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebarNav');
                 sidebar.classList.toggle('active');
@@ -182,6 +197,9 @@
                 document.getElementById('campaignTitle').textContent = 'No campaign info specified.';
                 document.getElementById('campaignSubtitle').textContent = '';
                 document.getElementById('campaignDescription').textContent = 'Please provide an info.js URL using ?info=...';
+                // Hide race/class carousels if no info.js
+                document.getElementById('raceCarousel').style.display = 'none';
+                document.getElementById('classCarousel').style.display = 'none';
             } else {
                 const parseInfoModule = (source) => {
                     const sanitized = source.replace(/export\s+const\s+/g, 'const ');
@@ -205,8 +223,87 @@
                         document.getElementById('campaignTitle').textContent = 'Campaign Unavailable';
                         document.getElementById('campaignSubtitle').textContent = '';
                         document.getElementById('campaignDescription').textContent = 'Unable to load campaign info.';
+                        document.getElementById('raceCarousel').style.display = 'none';
+                        document.getElementById('classCarousel').style.display = 'none';
                         return;
                     }
+
+                    // Dynamically load data.js from the same folder as info.js
+                    let dataUrl = '';
+                    try {
+                        const url = new URL(infoUrl);
+                        dataUrl = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/') + 1) + 'data.js';
+                    } catch (e) {
+                        dataUrl = 'data.js';
+                    }
+                    try {
+                        await loadScript(dataUrl);
+                    } catch (e) {
+                        document.getElementById('raceCarousel').innerHTML = '<p style="color:#999">No race/class data found.</p>';
+                        document.getElementById('classCarousel').innerHTML = '';
+                        return;
+                    }
+
+                    // Carousel rendering helpers for your D20_CAMPAIGN_DATA structure
+                    function renderRaceCarousel() {
+                        const data = (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.races) || [];
+                        const container = document.getElementById('raceCarousel');
+                        if (!Array.isArray(data) || data.length === 0) {
+                            container.innerHTML = `<p style='color:#999'>No Race data found.</p>`;
+                            return;
+                        }
+                        let idx = 0;
+                        function renderCard() {
+                            const item = data[idx];
+                            container.innerHTML = `
+                                <div class='carousel-card'>
+                                    <h4>${item.name}</h4>
+                                    ${item.passive ? `<div class='passive-block'><img src='${item.passive.icon}' class='icon-img'><strong>${item.passive.name}:</strong> <span>${item.passive.description}</span></div>` : ''}
+                                    ${(item.skills && item.skills.length) ? `<div class='skills-block'><strong>Skills:</strong><ul>${item.skills.map(s=>`<li><img src='${s.icon}' class='icon-img'><strong>${s.name}:</strong> <span>${s.description}</span></li>`).join('')}</ul></div>` : ''}
+                                    <div class='carousel-controls'>
+                                        <button ${idx===0?'disabled':''} id='prevRaceBtn'>&lt; Prev</button>
+                                        <span style='margin:0 10px;'>${idx+1} / ${data.length}</span>
+                                        <button ${idx===data.length-1?'disabled':''} id='nextRaceBtn'>Next &gt;</button>
+                                    </div>
+                                </div>
+                            `;
+                            if (idx > 0) document.getElementById('prevRaceBtn').onclick = () => { idx--; renderCard(); };
+                            if (idx < data.length-1) document.getElementById('nextRaceBtn').onclick = () => { idx++; renderCard(); };
+                        }
+                        renderCard();
+                    }
+
+                    function renderClassCarousel() {
+                        const data = (window.D20_CAMPAIGN_DATA && window.D20_CAMPAIGN_DATA.classes) || [];
+                        const container = document.getElementById('classCarousel');
+                        if (!Array.isArray(data) || data.length === 0) {
+                            container.innerHTML = `<p style='color:#999'>No Class data found.</p>`;
+                            return;
+                        }
+                        let idx = 0;
+                        function renderCard() {
+                            const item = data[idx];
+                            container.innerHTML = `
+                                <div class='carousel-card'>
+                                    <h4>${item.name}</h4>
+                                    ${item.passive ? `<div class='passive-block'><img src='${item.passive.icon}' class='icon-img'><strong>${item.passive.name}:</strong> <span>${item.passive.description}</span></div>` : ''}
+                                    ${(item.skills && item.skills.length) ? `<div class='skills-block'><strong>Skills:</strong><ul>${item.skills.map(s=>`<li><img src='${s.icon}' class='icon-img'><strong>${s.name}:</strong> <span>${s.description}</span></li>`).join('')}</ul></div>` : ''}
+                                    ${(item.subclasses && item.subclasses.length) ? `<div class='subclass-block'><strong>Subclasses:</strong><ul>${item.subclasses.map(sub=>`<li><strong>${sub.name}</strong>${sub.passive ? `<div class='passive-block'><img src='${sub.passive.icon}' class='icon-img'><strong>${sub.passive.name}:</strong> <span>${sub.passive.description}</span></div>` : ''}${(sub.skills && sub.skills.length) ? `<div class='skills-block'><strong>Skills:</strong><ul>${sub.skills.map(ss=>`<li><img src='${ss.icon}' class='icon-img'><strong>${ss.name}:</strong> <span>${ss.description}</span></li>`).join('')}</ul></div>` : ''}</li>`).join('')}</ul></div>` : ''}
+                                    <div class='carousel-controls'>
+                                        <button ${idx===0?'disabled':''} id='prevClassBtn'>&lt; Prev</button>
+                                        <span style='margin:0 10px;'>${idx+1} / ${data.length}</span>
+                                        <button ${idx===data.length-1?'disabled':''} id='nextClassBtn'>Next &gt;</button>
+                                    </div>
+                                </div>
+                            `;
+                            if (idx > 0) document.getElementById('prevClassBtn').onclick = () => { idx--; renderCard(); };
+                            if (idx < data.length-1) document.getElementById('nextClassBtn').onclick = () => { idx++; renderCard(); };
+                        }
+                        renderCard();
+                    }
+
+                    renderRaceCarousel();
+                    renderClassCarousel();
                     document.getElementById('pageTitle').textContent = campaignInfo.title + ' - D20';
                     document.getElementById('campaignTitle').textContent = campaignInfo.title;
                     document.getElementById('campaignSubtitle').textContent = campaignInfo.subtitle;
@@ -242,5 +339,62 @@
                 });
             }
         </script>
+        <style>
+        .carousel-container {
+            margin: 30px 0 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            min-height: 220px;
+        }
+        .carousel-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(123,75,163,0.10);
+            padding: 32px 36px;
+            min-width: 320px;
+            max-width: 400px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 1.1rem;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .carousel-card h4 {
+            color: #7b4ba3;
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+        }
+        .carousel-card ul {
+            margin: 0 0 10px 18px;
+            padding: 0;
+        }
+        .carousel-controls {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .carousel-controls button {
+            background: linear-gradient(135deg, #7b4ba3, #ff6b9d);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .carousel-controls button:disabled {
+            background: #eee;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+        </style>
     </body>
     </html>
