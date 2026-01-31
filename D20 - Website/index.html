@@ -399,13 +399,6 @@
                     document.getElementById('campaignTitle').textContent = campaignInfo.title;
                     document.getElementById('campaignSubtitle').textContent = campaignInfo.subtitle;
                     document.getElementById('campaignDescription').textContent = campaignInfo.description;
-                    // Set background to banner if available
-                    const bannerUrl = campaignInfo.banner || '';
-                    if (bannerUrl) {
-                        document.body.style.background = `url('${bannerUrl}') center/cover no-repeat fixed, #f8f9fa`;
-                    } else {
-                        document.body.style.background = '#f8f9fa';
-                    }
                     document.getElementById('storySection').innerHTML = campaignInfo.story;
                     const featuresList = document.getElementById('featuresList');
                     campaignInfo.features.forEach(feature => {
