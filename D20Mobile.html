@@ -1,1996 +1,534 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D20</title> <!-- Updated tab name -->
-    <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
-            color: #f0f0f0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .character-card {
-            background: linear-gradient(to bottom, #4b4b4b, #2f2f2f);
-            border-radius: 15px;
-            padding: 20px;
-            width: 960px; /* Updated width */
-            height: 540px; /* Updated height */
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: row; /* Ensure horizontal layout */
-            justify-content: space-between; /* Space between stats and portrait */
-            align-items: flex-start; /* Align items at the top */
-        }
-        .character-name {
-            text-align: center;
-            font-size: 32px; /* Resized font */
-            padding: 15px;
-            border: 2px solid #676767;
-            border-radius: 10px;
-            background: #2c2c2c;
-            margin-bottom: 20px;
-        }
-        .details {
-            display: flex;
-            flex-direction: row-reverse; /* Reverse the order to place the portrait on the right */
-            justify-content: space-between;
-            width: 100%; /* Ensure full use of space */
-        }
-        .stats {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            width: 50%;
-        }
-        .portrait {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 50%; /* Adjust width to take half of the card */
-            position: relative; /* Make the portrait container the reference for .actions */
-        }
-        .stat, .action-slot {
-            margin: 5px; /* Reduced margin to move circles closer */
-            width: 75px; /* Equal width */
-            height: 75px; /* Equal height */
-            border: 2px solid #676767;
-            border-radius: 50%; /* Ensures the element is a circle */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1e1e1e;
-            font-size: 18px; /* Resized text */
-        }
-        input, select {
-            font-size: 18px; /* Resized input font */
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #676767;
-            border-radius: 5px;
-            background: #2c2c2c;
-            color: #f0f0f0;
-            width: 90%;
-        }
-        .portrait img {
-            width: 240px; /* Updated image width */
-            height: 450px; /* Updated image height */
-            border-radius: 10px;
-            margin-bottom: 20px;
-            object-fit: cover;
-            border: 5px solid #000000; /* Optional: Add a border for the frame */
-        }
-        .actions {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            position: absolute;
-            left: -60px;
-            height: 100%;
-            gap: 10px;
-            z-index: 10; /* Ensure it appears above other elements */
-        }
-
-        .actions .action-slot {
-            margin: 0; /* Remove extra margin */
-            width: 75px; /* Equal width */
-            height: 75px; /* Equal height */
-            border: 2px solid #676767;
-            border-radius: 50%; /* Ensures the element is a circle */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1e1e1e;
-            font-size: 18px; /* Resized text */
-            color: #f0f0f0;
-            cursor: pointer; /* Add pointer cursor for buttons */
-            outline: none; /* Remove default button outline */
-        }
-
-        .actions .action-slot:hover {
-            background: #533663; /* Add hover effect */
-            transition: background 0.2s ease-in-out;
-        }
-
-        .actions .action-slot:last-child {
-            position: absolute;
-            bottom: 0px;
-            left: 25px;
-            display: none; /* Hide Action Slot H by default */
-        }
-        .stats-box {
-            background: #2c2c2c;
-            border: 2px solid #676767;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 10px;
-            width: 50%;
-            height: 484px; /* Set a fixed height */
-            overflow-y: auto; /* Enable vertical scrolling if content overflows */
-        }
-
-        .stats-box input {
-            width: 94%; /* Make inputs fill the box */
-            margin-bottom: 10px; /* Add spacing between inputs */
-            font-size: 16px;
-            padding: 8px;
-            border: 1px solid #676767;
-            border-radius: 5px;
-            background: #1e1e1e;
-            color: #f0f0f0;
-        }
-        .rulebook-icon {
-            position: absolute;
-            top: 10px; /* Distance from the top */
-            right: 10px; /* Distance from the right */
-            width: 50px; /* Icon width */
-            height: 50px; /* Icon height */
-            z-index: 1000; /* Ensure it appears above other elements */
-        }
-
-        .rulebook-icon img {
-            width: 100%; /* Make the image fill the container */
-            height: 100%; /* Maintain aspect ratio */
-            object-fit: cover; /* Ensure the image fits properly */
-            cursor: pointer; /* Change cursor to pointer on hover */
-            border-radius: 5px; /* Optional: Add rounded corners */
-            border: 2px solid #676767; /* Optional: Add a border */
-        }
-
-        .rulebook-icon img:hover {
-            transform: scale(1.1); /* Slight zoom effect on hover */
-            transition: transform 0.2s ease-in-out; /* Smooth transition */
-        }
-        .modal {
-            position: fixed;
-            top: 50%; /* Center vertically */
-            left: 50%; /* Center horizontally */
-            transform: translate(-50%, -50%); /* Adjust for the modal's size */
-            width: 100%; /* Full-screen width */
-            height: 100%; /* Full-screen height */
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-            display: none; /* Hidden by default */
-            justify-content: center; /* Center content horizontally */
-            align-items: center; /* Center content vertically */
-            z-index: 2000; /* Ensure it appears above other elements */
-        }
-
-        .modal-content {
-            background: #2c2c2c;
-            border: 2px solid #676767;
-            border-radius: 10px;
-            padding: 20px;
-            width: 80%;
-            max-height: 80%;
-            overflow-y: auto; /* Enable scrolling for long content */
-            color: #f0f0f0;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
-            position: relative;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #f0f0f0;
-            cursor: pointer;
-        }
-
-        .close-button:hover {
-            color: #ff0000;
-        }
-        .rules-content h3 {
-            margin-top: 20px;
-            color: #533663;
-        }
-
-        .rules-content p {
-            margin: 10px 0;
-        }
-        .die-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            position: relative;
-            z-index: 1; /* Lower z-index to place it below the buttons */
-        }
-        .action-menu {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2c2c2c;
-            border: 2px solid #676767;
-            border-radius: 10px;
-            padding: 20px; /* Adjust padding for spacing */
-            display: flex;
-            flex-direction: column; /* Stack search bar and icons vertically */
-            gap: 15px; /* Add spacing between search bar and icons */
-            z-index: 1000; /* Ensure it appears above other elements */
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
-            width: 850px; /* Slightly smaller than the character card */
-            height: 480px; /* Slightly smaller than the character card */
-            overflow-y: auto; /* Enable scrolling if content overflows */
-        }
-
-        .menu-content {
-            display: flex;
-            flex-direction: row; /* Arrange icons in a horizontal line */
-            flex-wrap: wrap; /* Allow icons to wrap to the next line if needed */
-            justify-content: flex-start; /* Align icons to the left */
-            align-items: center; /* Align icons vertically */
-            gap: 10px; /* Add spacing between icons */
-        }
-
-        .menu-icon {
-            width: 50px; /* Set a smaller width for the icons */
-            height: 50px; /* Set a smaller height for the icons */
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: transform 0.2s, border-color 0.2s;
-            object-fit: cover; /* Ensure the image fits properly within the icon */
-        }
-
-        .menu-icon:hover {
-            transform: scale(1.2); /* Slightly enlarge the icon on hover */
-            border-color: #533663;
-        }
-
-        #settingsPanel .modal-content {
-            overflow-x: hidden;
-            flex-wrap: wrap;
-            width: 320px;
-            max-width: 95vw;
-            box-sizing: border-box;
-        }
-
-        /* Responsive styles for mobile devices */
-        /* filepath: c:\Users\tgdos\OneDrive\Desktop\D20Mobile.html */
-        @media (max-width: 700px) {
-            body {
-                height: auto;
-                min-height: 100vh;
-                padding: 0;
-                align-items: flex-start;
-            }
-            .character-card {
-                flex-direction: column;
-                width: 98vw;
-                max-width: 100vw;
-                height: auto;
-                min-height: 100vh;
-                padding: 8px;
-                border-radius: 0;
-            }
-            .details {
-                flex-direction: column-reverse;
-                width: 100%;
-                align-items: stretch;
-            }
-            .stats-box, .stats, .portrait, .die-container {
-                width: 100% !important;
-                min-width: 0;
-                max-width: 100vw;
-                box-sizing: border-box;
-            }
-            .portrait img {
-                width: 100vw !important;
-                max-width: 98vw;
-                height: auto !important;
-                max-height: 45vh;
-                margin-bottom: 10px;
-            }
-            .actions {
-                position: static !important;
-                flex-direction: row !important;
-                width: 100%;
-                gap: 8px;
-                margin-bottom: 10px;
-                justify-content: center;
-                align-items: center;
-            }
-            .actions .action-slot {
-                width: 56px !important;
-                height: 56px !important;
-                font-size: 15px !important;
-            }
-            .modal-content {
-                width: 98vw !important;
-                max-width: 98vw !important;
-                padding: 10px !important;
-                font-size: 1em;
-            }
-            .rulebook-icon, .extra-icon, #settingsBtn, #calculatorBtn, #notepadBtn {
-                position: fixed !important;
-                right: 10px !important;
-                left: auto !important;
-                z-index: 2000 !important;
-            }
-            .rulebook-icon { top: 10px !important; }
-            .extra-icon { top: 70px !important; }
-            #settingsBtn { bottom: 10px !important; }
-            #calculatorBtn { bottom: 70px !important; }
-            #notepadBtn { bottom: 130px !important; }
-            .action-menu {
-                width: 98vw !important;
-                height: 70vh !important;
-                min-width: 0 !important;
-                max-width: 98vw !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                padding: 10px !important;
-                overflow-y: auto !important;
-            }
-            .menu-content {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                justify-content: flex-start !important;
-                align-items: flex-start !important;
-                gap: 6px !important;
-                max-height: 55vh !important;
-                overflow-y: auto !important;
-            }
-            .menu-icon {
-                width: 38px !important;
-                height: 38px !important;
-                margin: 2px !important;
-                flex: 0 0 38px !important;
-            }
-            #searchBar {
-                font-size: 1em !important;
-                width: 98% !important;
-            }
-            .modal {
-                align-items: flex-start !important;
-            }
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>D20 Pocket Companion</title>
+	<link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
+	<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Permanent Marker', cursive;
+			background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
+			color: #f0f0f0;
+			margin: 0;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.main-container {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			width: 100vw;
+			max-width: 480px;
+			margin: 0 auto;
+			padding-bottom: 70px;
+		}
+		.vertical-section {
+			width: 100%;
+			max-width: 480px;
+			margin: 0 auto;
+			padding: 16px 8px 0 8px;
+			box-sizing: border-box;
+		}
+		.menu-bar {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100vw;
+			background: #2c2c2c;
+			border-top: 2px solid #676767;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			height: 60px;
+			z-index: 1000;
+		}
+		.menu-btn {
+			background: none;
+			border: none;
+			color: #f0f0f0;
+			font-size: 1.1em;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			cursor: pointer;
+			flex: 1;
+			height: 100%;
+			justify-content: center;
+		}
+		.menu-btn img {
+			width: 32px;
+			height: 32px;
+			margin-bottom: 2px;
+		}
+		.active {
+			color: #ffcc33;
+		}
+		.hidden { display: none !important; }
+		.portrait-img {
+			width: 249.6px;
+			height: 479.6px;
+			border-radius: 10px;
+			border: 5px solid #000;
+			object-fit: cover;
+			margin: 0 auto 16px auto;
+			display: block;
+		}
+		.dice-result {
+			text-align: center;
+			font-size: 2.5em;
+			color: #533663;
+			font-weight: bold;
+			margin-bottom: 12px;
+		}
+		.dice-img {
+			width: 70vw;
+			max-width: 300px;
+			height: auto;
+			display: block;
+			margin: 0 auto 16px auto;
+		}
+		.input-row, .select-row {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 12px;
+			align-items: center;
+		}
+		.input-row input, .select-row select {
+			flex: 1;
+			font-size: 1.1em;
+			padding: 8px;
+			border-radius: 5px;
+			border: 1px solid #676767;
+			background: #2c2c2c;
+			color: #f0f0f0;
+		}
+		.section-title {
+			font-size: 1.3em;
+			color: #ffcc33;
+			margin-bottom: 12px;
+			text-align: center;
+		}
+		.health-bar-container {
+			width: 100%;
+			max-width: 320px;
+			height: 24px;
+			background: #2c2c2c;
+			border: 2px solid #676767;
+			border-radius: 10px;
+			margin: 12px auto 18px auto;
+			position: relative;
+			overflow: hidden;
+		}
+		.health-bar {
+			position: absolute;
+			left: 0; top: 0; bottom: 0;
+			height: 100%;
+			background: linear-gradient(to right, #33ff66, #66ff99);
+			transition: width 0.3s, background 0.4s;
+			z-index: 1;
+		}
+		.health-text {
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			color: #f0f0f0;
+			font-size: 1em;
+			line-height: 24px;
+			z-index: 2;
+			cursor: pointer;
+		}
+		.action-slots {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			justify-content: center;
+			margin-bottom: 12px;
+		}
+		.action-slot {
+			width: 56px;
+			height: 56px;
+			border: 2px solid #676767;
+			border-radius: 50%;
+			background: #1e1e1e;
+			color: #f0f0f0;
+			font-size: 1.1em;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+		}
+		.action-slot img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		.passive-skill-list {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			margin-bottom: 16px;
+		}
+		.passive-skill-item {
+			background: #2c2c2c;
+			border: 2px solid #676767;
+			border-radius: 8px;
+			padding: 10px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.passive-skill-item img {
+			width: 40px;
+			height: 40px;
+			border-radius: 5px;
+			object-fit: cover;
+		}
+		.passive-skill-info {
+			flex: 1;
+		}
+		.passive-skill-title {
+			font-weight: bold;
+			color: #ffcc33;
+			margin-bottom: 2px;
+		}
+		.passive-skill-desc {
+			font-size: 0.98em;
+			color: #f0f0f0;
+		}
+		.modal-bg {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: rgba(0,0,0,0.7);
+			z-index: 2000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.modal-content {
+			background: #2c2c2c;
+			border: 2px solid #676767;
+			border-radius: 10px;
+			padding: 24px 18px;
+			color: #f0f0f0;
+			max-width: 90vw;
+			max-height: 90vh;
+			overflow-y: auto;
+			box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
+		}
+		.close-btn {
+			position: absolute;
+			top: 8px;
+			right: 12px;
+			font-size: 1.5em;
+			color: #ff3333;
+			background: none;
+			border: none;
+			cursor: pointer;
+		}
+	</style>
+	<script src="data.js"></script>
 </head>
 <body>
-    <div class="character-card">
-        <!-- Replace the contents of .stats-box with this cleaner, grouped layout -->
-        <div class="stats-box">
-            <input type="text" placeholder="Character Name" id="characterName" oninput="updateName()"><br>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="number" placeholder="Level" id="level" oninput="updateStats()" style="width: 40%;">
-                <div style="position: relative; flex: 1; min-width: 0;">
-                    <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 22px; color: #533663; pointer-events: none;">$</span>
-                    <input type="number" placeholder="Currency" id="currency" min="0" oninput="updateStats()" style="padding-left: 28px; width: 76%; min-width: 0;">
-                </div>
-            </div>
-            <br>
-            <!-- Dropdown for Race -->
-            <select id="race" onchange="updateRace()">
-                <option value="">Select Race</option>
-                <option value="Human">Human</option>
-                <option value="Robot">Robot</option>
-                <option value="Geovector">Geovector</option>
-                <option value="Eltinian">Eltinian</option>
-                <option value="Reptilian">Reptilian</option>
-                <option value="GoldSerian">GoldSerian</option>
-            </select><br>
-            <!-- Dropdown for Class -->
-            <select id="class" onchange="updateClass()">
-                <option value="">Select Class</option>
-                <option value="Mechanic">Mechanic</option>
-                <option value="Artillery Specialist">Artillery Specialist</option>
-                <option value="Pilot">Pilot</option>
-                <option value="Medic">Medic</option>
-                <option value="Swordsman">Swordsman</option>
-                <option value="Brawler">Brawler</option>
-            </select><br>
-            <div class="button-row">
-                <button onclick="exportCode()" style="margin-top: 10px; padding: 10px; background: #533663; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Export Code</button>
-                <button onclick="pasteCode()" style="margin-top: 10px; padding: 10px; background: #3c763d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Paste Code</button>
-            </div>
-        </div>
-        <div class="details">
-            <div class="portrait">
-                <img id="portraitImage" src="placeholder.jpg" alt="Character Portrait" style="cursor:pointer;">
-                <div class="actions">
-                    <button class="action-slot">1</button>
-                    <button class="action-slot">2</button>
-                    <button class="action-slot">3</button>
-                    <button class="action-slot">H</button>
-                </div>
-                <button id="affinityBtn" style="display:none; position:absolute; top:-10px; right: -20px; z-index:10; background:none; border:none; cursor:pointer; padding:0;">
-                    <img id="affinityIcon"
-                         src=""
-                         alt="Affinity"
-                         style="width:70px; height:70px; border-radius:0%; border:5px solid #000000;">
-                </button>
-            </div>
-            <div class="die-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative;">
-                <button id="rollDie" onclick="rollDie()" style="background: none; border: none; cursor: pointer; position: relative;">
-                    <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/20SidedDie.png" alt="Roll D20" style="width: 300px; height: 300px;">
-                    <div id="dieResult" style="position: absolute; top: 48%; left: 51.5%; transform: translate(-50%, -50%); font-size: 48px; color: #533663; font-weight: bold;">-</div>
-                </button>
-            </div>
-            <audio id="diceSound" src="https://raw.githubusercontent.com/Kiderobin/D20/main/sounds/diceroll.mp3"></audio>
-        </div>
-    </div>
-    <div class="circle-container">
-        <div class="circle" id="circle1"></div>
-        <div class="circle" id="circle2"></div>
-    </div>
-    <div class="rulebook-icon">
-        <a href="javascript:void(0);" title="Rulebook" onclick="openRulebook()">
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/RuleBook.png" alt="Rulebook Icon">
-        </a>
-    </div>
-
-    <!-- Add Extra button under the rulebook icon -->
-    <div class="extra-icon" style="position: absolute; top: 70px; right: 10px; z-index: 1000;">
-        <button onclick="openExtraPanel()" style="width: 50px; height: 50px; background: #533663; color: #f0f0f0; border: 2px solid #676767; border-radius: 5px; font-size: 18px; cursor: pointer; padding: 0;">
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/Extra.png" alt="Extra" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
-        </button>
-    </div>
-
-    <!-- Settings Button (bottom left) -->
-    <div id="settingsBtn" style="position: fixed; bottom: 18px; left: 18px; z-index: 1200;">
-        <button style="background: none; border: none; cursor: pointer; padding: 0;">
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/cog.png" alt="Settings" style="width: 48px; height: 48px;">
-        </button>
-    </div>
-
-    <!-- Add this just after the settingsBtn div, near the bottom left -->
-    <div id="calculatorBtn" style="position: fixed; bottom: 18px; left: 78px; z-index: 1200;">
-        <button style="background: none; border: none; cursor: pointer; padding: 0;">
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/calculator.png" alt="Calculator" style="width: 48px; height: 48px;">
-        </button>
-    </div>
-
-    <!-- Add this just after the calculatorBtn div, near the bottom left -->
-    <div id="notepadBtn" style="position: fixed; bottom: 18px; left: 138px; z-index: 1200;">
-        <button style="background: none; border: none; cursor: pointer; padding: 0;">
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/notebook.png" alt="Notepad" style="width: 48px; height: 48px;">
-        </button>
-    </div>
-
-    <!-- Rulebook Modal -->
-    <div id="rulebookModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeRulebook()">×</span>
-            <h2>Rules of the Game: D20</h2>
-            <div class="rules-content">
-                <h3>Initial Setup</h3>
-                <p><strong>1. Player Order:</strong> Each player rolls a 20-sided die (d20). The highest roll goes first, and turn order follows from highest to lowest. In case of a tie, the players who tied roll again.</p>
-                <p><strong>2. Character Creation:</strong> Each player starts at level 5. Players choose a class as determined or approved by the GM. Each class comes with a base skill provided by the GM. Each character starts with one weapon that suits their class.</p>
-                
-                <h3>Turn Structure</h3>
-                <p><strong>1. Turn Composition:</strong> Each turn (scene) allows a player one movement and one action. Actions may include attacking, using a skill, interacting with the environment, or other GM-approved actions.</p>
-                <p><strong>2. Scenes:</strong> A scene represents one complete turn rotation. When multiple players are in the same scene, they may interact with each other. Once all players have completed their actions in a scene, the turn order continues with the next scene.</p>
-                
-                <h3>Skill Checks and Combat</h3>
-                <p><strong>1. Skill Checks:</strong> Players must roll a d20 to determine the success of an action. The roll must be equal to or higher than a target number set by the GM to succeed.</p>
-                <p><strong>2. Combat:</strong> Initial combat order follows the turn order established at the game’s start. Enemies also roll a d20 to determine their place in the combat order. Combat proceeds in rounds, following the established order.</p>
-                
-                <h3>Leveling Up</h3>
-                <p><strong>1. Experience and Levels:</strong> Characters can gain up to three levels in a single scene. Leveling up can result from battles, events, or finding artifacts.</p>
-                
-                <h3>Inventory Management</h3>
-                <p><strong>1. Items:</strong> Each character can hold up to three items. Certain items may allow characters to hold more than three items. Items must be class-appropriate and approved by the GM.</p>
-                
-                <h3>Game Rules and Endgame</h3>
-                <p><strong>1. Class and Weapon Restrictions:</strong> Characters' weapons must suit their class unless otherwise specified by the GM. Class changes are not allowed unless the GM decides otherwise.</p>
-                <p><strong>2. Artifact Rules:</strong> Once an artifact's description and effects are determined by the GM, they cannot change.</p>
-                <p><strong>3. Starting Location:</strong> All characters begin in the story in the same location unless specified by the GM.</p>
-                <p><strong>4. Endgame:</strong> The game concludes once the designated end goal is achieved. The end goal is defined by the GM and can involve completing a quest, defeating a final boss, or reaching a specific destination.</p>
-                
-                <h3>Miscellaneous</h3>
-                <p><strong>1. Game Master's Role:</strong> The GM is responsible for setting scenes, defining challenges, and arbitrating rules. The GM has the final say on all game-related decisions, including interpreting rules and resolving disputes.</p>
-                <p><strong>2. Interaction and Role-Playing:</strong> Players are encouraged to role-play their characters and interact with the game world creatively. Communication and cooperation between players can enhance the storytelling experience.</p>
-            </div>
-        </div>
-    </div>
-    <audio id="rulebookSound" src="https://raw.githubusercontent.com/Kiderobin/D20/main/sounds/RuleBook.mp3"></audio>
-
-    <!-- Action Menu -->
-    <div id="actionMenu" class="action-menu" style="display: none;">
-        <input type="text" id="searchBar" placeholder="Search items..." oninput="filterMenu()" 
-               style="width: 80%; height: 6%; padding: 3px; margin-bottom: 10px; border: 1px solid #676767; border-radius: 5px; background: #1e1e1e; color: #f0f0f0; font-size: 12px;">
-        <div class="menu-content"></div>
-        <button id="clearSlotButton" onclick="clearSlot()" 
-                style="margin-top: 15px; padding: 10px; background: #ff4d4d; color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
-            Clear Slot
-        </button>
-    </div>
-
-    <!-- Extra Panel Modal -->
-    <div id="extraPanel" class="modal" style="display: none;">
-        <div class="modal-content" style="width: 320px; max-width: 90%; padding: 28px 20px 20px 20px; box-sizing: border-box; text-align: left;">
-            <span class="close-button" onclick="closeExtraPanel()" style="top: 10px; right: 15px;">×</span>
-            <h2 style="margin-top: 0; margin-bottom: 18px; text-align: left; font-size: 1.4em;">Extra Options</h2>
-            <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer;">
-                    <input type="checkbox" id="affinityCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;">
-                    <span style="margin-left: 4px;">Affinity</span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Affinity Picker Modal -->
-    <div id="affinityPicker" class="modal" style="display:none;">
-        <div class="modal-content" style="width:340px; max-width:90%; padding:24px;">
-            <span class="close-button" onclick="closeAffinityPicker()" style="top:10px; right:15px;">×</span>
-            <h2 style="margin-top:0; margin-bottom:18px; text-align:left; font-size:1.2em;">Select Affinity</h2>
-            <div id="affinityIcons" style="display:flex; flex-wrap:wrap; gap:12px;">
-                <!-- Affinity icons will be injected here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Portrait Modal -->
-    <div id="portraitModal" class="modal" style="display:none; z-index:3000;">
-        <div class="modal-content" style="width:340px; max-width:90%; padding:24px; display:flex; flex-direction:column; align-items:center;">
-            <span class="close-button" onclick="closePortraitModal()" style="top:10px; right:15px;">×</span>
-            <img id="modalPortraitImage" src="placeholder.jpg" alt="Character Portrait" style="width:240px; height:450px; border-radius:10px; object-fit:cover; border:5px solid #000;">
-            <input type="file" accept="image/*" id="imageUploader" onchange="uploadImage()" style="margin-top:18px;">
-        </div>
-    </div>
-
-    <!-- Settings Panel Modal -->
-    <div id="settingsPanel" class="modal" style="display: none;">
-        <div class="modal-content" style="width: 320px; max-width: 90%; padding: 28px 20px 20px 20px; box-sizing: border-box; text-align: left;">
-            <span class="close-button" onclick="closeSettingsPanel()" style="top: 10px; right: 15px;">×</span>
-            <h2 style="margin-top: 0; margin-bottom: 18px; text-align: left; font-size: 1.4em;">Settings</h2>
-            <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer;">
-                    <input type="checkbox" id="exportPortraitCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
-                    <span style="margin-left: 4px;">Export Portrait</span>
-                </label>
-                <!-- Add this inside the settings panel, after Export Portrait -->
-                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px; flex-wrap: wrap;">
-                    <input type="file" id="cardBgUploader" accept="image/*" style="display:none;">
-                    <button type="button" onclick="document.getElementById('cardBgUploader').click()" style="margin-right:8px; background:#533663; color:#fff; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Upload Card Background</button>
-                    <span id="bgFileName" style="font-size: 14px; color: #aaa;"></span>
-                    <button type="button" onclick="resetCardBackground()" style="background:#444; color:#fff; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; margin-left:8px;">Reset</button>
-                </label>
-                <!-- Add the Export Mat setting checkbox in the Settings Panel, after Export Portrait -->
-                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
-                    <input type="checkbox" id="exportMatCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
-                    <span style="margin-left: 4px;">Export Mat</span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Calculator Modal -->
-    <div id="calculatorModal" style="
-        display: none;
-        position: fixed;
-        bottom: 90px;
-        left: 30px;
-        z-index: 3000;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
-        ">
-        <div id="calculatorHeader" style="
-            cursor: move;
-            background: #533663;
-            color: #fff;
-            padding: 8px 12px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            font-size: 1.1em;
-            user-select: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        ">
-            <span>Calculator</span>
-            <span class="close-button" onclick="closeCalculator()" style="cursor:pointer; font-size: 1.3em;">×</span>
-        </div>
-        <div class="modal-content" style="
-            width: 320px;
-            max-width: 90vw;
-            padding: 18px 20px 20px 20px;
-            box-sizing: border-box;
-            text-align: left;
-            background: #2c2c2c;
-            border: 2px solid #676767;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            border-top: none;
-        ">
-            <input id="calcDisplay" type="text" readonly style="width: 100%; font-size: 1.3em; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #676767; background: #1e1e1e; color: #f0f0f0;">
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-                <button onclick="calcInput('7')">7</button>
-                <button onclick="calcInput('8')">8</button>
-                <button onclick="calcInput('9')">9</button>
-                <button onclick="calcInput('/')">÷</button>
-                <button onclick="calcInput('4')">4</button>
-                <button onclick="calcInput('5')">5</button>
-                <button onclick="calcInput('6')">6</button>
-                <button onclick="calcInput('*')">×</button>
-                <button onclick="calcInput('1')">1</button>
-                <button onclick="calcInput('2')">2</button>
-                <button onclick="calcInput('3')">3</button>
-                <button onclick="calcInput('-')">−</button>
-                <button onclick="calcInput('0')">0</button>
-                <button onclick="calcInput('.')">.</button>
-                <button onclick="calcEquals()">=</button>
-                <button onclick="calcInput('+')">+</button>
-                <button onclick="calcClear()" style="grid-column: span 4; background: #ff4d4d; color: #fff;">C</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notepad Modal -->
-    <div id="notepadModal" style="
-    display: none;
-    position: fixed;
-    bottom: 90px;
-    left: 90px;
-    z-index: 3000;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
-">
-    <div id="notepadHeader" style="
-        cursor: move;
-        background: #533663;
-        color: #fff;
-        padding: 8px 12px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        font-size: 1.1em;
-        user-select: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    ">
-        <span>Notepad</span>
-        <span class="close-button" onclick="closeNotepad()" style="cursor:pointer; font-size: 1.3em;">×</span>
-    </div>
-    <div class="modal-content" style="
-        width: 320px;
-        max-width: 90vw;
-        padding: 18px 20px 20px 20px;
-        box-sizing: border-box;
-        text-align: left;
-        background: #2c2c2c;
-        border: 2px solid #676767;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        border-top: none;
-    ">
-        <textarea id="notepadArea" style="width:100%; height:200px; font-size:1.1em; border-radius:6px; background:#1e1e1e; color:#f0f0f0; border:1px solid #676767; padding:10px;"></textarea>
-    </div>
-</div>
-
-    <script>
-        let cardBgData = ""; // Add this at the top of your <script> section
-
-        function updateName() {
-            const nameField = document.getElementById('characterName').value;
-            const nameDiv = document.querySelector('.character-name');
-            nameDiv.textContent = nameField || 'Character Name';
-        }
-
-        function updateStats() {
-            const level = document.getElementById('level').value || 'Level';
-            const race = document.getElementById('race').value || 'Race';
-            const className = document.getElementById('class').value || 'Class';
-            const skill = document.getElementById('skill').value || 'Skill';
-            const passiveTrait = document.getElementById('passiveTrait').value || 'Passive Trait';
-            const classPassiveTrait = document.getElementById('classPassiveTrait').value || 'Class Passive Trait';
-            const atk = document.getElementById('atk').value || 'ATK';
-            const def = document.getElementById('def').value || 'DEF';
-            const currency = document.getElementById('currency')?.value || '0';
-
-            const stats = document.querySelector('.stats');
-            stats.innerHTML = `
-                <div class="stat">Lvl. ${level}</div>
-                <div class="stat">Race: ${race}</div>
-                <div class="stat">Class: ${className}</div>
-                <div class="stat">Skill: ${skill}</div>
-                <div class="stat">Passive: ${passiveTrait}</div>
-                <div class="stat">Class Passive: ${classPassiveTrait}</div>
-                <div class="stat">ATK: ${atk}</div>
-                <div class="stat">DEF: ${def}</div>
-                <div class="stat">$${currency}</div>
-            `;
-        }
-
-        function uploadImage() {
-            const fileInput = document.getElementById('imageUploader');
-            const file = fileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('portraitImage').src = e.target.result;
-                    document.getElementById('modalPortraitImage').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function rollDie() {
-            const result = Math.floor(Math.random() * 20) + 1;
-            document.getElementById('dieResult').textContent = result;
-            const diceSound = document.getElementById('diceSound');
-            diceSound.play();
-        }
-
-        function exportCode() {
-            const characterName = document.getElementById('characterName').value || '';
-            const level = document.getElementById('level').value || '';
-            const race = document.getElementById('race').value || '';
-            const className = document.getElementById('class').value || '';
-            const currency = document.getElementById('currency').value || '';
-
-            // Extra Options
-            const affinityChecked = document.getElementById('affinityCheckbox').checked;
-            const affinityIcon = affinityChecked ? (selectedAffinity || "none.png") : "";
-
-            // Settings: Export Portrait
-            const exportPortrait = document.getElementById('exportPortraitCheckbox')?.checked !== false;
-            // Settings: Export Mat
-            const exportMat = document.getElementById('exportMatCheckbox')?.checked !== false;
-
-            // Get portrait image as Data URL, but only if not placeholder and exportPortrait is enabled
-            const portraitImage = document.getElementById('portraitImage');
-            let portraitData = '';
-            if (
-                exportPortrait &&
-                portraitImage.src &&
-                portraitImage.src.startsWith('data:image') &&
-                !portraitImage.src.includes('placeholder')
-            ) {
-                portraitData = portraitImage.src;
-            }
-
-            // Get Action Slot icons (background images)
-            const actionSlots = document.querySelectorAll('.actions .action-slot');
-            let actionIcons = [];
-            actionSlots.forEach((slot, i) => {
-                // Extract the background image URL if set
-                let bg = slot.style.backgroundImage;
-                if (bg && bg.startsWith('url(')) {
-                    // Extract URL from: url("...")
-                    let url = bg.slice(5, -2);
-                    actionIcons.push(url);
-                } else {
-                    // If no icon, store the slot label (e.g., "1", "2", "3", "H", "S")
-                    actionIcons.push(slot.textContent.trim());
-                }
-            });
-
-            let exportData = `
-Character Name: ${characterName}
-Level: ${level}
-Race: ${race}
-Class: ${className}
-Currency: ${currency}
-Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
-Affinity Icon: ${affinityIcon}
-Action Icons: ${JSON.stringify(actionIcons)}
-`.trim();
-
-            if (portraitData) {
-                exportData += `\nPortrait Image: ${portraitData}`;
-            }
-            if (exportMat && cardBgData) {
-                exportData += `\nCard Background: ${cardBgData}`;
-            }
-
-            navigator.clipboard.writeText(exportData).then(() => {
-                alert(`${characterName || "Character"} has been saved to the clipboard`);
-            }).catch(err => {
-                console.error('Failed to save character: ', err);
-            });
-        }
-
-        function pasteCode() {
-            navigator.clipboard.readText().then((text) => {
-                const lines = text.split('\n').map(line => line.trim());
-                const data = {};
-                lines.forEach(line => {
-                    const [key, ...rest] = line.split(':');
-                    if (key && rest.length > 0) {
-                        data[key.trim()] = rest.join(':').trim();
-                    }
-                });
-
-                if (typeof data['Character Name'] !== 'undefined') {
-                    document.getElementById('characterName').value = data['Character Name'];
-                }
-                if (typeof data['Level'] !== 'undefined') {
-                    document.getElementById('level').value = data['Level'];
-                }
-                if (typeof data['Race'] !== 'undefined') {
-                    document.getElementById('race').value = data['Race'];
-                    updateRace();
-                }
-                if (typeof data['Class'] !== 'undefined') {
-                    document.getElementById('class').value = data['Class'];
-                    updateClass();
-                }
-                if (typeof data['Currency'] !== 'undefined') {
-                    document.getElementById('currency').value = data['Currency'];
-                }
-
-                // Handle Extra Options: Affinity
-                if (typeof data['Affinity Option'] !== 'undefined') {
-                    const affinityChecked = data['Affinity Option'] === "Enabled";
-                    document.getElementById('affinityCheckbox').checked = affinityChecked;
-                    affinityBtn.style.display = affinityChecked ? 'block' : 'none';
-                }
-                if (typeof data['Affinity Icon'] !== 'undefined') {
-                    selectedAffinity = data['Affinity Icon'] || "none.png";
-                    updateAffinityBtn();
-                }
-
-                // Handle Action Slot icons
-                if (typeof data['Action Icons'] !== 'undefined') {
-                    try {
-                        const actionIcons = JSON.parse(data['Action Icons']);
-                        const actionSlots = document.querySelectorAll('.actions .action-slot');
-                        actionSlots.forEach((slot, i) => {
-                            const icon = actionIcons[i];
-                            if (icon && icon.startsWith('http')) {
-                                slot.style.backgroundImage = `url('${icon}')`;
-                                slot.style.backgroundSize = 'cover';
-                                slot.style.backgroundPosition = 'center';
-                                slot.textContent = '';
-                            } else {
-                                slot.style.backgroundImage = '';
-                                slot.textContent = icon || (i === 3 ? 'H' : (i + 1).toString());
-                            }
-                        });
-                    } catch (e) {
-                        // Ignore if parsing fails
-                    }
-                }
-
-                // Handle Portrait Image
-                if (typeof data['Portrait Image'] !== 'undefined' && data['Portrait Image'].startsWith('data:image')) {
-                    document.getElementById('portraitImage').src = data['Portrait Image'];
-                    document.getElementById('modalPortraitImage').src = data['Portrait Image'];
-                }
-
-                // Handle Card Background
-                if (typeof data['Card Background'] !== 'undefined' && data['Card Background'].startsWith('data:image')) {
-                    document.querySelector('.character-card').style.backgroundImage = `url('${data['Card Background']}')`;
-                    document.querySelector('.character-card').style.backgroundSize = 'cover';
-                    document.querySelector('.character-card').style.backgroundPosition = 'center';
-                    cardBgData = data['Card Background'];
-                }
-
-                updateName();
-                updateStats();
-            }).catch(err => {
-                console.error('Read clipboard: ', err);
-                // Use the pasted character name if available
-                const pastedName = data['Character Name'] || "Character";
-                alert(`${pastedName} has been added`);
-            });
-        }
-
-        function updateRace() {
-            const race = document.getElementById('race').value;
-            const statsBox = document.querySelector('.stats-box'); // Select the stats box
-
-            // Define race-to-passive trait and icon mapping
-            const raceTraits = {
-                Geovector: { 
-                    passive: "Brute Strength", 
-                    icon: "brutestrength.png", 
-                    description: "Naturally strong, providing enhanced physical abilities." 
-                },
-                Eltinian: { 
-                    passive: "Advanced Perception", 
-                    icon: "advancedperception.png", 
-                    description: "Adaptive senses, allowing for heightened awareness." 
-                },
-                Reptilian: { 
-                    passive: "Slither", 
-                    icon: "slither.png", 
-                    description: "Naturally quick and sneaky, ideal for stealth." 
-                },
-                GoldSerian: { 
-                    passive: "First Guard", 
-                    icon: "firstguard.png", 
-                    description: "Immunity to the first hit of a battle." 
-                },
-                Robot: {
-                    skill: "Connect",
-                    icon: "connect.png",
-                    description: "Can interface with machines and digital systems."
-                }
-            };
-
-            // Get the selected race traits
-            const selectedRace = raceTraits[race] || { passive: "", icon: "", description: "" };
-
-            // Remove any existing race passive trait display
-            const existingPassive = statsBox.querySelector('.race-passive-trait');
-            if (existingPassive) {
-                existingPassive.remove();
-            }
-
-            // Add the passive trait or skill inline with skills
-            if (selectedRace.passive || selectedRace.skill) {
-                const traitCard = document.createElement('div');
-                traitCard.className = 'race-passive-trait';
-                traitCard.style.display = 'inline-flex';
-                traitCard.style.alignItems = 'center';
-                traitCard.style.marginRight = '5px';
-                traitCard.style.cursor = 'pointer';
-
-                const traitIcon = document.createElement('img');
-                traitIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/${selectedRace.passive ? 'passiveicons' : 'skillicons'}/${selectedRace.icon}`;
-                traitIcon.alt = selectedRace.passive || selectedRace.skill;
-                traitIcon.style.width = '50px';
-                traitIcon.style.height = '50px';
-
-                traitCard.appendChild(traitIcon);
-
-                // Add click event to show modal with trait details
-                traitCard.addEventListener('click', () => {
-                    showModal(selectedRace.passive || selectedRace.skill, selectedRace.icon, selectedRace.description, true);
-                });
-
-                const exportButtonRow = statsBox.querySelector('.button-row');
-                statsBox.insertBefore(traitCard, exportButtonRow);
-            }
-
-            // --- Show/hide slot H if needed ---
-            updateActionSlotH();
-        }
-
-        function updateClass() {
-            const className = document.getElementById('class').value;
-            const statsBox = document.querySelector('.stats-box'); // Select the stats box
-
-            // Define class-to-skills, icons, passive traits, and descriptions mapping
-            const classTraits = {
-                Mechanic: {
-                    skills: [
-                        { skill: "Machine Maintenance", icon: "maintenance.png", description: "Be able to work at a workbench and be able to run maintenance on ships or machinery." },
-                        { skill: "Config", icon: "config.png", description: "If you have a tool bag on you, you can modify weapons and gear on the go by equipping artifacts on them." }
-                    ]
-                },
-                "Artillery Specialist": {
-                    passive: "Holster",
-                    passiveIcon: "holster.png",
-                    passiveDescription: "Gains +1 item slot specifically for firearms only. Dual pistols count as one item. Requires Firearms.",
-                    skills: [
-                        { skill: "Lock On", icon: "locked on.png", description: "Increase your accuracy or precision by one multiplied by skill level." }
-                    ]
-                },
-                Pilot: {
-                    skills: [
-                        { skill: "Ship Call", icon: "shipcall.png", description: "If you have one, you can pilot any ship. After activation, wait one full turn rotation for the ship registered to you." }
-                    ]
-                },
-                Medic: {
-                    passive: "Effective Dosage",
-                    passiveIcon: "effectivedosage.png",
-                    passiveDescription: "Your health items do twice the effects.",
-                    skills: [
-                        { skill: "Medical Experiment", icon: "medicalexperiment.png", description: "You can mix ingredients for new item effects." }
-                    ]
-                },
-                Swordsman: {
-                    passive: "Sheath",
-                    passiveIcon: "sheath.png",
-                    passiveDescription: "Gains +1 item slot specifically for swords only.",
-                    skills: [
-                        { skill: "Footwork", icon: "footwork.png", description: "Gains additional stealth points on use. Requires Sword." }
-                    ]
-                },
-                Brawler: {
-                    passive: "Bloodsport",
-                    passiveIcon: "bloodsport.png",
-                    passiveDescription: "In battle domes, you earn twice the amount of credits when winning a fight.",
-                    skills: [
-                        { skill: "Ambush", icon: "ambush.png", description: "On unexpected targets, the first hit will be 5x the result of a d20." }
-                    ]
-                }
-            };
-
-            // Get the selected class traits
-            const selectedClass = classTraits[className] || { passive: "", passiveIcon: "", passiveDescription: "", skills: [] };
-
-            // Remove any existing passive trait display
-            const existingPassive = statsBox.querySelector('.passive-trait');
-            if (existingPassive) {
-                existingPassive.remove();
-            }
-
-            // Add the passive trait inline with skills
-            if (selectedClass.passive) {
-                const passiveTraitButton = document.createElement('button');
-                passiveTraitButton.className = 'passive-trait';
-                passiveTraitButton.style.display = 'inline-flex';
-                passiveTraitButton.style.alignItems = 'center';
-                passiveTraitButton.style.marginRight = '5px'; // Reduced margin for closer spacing
-                passiveTraitButton.style.background = 'none';
-                passiveTraitButton.style.border = 'none';
-                passiveTraitButton.style.cursor = 'pointer';
-
-                const passiveIcon = document.createElement('img');
-                passiveIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/${selectedClass.passiveIcon}`;
-                passiveIcon.alt = selectedClass.passive;
-                passiveIcon.style.width = '50px';
-                passiveIcon.style.height = '50px';
-
-                passiveTraitButton.appendChild(passiveIcon);
-
-                // Add click event to show modal with passive trait details
-                passiveTraitButton.addEventListener('click', () => {
-                    showModal(selectedClass.passive, selectedClass.passiveIcon, selectedClass.passiveDescription, true);
-                });
-
-                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
-                statsBox.insertBefore(passiveTraitButton, exportButtonRow); // Insert above the button row
-            }
-
-            // Remove any existing skill buttons
-            const existingSkills = statsBox.querySelectorAll('.skill-button');
-            existingSkills.forEach(skill => skill.remove());
-
-            // Add skill buttons for the selected class
-            selectedClass.skills.forEach(skill => {
-                const skillButton = document.createElement('button');
-                skillButton.className = 'skill-button';
-                skillButton.style.display = 'inline-flex';
-                skillButton.style.alignItems = 'center';
-                skillButton.style.marginRight = '5px'; // Reduced margin for closer spacing
-                skillButton.style.background = 'none';
-                skillButton.style.border = 'none';
-                skillButton.style.cursor = 'pointer';
-
-                const skillIcon = document.createElement('img');
-                skillIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/${skill.icon}`;
-                skillIcon.alt = skill.skill;
-                skillIcon.style.width = '50px';
-                skillIcon.style.height = '50px';
-                skillIcon.style.marginRight = '5px'; // Reduced margin for closer spacing
-
-                skillButton.appendChild(skillIcon);
-
-                // Add click event to show modal with skill details
-                skillButton.addEventListener('click', () => {
-                    showModal(skill.skill, skill.icon, skill.description, false);
-                });
-
-                const exportButtonRow = statsBox.querySelector('.button-row'); // Find the button row
-                statsBox.insertBefore(skillButton, exportButtonRow); // Insert above the button row
-            });
-
-            // --- Show/hide slot H if needed ---
-            updateActionSlotH();
-        }
-
-        function updateActionSlotH() {
-            // Show slot H if class is "Artillery Specialist" or has "Holster" passive
-            // Show slot S if class is "Swordsman" or has "Sheath" passive
-            const className = document.getElementById('class').value;
-            let hasHolsterPassive = false;
-            let hasSheathPassive = false;
-
-            // Check for passive trait "Holster" or "Sheath" in the stats box
-            const statsBox = document.querySelector('.stats-box');
-            const passiveTraitButton = statsBox.querySelector('.passive-trait');
-            if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
-                const alt = passiveTraitButton.querySelector('img').alt;
-                if (alt && alt.toLowerCase() === 'holster') {
-                    hasHolsterPassive = true;
-                }
-                if (alt && alt.toLowerCase() === 'sheath') {
-                    hasSheathPassive = true;
-                }
-            }
-
-            // Show or hide the H/S slot and set its label
-            const actionSlots = document.querySelectorAll('.actions .action-slot');
-            if (actionSlots.length === 4) {
-                const hSlot = actionSlots[3];
-                if (className === 'Artillery Specialist' || hasHolsterPassive) {
-                    hSlot.style.display = 'flex';
-                    hSlot.textContent = 'H';
-                } else if (className === 'Swordsman' || hasSheathPassive) {
-                    hSlot.style.display = 'flex';
-                    hSlot.textContent = 'S';
-                } else {
-                    hSlot.style.display = 'none';
-                    hSlot.textContent = 'H'; // Reset to default if hidden
-                }
-                // Remove any background image if slot is hidden
-                if (hSlot.style.display === 'none') {
-                    hSlot.style.backgroundImage = '';
-                }
-            }
-        }
-
-        function showModal(title, icon, description, isPassive = false) {
-            // Define the correct paths for icons
-            const iconPaths = {
-                "Machine Maintenance": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/maintenance.png",
-                "Ambush": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/ambush.png",
-                "Footwork": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/footwork.png",
-                "Medical Experiment": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/medicalexperiment.png",
-                "Ship Call": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/shipcall.png",
-                "Lock On": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/locked on.png",
-                "Config": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/skillicons/config.png",
-                "Bloodsport": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/bloodsport.png",
-                "Sheath": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/sheath.png",
-                "Effective Dosage": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/effectivedosage.png",
-                "Holster": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/classicons/passiveicons/holster.png",
-                "Reptile Efficiency": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/reptile efficiency.png",
-                "Slither": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/slither.png",
-                "Advanced Perception": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/advancedperception.png",
-                "Brute Strength": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/brutestrength.png",
-                "First Guard": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/passiveicons/firstguard.png",
-                "Decoy": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/decoy.png",
-                "Connect": "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/raceicons/skillicons/connect.png"
-            };
-
-            // Create the modal container
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.position = 'fixed';
-            modal.style.top = '50%'; /* Center vertically */
-            modal.style.left = '50%'; /* Center horizontally */
-            modal.style.transform = 'translate(-50%, -50%)'; /* Adjust for the modal's size */
-            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            modal.style.display = 'flex';
-            modal.style.flexDirection = 'column';
-            modal.style.alignItems = 'center';
-            modal.style.padding = '20px';
-            modal.style.borderRadius = '10px';
-            modal.style.zIndex = '2000';
-
-            // Create the modal content
-            const modalContent = document.createElement('div');
-            modalContent.style.background = '#2c2c2c';
-            modalContent.style.border = '2px solid #676767';
-            modalContent.style.borderRadius = '10px';
-            modalContent.style.padding = '20px';
-            modalContent.style.color = '#f0f0f0';
-            modalContent.style.textAlign = 'center';
-            modalContent.style.width = '400px';
-            modalContent.style.boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.6)';
-
-            // Add the icon to the modal
-            const modalIcon = document.createElement('img');
-            modalIcon.src = iconPaths[title] || icon; // Use the correct path or fallback to the provided icon
-            modalIcon.alt = title;
-            modalIcon.style.width = '100px';
-            modalIcon.style.height = '100px';
-            modalIcon.style.marginBottom = '10px';
-
-            // Add the title to the modal
-            const modalTitle = document.createElement('h3');
-            modalTitle.textContent = title;
-
-            // Add the description to the modal
-            const modalDescription = document.createElement('p');
-            modalDescription.textContent = description;
-
-            // Add a close button to the modal
-            const closeButton = document.createElement('button');
-            closeButton.textContent = 'Close';
-            closeButton.style.marginTop = '10px';
-            closeButton.style.padding = '10px';
-            closeButton.style.background = '#533663';
-            closeButton.style.color = '#f0f0f0';
-            closeButton.style.border = 'none';
-            closeButton.style.borderRadius = '5px';
-            closeButton.style.cursor = 'pointer';
-
-            closeButton.addEventListener('click', () => {
-                modal.remove();
-            });
-
-            // Append all elements to the modal content
-            modalContent.appendChild(modalIcon);
-            modalContent.appendChild(modalTitle);
-            modalContent.appendChild(modalDescription);
-            modalContent.appendChild(closeButton);
-
-            // Append the modal content to the modal container
-            modal.appendChild(modalContent);
-
-            // Append the modal to the body
-            document.body.appendChild(modal);
-        }
-
-        let selectedSlot = null; // Variable to store the clicked action slot
-
-        // Add event listeners to action slots
-        document.querySelectorAll('.action-slot').forEach(slot => {
-            slot.addEventListener('click', (event) => {
-                selectedSlot = event.target; // Store the clicked action slot
-                const menu = document.getElementById('actionMenu');
-                menu.style.display = 'flex'; // Show the menu
-            });
-        });
-
-        // List of image names in the folder
-        const imageList = [
-             "3d-meeple.png",
-            "abbot-meeple.png",
-            "ace.png",
-            "ages.png",
-            "almond.png",
-            "anchor.png",
-            "artichoke.png",
-            "asparagus.png",
-            "aubergine.png",
-            "avocado.png",
-            "backgammon.png",
-            "backpack.png",
-            "banana.png",
-            "bandana.png",
-            "barrel.png",
-            "bayonet.png",
-            "beer-bottle.png",
-            "beer-stein.png",
-            "beet.png",
-            "bell-pepper.png",
-            "berries-bowl.png",
-            "black-flag.png",
-            "blade-bite.png",
-            "blunderbuss.png",
-            "boba.png",
-            "bok-choy.png",
-            "bowie-knife.png",
-            "bowl-of-rice.png",
-            "brandy-bottle.png",
-            "brass knuckles.png",
-            "brass-eye.png",
-            "bread-slice.png",
-            "bread.png",
-            "broad-dagger.png",
-            "broadsword.png",
-            "burn.png",
-            "butter-toast.png",
-            "butter.png",
-            "buy-card.png",
-            "cabbage.png",
-            "cake-slice.png",
-            "candy-canes.png",
-            "canned-fish.png",
-            "cannon-ball.png",
-            "cannon-shot.png",
-            "cannon.png",
-            "card-10-clubs.png",
-            "card-10-diamonds.png",
-            "card-10-hearts.png",
-            "card-10-spades.png",
-            "card-2-clubs.png",
-            "card-2-diamonds.png",
-            "card-2-hearts.png",
-            "card-2-spades.png",
-            "card-3-clubs.png",
-            "card-3-diamonds.png",
-            "card-3-hearts.png",
-            "card-3-spades.png",
-            "card-4-clubs.png",
-            "card-4-diamonds.png",
-            "card-4-hearts.png",
-            "card-4-spades.png",
-            "card-5-clubs.png",
-            "card-5-diamonds.png",
-            "card-5-hearts.png",
-            "card-5-spades.png",
-            "card-6-clubs.png",
-            "card-6-diamonds.png",
-            "card-6-hearts.png",
-            "card-6-spades.png",
-            "card-7-clubs.png",
-            "card-7-diamonds.png",
-            "card-7-hearts.png",
-            "card-7-spades.png",
-            "card-8-clubs.png",
-            "card-8-diamonds.png",
-            "card-8-hearts.png",
-            "card-8-spades.png",
-            "card-9-clubs.png",
-            "card-9-diamonds.png",
-            "card-9-hearts.png",
-            "card-9-spades.png",
-            "card-ace-clubs.png",
-            "card-ace-diamonds.png",
-            "card-ace-hearts.png",
-            "card-ace-spades.png",
-            "card-burn.png",
-            "card-discard.png",
-            "card-draw.png",
-            "card-exchange.png",
-            "card-jack-clubs.png",
-            "card-jack-diamonds.png",
-            "card-jack-hearts.png",
-            "card-jack-spades.png",
-            "card-joker.png",
-            "card-king-clubs.png",
-            "card-king-diamonds.png",
-            "card-king-hearts.png",
-            "card-king-spades.png",
-            "card-pick.png",
-            "card-pickup.png",
-            "card-play.png",
-            "card-queen-clubs.png",
-            "card-queen-diamonds.png",
-            "card-queen-hearts.png",
-            "card-queen-spades.png",
-            "card-random.png",
-            "carrot.png",
-            "charcuterie.png",
-            "cheese-wedge.png",
-            "cherry.png",
-            "chess-bishop.png",
-            "chess-king.png",
-            "chess-knight.png",
-            "chess-pawn.png",
-            "chess-queen.png",
-            "chess-rook.png",
-            "chili-pepper.png",
-            "chips-bag.png",
-            "chocolate-bar.png",
-            "clubs.png",
-            "coffee-beans.png",
-            "coffee-cup.png",
-            "coffee-mug.png",
-            "coins.png",
-            "compass.png",
-            "conway-life-glider.png",
-            "cookie.png",
-            "cool-spices.png",
-            "corn.png",
-            "cornucopia.png",
-            "crescent-blade.png",
-            "croissant.png",
-            "crossed-bones.png",
-            "crossed-sabres.png",
-            "crow-nest.png",
-            "cupcake.png",
-            "curled-tentacle.png",
-            "dango.png",
-            "diamonds.png",
-            "dice-six-faces-three.png",
-            "dig-hole.png",
-            "dog-bowl.png",
-            "dolphin.png",
-            "domino-tiles.png",
-            "doner-kebab.png",
-            "donut.png",
-            "dripping-honey.png",
-            "dumpling-bao.png",
-            "dumpling.png",
-            "easter-egg.png",
-            "eating.png",
-            "egg-pod.png",
-            "elderberry.png",
-            "empty-chessboard.png",
-            "eyepatch.png",
-            "fast-noodles.png",
-            "figurehead.png",
-            "fishing-net.png",
-            "flour.png",
-            "food-chain.png",
-            "food-truck.png",
-            "french-fries.png",
-            "fried-eggs.png",
-            "full-pizza.png",
-            "galleon.png",
-            "garlic.png",
-            "gingerbread-man.png",
-            "gluttony.png",
-            "grain.png",
-            "grapes.png",
-            "grapple.png",
-            "hamburger.png",
-            "harpoon-chain.png",
-            "hearts.png",
-            "herbs-bundle.png",
-            "hexes.png",
-            "honey-jar.png",
-            "honeycomb.png",
-            "honeypot.png",
-            "hot-dog.png",
-            "hot-meal.png",
-            "hot-spices.png",
-            "hourglass.png",
-            "ice-cream-cone.png",
-            "ice-cube.png",
-            "ice-pop.png",
-            "island.png",
-            "jelly-beans.png",
-            "jelly.png",
-            "katana.png",
-            "ketchup.png",
-            "kiwi-fruit.png",
-            "knot.png",
-            "locked-chest.png",
-            "marshmallows.png",
-            "martini.png",
-            "meal.png",
-            "meat-cleaver.png",
-            "meat-hook.png",
-            "meeple-army.png",
-            "meeple-circle.png",
-            "meeple-group.png",
-            "meeple-king.png",
-            "meeple.png",
-            "milk-carton.png",
-            "monkey.png",
-            "mushroom-gills.png",
-            "mushroom.png",
-            "mushrooms.png",
-            "mussel.png",
-            "nachos.png",
-            "noodles.png",
-            "notebook.png",
-            "oat.png",
-            "oden.png",
-            "olive.png",
-            "one-eyed.png",
-            "onigori.png",
-            "open-treasure-chest.png",
-            "opened-food-can.png",
-            "opposite-hearts.png",
-            "overdose.png",
-            "oyster-pearl.png",
-            "palm-tree.png",
-            "parrot-head.png",
-            "pawn.png",
-            "pay-money.png",
-            "peanut.png",
-            "pear.png",
-            "perspective-dice-six-faces-four.png",
-            "pickle.png",
-            "pie-slice.png",
-            "pill.png",
-            "pimiento.png",
-            "piranha.png",
-            "pirate-cannon.png",
-            "pirate-captain.png",
-            "pirate-coat.png",
-            "pirate-flag.png",
-            "pirate-grave.png",
-            "pirate-hat.png",
-            "pirate-hook.png",
-            "pirate-skull.png",
-            "pizza-cutter.png",
-            "pizza-slice.png",
-            "player-base.png",
-            "player-next.png",
-            "player-previous.png",
-            "player-time.png",
-            "poker-hand.png",
-            "popcorn.png",
-            "potato.png",
-            "powder.png",
-            "pretzel.png",
-            "pumpkin-lantern.png",
-            "raw-egg.png",
-            "receive-money.png",
-            "revolver.png",
-            "rolling-dice-cup.png",
-            "rolling-dices.png",
-            "rope-coil.png",
-            "round-table.png",
-            "rule-book.png",
-            "saber-slash.png",
-            "sail.png",
-            "sake-bottle.png",
-            "salt-shaker.png",
-            "sands-of-time.png",
-            "sandwich.png",
-            "sell-card.png",
-            "sesame.png",
-            "sextant.png",
-            "shark-fin.png",
-            "shiny-apple.png",
-            "ship-wheel.png",
-            "ship-wreck.png",
-            "silver-bullet.png",
-            "skull-crossed-bones.png",
-            "sliced-bread.png",
-            "sliced-mushroom.png",
-            "soda-bottle.png",
-            "soda-can.png",
-            "spades.png",
-            "sparky-bomb.png",
-            "spiral-lollipop.png",
-            "spyglass.png",
-            "stack.png",
-            "stairs-cake.png",
-            "steyr-aug.png",
-            "stomach.png",
-            "stopwatch.png",
-            "suits.png",
-            "sushis.png",
-            "tabletop-players.png",
-            "tacos.png",
-            "tangerine.png",
-            "team-downgrade.png",
-            "team-upgrade.png",
-            "teapot.png",
-            "thrown-knife.png",
-            "tic-tac-toe.png",
-            "tied-scroll.png",
-            "toaster.png",
-            "token.png",
-            "tomato.png",
-            "treasure-map.png",
-            "two-coins.png",
-            "udder.png",
-            "unlit-bomb.png",
-            "up-card.png",
-            "vending-machine.png",
-            "wheat.png",
-            "wine-bottle.png",
-            "wine-glass.png",
-            "wooden-pegleg.png",
-            "wrapped-sweet.png"
-        ];
-
-        // Dynamically populate the menu with images
-        const menuContent = document.querySelector('.menu-content');
-
-        menuContent.innerHTML = ''; // Clear existing content before populating
-        imageList.forEach(imageName => {
-            const imgElement = document.createElement('img');
-            imgElement.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/itemicons/equip/${imageName}`;
-            imgElement.alt = imageName;
-            imgElement.className = 'menu-icon';
-            imgElement.onclick = () => selectIcon(imageName);
-            menuContent.appendChild(imgElement);
-        });
-
-        // Function to handle icon selection
-        function selectIcon(iconName) {
-            if (selectedSlot) {
-                // Set the selected image as the background of the clicked action slot
-                selectedSlot.style.backgroundImage = `url('https://raw.githubusercontent.com/Kiderobin/D20/main/pics/itemicons/equip/${iconName}')`;
-                selectedSlot.style.backgroundSize = 'cover'; // Ensure the image covers the slot
-                selectedSlot.style.backgroundPosition = 'center'; // Center the image
-
-                // Remove the label (text content) from the action slot
-                selectedSlot.textContent = '';
-            }
-            const menu = document.getElementById('actionMenu');
-            menu.style.display = 'none'; // Hide the menu
-        }
-
-        // --- Add this code after your existing selectIcon function ---
-
-        // Allow uploading a custom icon for the selected action slot
-        function uploadCustomIcon(file) {
-            if (!selectedSlot || !file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                selectedSlot.style.backgroundImage = `url('${e.target.result}')`;
-                selectedSlot.style.backgroundSize = 'cover';
-                selectedSlot.style.backgroundPosition = 'center';
-                selectedSlot.textContent = '';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Add a hidden file input for uploading custom icons
-        let customIconInput = document.getElementById('customIconInput');
-        if (!customIconInput) {
-            customIconInput = document.createElement('input');
-            customIconInput.type = 'file';
-            customIconInput.accept = 'image/*';
-            customIconInput.id = 'customIconInput';
-            customIconInput.style.display = 'none';
-            document.body.appendChild(customIconInput);
-
-            customIconInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    uploadCustomIcon(this.files[0]);
-                }
-                this.value = '';
-                document.getElementById('actionMenu').style.display = 'none';
-            });
-        }
-
-        // Add a button to the action menu for uploading custom icons
-        (function addCustomIconButton() {
-            const menu = document.getElementById('actionMenu');
-            if (!document.getElementById('uploadCustomIconBtn')) {
-                const btn = document.createElement('button');
-                btn.id = 'uploadCustomIconBtn';
-                btn.textContent = 'Upload Icon';
-                btn.style.marginTop = '10px';
-                btn.style.background = '#533663';
-                btn.style.color = '#fff';
-                btn.style.border = 'none';
-                btn.style.borderRadius = '5px';
-                btn.style.padding = '8px 12px';
-                btn.style.cursor = 'pointer';
-                btn.onclick = function() {
-                    customIconInput.click();
-                };
-                menu.appendChild(btn);
-            }
-        })();
-
-        // --- Paste image from clipboard into action slot ---
-        document.addEventListener('paste', function(e) {
-            if (!selectedSlot) return;
-            if (e.clipboardData && e.clipboardData.items) {
-                for (let i = 0; i < e.clipboardData.items.length; i++) {
-                    const item = e.clipboardData.items[i];
-                    if (item.type.indexOf('image') !== -1) {
-                        const file = item.getAsFile();
-                        uploadCustomIcon(file);
-                        document.getElementById('actionMenu').style.display = 'none';
-                        break;
-                    }
-                }
-            }
-        });
-
-        // Hide the menu when clicking outside
-        document.addEventListener('click', (event) => {
-            const menu = document.getElementById('actionMenu');
-            if (menu.style.display === 'flex' && !menu.contains(event.target) && !event.target.classList.contains('action-slot')) {
-                menu.style.display = 'none';
-            }
-        });
-
-        function filterMenu() {
-            const searchQuery = document.getElementById('searchBar').value.toLowerCase();
-            const menuIcons = document.querySelectorAll('.menu-icon');
-
-            menuIcons.forEach(icon => {
-                const altText = icon.alt.toLowerCase();
-                if (altText.includes(searchQuery)) {
-                    icon.style.display = 'block'; // Show matching icons
-                } else {
-                    icon.style.display = 'none'; // Hide non-matching icons
-                }
-            });
-        }
-
-        function clearSlot() {
-            if (selectedSlot) {
-                // Remove the background image from the selected action slot
-                selectedSlot.style.backgroundImage = '';
-
-                // Restore the label (text content) of the action slot
-                if (selectedSlot.classList.contains('action-slot')) {
-                    const slotIndex = Array.from(selectedSlot.parentElement.children).indexOf(selectedSlot) + 1;
-                    if (slotIndex === 4) {
-                        // For the last slot, check if Swordsman or Sheath passive is active
-                        const className = document.getElementById('class').value;
-                        let hasSheathPassive = false;
-                        const statsBox = document.querySelector('.stats-box');
-                        const passiveTraitButton = statsBox.querySelector('.passive-trait');
-                        if (passiveTraitButton && passiveTraitButton.querySelector('img')) {
-                            const alt = passiveTraitButton.querySelector('img').alt;
-                            if (alt && alt.toLowerCase() === 'sheath') {
-                                hasSheathPassive = true;
-                            }
-                        }
-                        if (className === 'Swordsman' || hasSheathPassive) {
-                            selectedSlot.textContent = 'S';
-                        } else {
-                            selectedSlot.textContent = 'H';
-                        }
-                    } else {
-                        selectedSlot.textContent = slotIndex.toString();
-                    }
-                }
-            }
-            const menu = document.getElementById('actionMenu');
-            menu.style.display = 'none'; // Hide the menu
-        }
-
-        function openRulebook() {
-            const rulebookModal = document.getElementById('rulebookModal');
-            rulebookModal.style.display = 'flex'; // Show the rulebook modal
-
-            // Play the rulebook sound
-            const rulebookSound = document.getElementById('rulebookSound');
-            rulebookSound.play();
-        }
-
-        function closeRulebook() {
-            const rulebookModal = document.getElementById('rulebookModal');
-            rulebookModal.style.display = 'none'; // Hide the rulebook modal
-        }
-
-        function openExtraPanel() {
-            document.getElementById('extraPanel').style.display = 'flex';
-        }
-        function closeExtraPanel() {
-            document.getElementById('extraPanel').style.display = 'none';
-        }
-
-        // Affinity icon list (add more as needed)
-        const affinityList = [
-            "fire.png",
-            "water.png",
-            "earth.png",
-            "air.png",
-            "aether.png",
-            "void.png",
-            "none.png"
-        ];
-
-        // Add Affinity button to portrait (top right corner)
-        const portraitDiv = document.querySelector('.portrait');
-        const affinityBtn = document.getElementById('affinityBtn');
-        portraitDiv.style.position = 'relative';
-        portraitDiv.appendChild(affinityBtn);
-
-        // Handle Affinity checkbox toggle
-        document.getElementById('affinityCheckbox').addEventListener('change', function() {
-            affinityBtn.style.display = this.checked ? 'block' : 'none';
-        });
-
-        // Show affinity picker modal
-        affinityBtn.onclick = function() {
-            showAffinityPicker();
-        };
-
-        let selectedAffinity = null; // Track selected affinity
-
-        function updateAffinityBtn() {
-            const affinityIcon = document.getElementById('affinityIcon');
-            const affinityBtn = document.getElementById('affinityBtn');
-            if (!selectedAffinity || selectedAffinity === "none.png") {
-                affinityIcon.src = "https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/none.png";
-                affinityIcon.style.background = "none";
-                affinityIcon.style.border = "0px solid #000000";
-                affinityIcon.style.width = "70px";
-                affinityIcon.style.height = "70px";
-                affinityBtn.style.background = "none";
-            } else {
-                affinityIcon.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/${selectedAffinity}`;
-                affinityIcon.style.background = "none";
-                affinityIcon.style.border = "0px solid #000000";
-                affinityIcon.style.width = "70px";
-                affinityIcon.style.height = (selectedAffinity === "air.png") ? "108px" : "70px";
-                affinityBtn.style.background = "none";
-            }
-        }
-
-        function showAffinityPicker() {
-            const picker = document.getElementById('affinityPicker');
-            const iconsDiv = document.getElementById('affinityIcons');
-            iconsDiv.innerHTML = '';
-            affinityList.forEach(name => {
-                const img = document.createElement('img');
-                img.src = `https://raw.githubusercontent.com/Kiderobin/D20/main/pics/charicons/elemticon/${name}`;
-                img.alt = name.replace('.png','');
-                img.style.width = "70px";
-                img.style.height = (name === "air.png") ? "108px" : "70px";
-                img.style.borderRadius = "0%";
-                img.style.background = "none";
-                img.style.cursor = "pointer";
-                // Highlight if selected
-                if (selectedAffinity === name || (!selectedAffinity && name === "none.png")) {
-                    img.style.border = "3px solid #533663";
-                    img.style.boxShadow = "0 0 8px #533663";
-                } else {
-                    img.style.border = "0px solid #000000";
-                    img.style.boxShadow = "none";
-                }
-                img.onclick = function() {
-                    selectedAffinity = name;
-                    updateAffinityBtn();
-                    closeAffinityPicker();
-                };
-                iconsDiv.appendChild(img);
-            });
-            picker.style.display = 'flex';
-        }
-
-        // On load, ensure button is correct
-        updateAffinityBtn();
-
-        function closeAffinityPicker() {
-            document.getElementById('affinityPicker').style.display = 'none';
-        }
-
-        // Optional: Hide affinity picker if modal background is clicked
-        document.getElementById('affinityPicker').addEventListener('click', function(e) {
-            if (e.target === this) closeAffinityPicker();
-        });
-
-        // Show modal when portrait is clicked
-        document.getElementById('portraitImage').onclick = function() {
-            // Set modal image to current portrait
-            document.getElementById('modalPortraitImage').src = document.getElementById('portraitImage').src;
-            document.getElementById('portraitModal').style.display = 'flex';
-        };
-
-        // Hide modal function
-        function closePortraitModal() {
-            document.getElementById('portraitModal').style.display = 'none';
-        }
-
-        // Optional: Hide modal if background is clicked
-        document.getElementById('portraitModal').addEventListener('click', function(e) {
-            if (e.target === this) closePortraitModal();
-        });
-
-        // Settings button logic
-        document.getElementById('settingsBtn').onclick = function() {
-            document.getElementById('settingsPanel').style.display = 'flex';
-        };
-        function closeSettingsPanel() {
-            document.getElementById('settingsPanel').style.display = 'none';
-        }
-        // Optional: Hide settings panel if background is clicked
-        document.getElementById('settingsPanel').addEventListener('click', function(e) {
-            if (e.target === this) closeSettingsPanel();
-        });
-
-        // Handle card background upload
-        document.getElementById('cardBgUploader').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.querySelector('.character-card').style.backgroundImage = `url('${e.target.result}')`;
-                document.querySelector('.character-card').style.backgroundSize = 'cover';
-                document.querySelector('.character-card').style.backgroundPosition = 'center';
-                cardBgData = e.target.result; // Store the Data URL
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function resetCardBackground() {
-            const card = document.querySelector('.character-card');
-            card.style.backgroundImage = '';
-            document.getElementById('bgFileName').textContent = '';
-            cardBgData = ""; // Reset the stored background
-        }
-
-        // Calculator logic
-        let calcValue = "";
-
-        document.getElementById('calculatorBtn').onclick = function() {
-            const calc = document.getElementById('calculatorModal');
-            calc.style.display = 'block';
-            document.getElementById('calcDisplay').value = calcValue;
-        };
-
-        function closeCalculator() {
-            document.getElementById('calculatorModal').style.display = 'none';
-        }
-
-        function calcInput(val) {
-            calcValue += val;
-            document.getElementById('calcDisplay').value = calcValue;
-        }
-
-        function calcEquals() {
-            try {
-                // Evaluate only safe math expressions
-                calcValue = eval(calcValue).toString();
-            } catch {
-                calcValue = "Error";
-            }
-            document.getElementById('calcDisplay').value = calcValue;
-        }
-
-        function calcClear() {
-            calcValue = "";
-            document.getElementById('calcDisplay').value = "";
-        }
-
-        // --- Draggable logic ---
-        (function() {
-            const calcModal = document.getElementById('calculatorModal');
-            const header = document.getElementById('calculatorHeader');
-            let offsetX = 0, offsetY = 0, isDragging = false;
-
-            header.onmousedown = function(e) {
-                isDragging = true;
-                // Get the current mouse position and modal position
-                const rect = calcModal.getBoundingClientRect();
-                offsetX = e.clientX - rect.left;
-                offsetY = e.clientY - rect.top;
-                document.body.style.userSelect = "none";
-            };
-
-            document.onmousemove = function(e) {
-                if (isDragging) {
-                    calcModal.style.left = (e.clientX - offsetX) + "px";
-                    calcModal.style.top = (e.clientY - offsetY) + "px";
-                    calcModal.style.bottom = "auto";
-                }
-            };
-
-            document.onmouseup = function() {
-                isDragging = false;
-                document.body.style.userSelect = "";
-            };
-        })();
-
-        // Prevent accidental text selection while dragging
-        document.getElementById('calculatorModal').onselectstart = function() { return false; };
-
-        // Notepad button logic
-document.getElementById('notepadBtn').onclick = function() {
-    const modal = document.getElementById('notepadModal');
-    modal.style.display = 'block';
-    modal.style.left = '90px';
-    modal.style.top = '';
-    modal.style.bottom = '90px';
-    modal.style.right = '';
-    modal.style.position = 'fixed';
-    document.getElementById('notepadArea').value = localStorage.getItem('d20notepad') || '';
-};
-function closeNotepad() {
-    document.getElementById('notepadModal').style.display = 'none';
-    localStorage.setItem('d20notepad', document.getElementById('notepadArea').value);
-}
-// Prevent accidental text selection while dragging
-document.getElementById('notepadModal').onselectstart = function() { return false; };
-
-(function() {
-    const notepadModal = document.getElementById('notepadModal');
-    const header = document.getElementById('notepadHeader');
-    let offsetX = 0, offsetY = 0, isDragging = false;
-
-    header.onmousedown = function(e) {
-        isDragging = true;
-        const rect = notepadModal.getBoundingClientRect();
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-        document.body.style.userSelect = "none";
-    };
-
-    document.addEventListener('mousemove', function(e) {
-        if (isDragging) {
-            notepadModal.style.left = (e.clientX - offsetX) + "px";
-            notepadModal.style.top = (e.clientY - offsetY) + "px";
-            notepadModal.style.right = "auto";
-            notepadModal.style.bottom = "auto";
-            notepadModal.style.position = "fixed";
-        }
-    });
-
-    document.addEventListener('mouseup', function() {
-        isDragging = false;
-        document.body.style.userSelect = "";
-    });
-})();
-    </script>
+	<div class="main-container">
+		<!-- Dice Section -->
+		<div id="diceSection" class="vertical-section hidden" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100vh - 70px);min-height:350px;">
+			<div class="section-title">Roll a D20</div>
+			<div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:300px;height:300px;">
+				<button id="rollDieBtn" style="background:none;border:none;cursor:pointer;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;">
+					<img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/20SidedDie.png" class="dice-img" alt="Roll D20" style="display:block;margin:0 auto;">
+				</button>
+				   <div id="diceResult" class="dice-result" style="position:absolute;top: 49%;left: 52%;transform:translate(-50%,-50%);z-index:2;pointer-events:none;font-size:48px;color:#533663;font-weight:bold;font-family:Arial,sans-serif;">-</div>
+			</div>
+			<audio id="diceSound" src="https://raw.githubusercontent.com/Kiderobin/D20/main/sounds/diceroll.mp3"></audio>
+		</div>
+		<!-- Character Section -->
+		<div id="characterSection" class="vertical-section hidden">
+			<div class="section-title">Character Portrait</div>
+			<img id="portraitImage" src="placeholder.jpg" class="portrait-img" alt="Character Portrait" onclick="openPortraitPicker()">
+			<input type="file" id="portraitInput" accept="image/*" style="display:none;">
+		</div>
+		<!-- Info Section -->
+		<div id="infoSection" class="vertical-section hidden">
+			<div class="section-title">Character Info</div>
+			<div class="input-row"><input id="characterName" type="text" placeholder="Name"></div>
+			<div class="input-row"><input id="level" type="number" min="1" placeholder="Level"></div>
+			<div class="input-row"><input id="currency" type="number" min="0" placeholder="Currency"></div>
+			<div class="select-row">
+				<select id="raceInfoSelect"><option value="">Race</option></select>
+				<select id="classInfoSelect"><option value="">Class</option></select>
+				<select id="subclassInfoSelect" style="flex:2;"><option value="">Subclass</option></select>
+			</div>
+			<div class="health-bar-container" onclick="editHealth()">
+				<div class="health-bar" id="healthBar"></div>
+				<div class="health-text" id="healthText">100/100</div>
+			</div>
+			<div class="section-title" style="font-size:1.1em;margin:8px 0 4px 0;">Action Slots</div>
+			<div class="action-slots" id="actionSlots"></div>
+		</div>
+		<!-- Passive/Skills Section -->
+		<div id="passiveSection" class="vertical-section hidden">
+			<div class="section-title">Passives & Skills</div>
+			<div class="passive-skill-list" id="passiveSkillList"></div>
+		</div>
+	</div>
+	<div class="menu-bar">
+		<button class="menu-btn active" id="menuDice" onclick="showSection('dice')"><img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/20SidedDie.png" alt="Dice">Dice</button>
+		<button class="menu-btn" id="menuCharacter" onclick="showSection('character')"><img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/portraiticon.png" alt="Character">Character</button>
+		<button class="menu-btn" id="menuInfo" onclick="showSection('info')"><img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/infoicon.png" alt="Info">Info</button>
+		<button class="menu-btn" id="menuPassive" onclick="showSection('passive')"><img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/skillicon.png" alt="Skills">Skills</button>
+	</div>
+	<script>
+	// --- Data Loading ---
+	let D20_DATA = window.D20_CAMPAIGN_DATA || {};
+	function populateDropdowns() {
+		const races = D20_DATA.races || [];
+		const classes = D20_DATA.classes || [];
+		// Info section only
+		const raceInfoSel = document.getElementById('raceInfoSelect');
+		const classInfoSel = document.getElementById('classInfoSelect');
+		const subSel = document.getElementById('subclassInfoSelect');
+		raceInfoSel.innerHTML = '<option value="">Race</option>';
+		classInfoSel.innerHTML = '<option value="">Class</option>';
+		races.forEach(r => raceInfoSel.innerHTML += `<option value="${r.name}">${r.name}</option>`);
+		classes.forEach(c => classInfoSel.innerHTML += `<option value="${c.name}">${c.name}</option>`);
+		classInfoSel.onchange = function() {
+			const className = classInfoSel.value;
+			const cls = classes.find(c=>c.name===className);
+			subSel.innerHTML = '<option value="">Subclass</option>';
+			if(cls && Array.isArray(cls.subclasses)) {
+				cls.subclasses.forEach(sub=>{
+					subSel.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+				});
+			}
+			updateActionSlots();
+		};
+		subSel.onchange = function() {
+			updateActionSlots();
+		};
+	}
+		// --- Remove modal logic ---
+	// --- Section Navigation ---
+	function showSection(section) {
+		document.getElementById('diceSection').classList.add('hidden');
+		document.getElementById('characterSection').classList.add('hidden');
+		document.getElementById('infoSection').classList.add('hidden');
+		document.getElementById('passiveSection').classList.add('hidden');
+		document.getElementById('menuDice').classList.remove('active');
+		document.getElementById('menuCharacter').classList.remove('active');
+		document.getElementById('menuInfo').classList.remove('active');
+		document.getElementById('menuPassive').classList.remove('active');
+		if(section==='dice') {
+			document.getElementById('diceSection').classList.remove('hidden');
+			document.getElementById('menuDice').classList.add('active');
+		} else if(section==='character') {
+			document.getElementById('characterSection').classList.remove('hidden');
+			document.getElementById('menuCharacter').classList.add('active');
+		} else if(section==='info') {
+			document.getElementById('infoSection').classList.remove('hidden');
+			document.getElementById('menuInfo').classList.add('active');
+		} else if(section==='passive') {
+			document.getElementById('passiveSection').classList.remove('hidden');
+			document.getElementById('menuPassive').classList.add('active');
+		}
+	}
+	// --- Dice Logic ---
+	document.getElementById('rollDieBtn').onclick = function() {
+		const result = Math.floor(Math.random()*20)+1;
+		document.getElementById('diceResult').textContent = result;
+		document.getElementById('diceSound').play();
+	};
+	// --- Portrait Logic ---
+	function openPortraitPicker() {
+		document.getElementById('portraitInput').click();
+	}
+	document.getElementById('portraitInput').addEventListener('change', function(e) {
+		const file = e.target.files[0];
+		if(file) {
+			const reader = new FileReader();
+			reader.onload = function(ev) {
+				document.getElementById('portraitImage').src = ev.target.result;
+			};
+			reader.readAsDataURL(file);
+		}
+	});
+	// --- Info Section Logic ---
+	function updateInfo() {
+		// Sync dropdowns
+		document.getElementById('raceInfoSelect').value = document.getElementById('raceInfoSelect').value || document.getElementById('raceSelect').value;
+		document.getElementById('classInfoSelect').value = document.getElementById('classInfoSelect').value || document.getElementById('classSelect').value;
+		// Subclass
+		const className = document.getElementById('classInfoSelect').value;
+		const level = parseInt(document.getElementById('level').value) || 1;
+		const cls = (D20_DATA.classes||[]).find(c=>c.name===className);
+		const subSel = document.getElementById('subclassInfoSelect');
+		subSel.innerHTML = '<option value="">Subclass</option>';
+		if(cls && Array.isArray(cls.subclasses) && typeof cls.subclasslevel==='number' && level>=cls.subclasslevel) {
+			cls.subclasses.forEach(sub=>{
+				subSel.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+			});
+		}
+		// Health
+		updateHealthBar();
+		// Update passives/skills
+		updatePassives();
+	}
+	document.getElementById('raceInfoSelect').onchange = updateInfo;
+	document.getElementById('classInfoSelect').onchange = function() {
+		updateActionSlots();
+		updateInfo();
+	};
+	document.getElementById('subclassInfoSelect').onchange = function() {
+		updateActionSlots();
+		updateInfo();
+	};
+	document.getElementById('level').oninput = function() {
+		updateHealthBar();
+		updatePassives();
+	};
+	// --- Health Bar Logic ---
+	let currentHP = 100;
+	let maxHP = 100;
+	function updateHealthBar() {
+		const level = Math.max(1, parseInt(document.getElementById('level').value)||1);
+		maxHP = level*20;
+		if(currentHP>maxHP) currentHP=maxHP;
+		if(currentHP<0) currentHP=0;
+		const percent = (currentHP/maxHP)*100;
+		const bar = document.getElementById('healthBar');
+		bar.style.width = percent+'%';
+		if(percent>=70) bar.style.background = 'linear-gradient(to right, #33ff66, #66ff99)';
+		else if(percent>=30) bar.style.background = 'linear-gradient(to right, #ffcc33, #ff9933)';
+		else bar.style.background = 'linear-gradient(to right, #ff3333, #ff6666)';
+		document.getElementById('healthText').textContent = `${currentHP}/${maxHP}`;
+	}
+	// Make healthText editable on click, update on blur/enter
+	const healthText = document.getElementById('healthText');
+	healthText.addEventListener('click', function() {
+		healthText.contentEditable = 'true';
+		healthText.focus();
+	});
+	healthText.addEventListener('blur', function() {
+		healthText.contentEditable = 'false';
+		let text = healthText.textContent.trim();
+		let value = text.includes('/') ? text.split('/')[0] : text;
+		value = parseInt(value);
+		if(!isNaN(value)) {
+			currentHP = Math.max(0, Math.min(value, maxHP));
+			updateHealthBar();
+		} else {
+			updateHealthBar();
+		}
+	});
+	healthText.addEventListener('keydown', function(e) {
+		if(e.key === 'Enter') {
+			healthText.blur();
+			e.preventDefault();
+		}
+	});
+	document.getElementById('level').addEventListener('input', updateHealthBar);
+	window.addEventListener('load', updateHealthBar);
+	// --- Action Slots Logic ---
+	function updateActionSlots() {
+		const container = document.getElementById('actionSlots');
+		container.innerHTML = '';
+		// Always show three action slots (1, 2, 3)
+		for (let i = 1; i <= 3; i++) {
+			const btn = document.createElement('div');
+			btn.className = 'action-slot';
+			btn.textContent = i;
+			container.appendChild(btn);
+		}
+		// Show a fourth slot if subclass passive has AS, else class passive AS
+		const className = document.getElementById('classInfoSelect').value;
+		const subclassName = document.getElementById('subclassInfoSelect').value;
+		const cls = (D20_DATA.classes || []).find(c => c.name === className);
+		let asLabel = null;
+		if (cls && Array.isArray(cls.subclasses) && subclassName) {
+			const sub = cls.subclasses.find(s => s.name === subclassName);
+			if (sub && sub.passive && typeof sub.passive.AS === 'string' && sub.passive.AS.trim() !== '') {
+				asLabel = sub.passive.AS;
+			}
+		}
+		if (!asLabel && cls && cls.passive && typeof cls.passive.AS === 'string' && cls.passive.AS.trim() !== '') {
+			asLabel = cls.passive.AS;
+		}
+		if (asLabel) {
+			const btn = document.createElement('div');
+			btn.className = 'action-slot';
+			btn.textContent = asLabel;
+			container.appendChild(btn);
+		}
+	}
+	// --- Passives/Skills Logic ---
+	function updatePassives() {
+		const raceName = document.getElementById('raceInfoSelect').value;
+		const className = document.getElementById('classInfoSelect').value;
+		const subclassName = document.getElementById('subclassInfoSelect').value;
+		const race = (D20_DATA.races||[]).find(r=>r.name===raceName)||{};
+		const cls = (D20_DATA.classes||[]).find(c=>c.name===className)||{};
+		let sub = null;
+		if(cls && subclassName && Array.isArray(cls.subclasses)) sub = cls.subclasses.find(s=>s.name===subclassName);
+		const list = document.getElementById('passiveSkillList');
+		list.innerHTML = '';
+		// Race passives/skills
+		let racePassives = Array.isArray(race.passives)?race.passives:(race.passive?[race.passive]:[]);
+		let raceSkills = Array.isArray(race.skills)?race.skills:(race.skill?[race.skill]:[]);
+		racePassives.forEach(trait=>list.appendChild(makePassiveSkillItem(trait)));
+		raceSkills.forEach(skill=>list.appendChild(makePassiveSkillItem(skill)));
+		// Class passives/skills
+		let classPassives = Array.isArray(cls.passives)?cls.passives:(cls.passive?[cls.passive]:[]);
+		let classSkills = Array.isArray(cls.skills)?cls.skills:[];
+		classPassives.forEach(trait=>list.appendChild(makePassiveSkillItem(trait)));
+		classSkills.forEach(skill=>list.appendChild(makePassiveSkillItem(skill)));
+		// Subclass passives/skills
+		if(sub) {
+			let subPassives = Array.isArray(sub.passives)?sub.passives:(sub.passive?[sub.passive]:[]);
+			let subSkills = Array.isArray(sub.skills)?sub.skills:[];
+			subPassives.forEach(trait=>list.appendChild(makePassiveSkillItem(trait)));
+			subSkills.forEach(skill=>list.appendChild(makePassiveSkillItem(skill)));
+		}
+	}
+	function makePassiveSkillItem(obj) {
+		const div = document.createElement('div');
+		div.className = 'passive-skill-item';
+		const img = document.createElement('img');
+		img.src = obj.icon?`icons/${obj.icon}`:'';
+		img.alt = obj.name||'';
+		div.appendChild(img);
+		const info = document.createElement('div');
+		info.className = 'passive-skill-info';
+		const title = document.createElement('div');
+		title.className = 'passive-skill-title';
+		title.textContent = obj.name||'';
+		info.appendChild(title);
+		const desc = document.createElement('div');
+		desc.className = 'passive-skill-desc';
+		desc.textContent = obj.description||'';
+		info.appendChild(desc);
+		div.appendChild(info);
+		return div;
+	}
+	// --- Sync Info Section Inputs ---
+	document.getElementById('characterName').oninput = updateInfo;
+	document.getElementById('currency').oninput = updateInfo;
+	// --- Initial Load ---
+	window.addEventListener('DOMContentLoaded', function() {
+		D20_DATA = window.D20_CAMPAIGN_DATA || {};
+		populateDropdowns();
+		showSection('dice');
+		// Show action slots immediately on load
+		updateActionSlots();
+		// Also update after dropdowns are populated
+		document.getElementById('classInfoSelect').dispatchEvent(new Event('change'));
+	});
+	</script>
 </body>
 </html>
