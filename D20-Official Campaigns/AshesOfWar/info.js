@@ -38,12 +38,13 @@ const campaignInfo = {
     resources: [
         {
             name: "Play",
-            link: "https://ScareTheVoices.github.io/D20/D20-Official%20Campaigns/AshesOfWar/D20.html"
+            link: "https://scarethevoices.github.io/D20/D20-Official%20Campaigns/AshesOfWar/D20.html"
         }
     ]
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
