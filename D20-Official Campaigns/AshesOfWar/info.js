@@ -16,7 +16,11 @@ const campaignInfo = {
     // Story section (can include HTML)
     story: `
         <h3> Campaign Overview</h3>
-        <p>The 7 Nations of Promethea are at war after a failed peace conference takes place and it's up to a band of recruits from Embres' military to help The Baron Of Flame find the Mythical "Prometheus' Treasure" before the other nations get their hands on it.</p>
+        <p>War has begun.
+
+The failed peace conference is now just a scorched memory, and the world stands on the brink. Tensions erupt, alliances fracture, and the flames of conflict consume everything in their path. Amidst the chaos, a final mission emerges—one that could turn the tide... or reduce everything to ash.
+
+Join us for Ashes of War, the third explosive installment in the Baron of Flame D20 campaign series. You're a fresh recruit, every character starts at square one. You’re not a hero. Not yet. But soon, you’ll be something else entirely.</p>
     `,
     
     // Key features
@@ -42,5 +46,6 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
