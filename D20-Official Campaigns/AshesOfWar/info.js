@@ -17,7 +17,9 @@ const campaignInfo = {
     story: `
         <h3> Campaign Overview</h3>
         <p>War has begun.
-        The failed peace conference is now just a scorched memory, and the world stands on the brink. Tensions erupt, alliances fracture, and the flames of conflict consume everything in their path. Amidst the chaos, a final mission emerges—one that could turn the tide... or reduce everything to ash.</p>,
+        The failed peace conference is now just a scorched memory, and the world stands on the brink. Tensions erupt, alliances fracture, and the flames of conflict consume everything in their path. Amidst the chaos, a final mission emerges—one that could turn the tide... or reduce everything to ash.</p>
+        
+        `,
     
     // Key features
     features: [
@@ -42,6 +44,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
