@@ -14,11 +14,12 @@ const campaignRegistry = [
         color: "#da120b",
         folder: "AshesOfWar",
         description: "The Third installment of The Baron Of Flame Story",
-        banner: "",
+        banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/banner.png",
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/info.js"
     }
     // Add more campaigns here
 ];
+
 
 
 
