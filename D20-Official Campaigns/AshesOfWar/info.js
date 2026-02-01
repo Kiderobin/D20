@@ -16,8 +16,7 @@ const campaignInfo = {
     // Story section (can include HTML)
     story: `
         <h3> Campaign Overview</h3>
-        <p>In a world scarred by ancient wars, heroes must rise to face the flames of a new conflict. 
-        Uncover secrets, forge alliances, and battle the Baron Of Flame in a saga of ashes and rebirth.</p>
+        <p>The 7 Nations of Promethea are at war after a failed peace conference takes place and it's up to a band of recruits from Embres' military to help The Baron Of Flame find the Mythical "Prometheus' Treasure" before the other nations get their hands on it.</p>
     `,
     
     // Key features
@@ -43,4 +42,5 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
