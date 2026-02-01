@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D20 Catalog - Browse Content</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/scarethevoices/D20/main/pics/d20.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         * {
@@ -501,7 +501,7 @@
                 <span></span>
                 <span></span>
             </button>
-            <img src="https://raw.githubusercontent.com/Kiderobin/D20/main/pics/d20.png" alt="D20 Logo">
+            <img src="https://raw.githubusercontent.com/scarethevoices/D20/main/pics/d20.png" alt="D20 Logo">
             <div class="header-text">
             </div>
             <div class="header-search">
@@ -543,7 +543,7 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 ScareTheVoices &mdash; <a href="https://github.com/Kiderobin/D20">D20 on GitHub</a>
+        &copy; 2026 ScareTheVoices &mdash; <a href="https://github.com/scarethevoices/D20">D20 on GitHub</a>
     </div>
 
     <script>
@@ -553,7 +553,7 @@
                     { name: 'Rules', file: 'Rules.html' },
                     { name: 'Catalog', file: 'Catalog.html' },
                 ];
-                const CAMPAIGNS_JS_URL = 'https://kiderobin.github.io/D20/D20%20-%20Website/campaigns.js';
+                const CAMPAIGNS_JS_URL = 'https://scarethevoices.github.io/D20/D20%20-%20Website/campaigns.js';
                 const INDEX_PAGE = 'index.html';
 
                 async function fetchPageText(url) {
@@ -602,8 +602,8 @@
                         fetchPageText('Rules.html'),
                         fetchPageText('Catalog.html'),
                         fetchCampaigns(),
-                        fetchInfoJs('https://raw.githubusercontent.com/Kiderobin/D20/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js'),
-                        fetchInfoJs('https://raw.githubusercontent.com/Kiderobin/D20/main/D20-Official%20Campaigns/AshesOfWar/info.js')
+                        fetchInfoJs('https://raw.githubusercontent.com/scarethevoices/D20/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js'),
+                        fetchInfoJs('https://raw.githubusercontent.com/scarethevoices/D20/main/D20-Official%20Campaigns/AshesOfWar/info.js')
                     ]);
                     return {
                         Welcome: { text: welcome, file: 'D20.html' },
@@ -611,8 +611,8 @@
                         Catalog: { text: catalog, file: 'Catalog.html' },
                         Campaigns: campaigns, // array
                         OfficialCampaigns: [
-                            { name: 'Starlight Symphony', text: starlight, infoUrl: 'https://kiderobin.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/info.js' },
-                            { name: 'Ashes Of War', text: ashes, infoUrl: 'https://kiderobin.github.io/D20/D20-Official%20Campaigns/AshesOfWar/info.js' }
+                            { name: 'Starlight Symphony', text: starlight, infoUrl: 'https://scarethevoices.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/info.js' },
+                            { name: 'Ashes Of War', text: ashes, infoUrl: 'https://scarethevoices.github.io/D20/D20-Official%20Campaigns/AshesOfWar/info.js' }
                         ]
                     };
                 }
@@ -724,7 +724,7 @@
 
             try {
                 // Fetch campaigns.js from GitHub Pages
-                const response = await fetch('https://kiderobin.github.io/D20/D20%20-%20Website/campaigns.js');
+                const response = await fetch('https://scarethevoices.github.io/D20/D20%20-%20Website/campaigns.js');
                 const jsContent = await response.text();
                 // Execute the JavaScript to get campaignRegistry
                 const func = new Function(jsContent + '; return campaignRegistry;');
@@ -748,7 +748,7 @@
                 `;
                 card.onclick = () => {
                     const infoParam = campaign.infoUrl ? `?info=${encodeURIComponent(campaign.infoUrl)}` : '';
-                    window.location.href = `https://kiderobin.github.io/D20/D20%20-%20Website/index.html${infoParam}`;
+                    window.location.href = `https://scarethevoices.github.io/D20/D20%20-%20Website/index.html${infoParam}`;
                 };
                 catalogGrid.appendChild(card);
                 });
@@ -786,3 +786,4 @@
     </script>
 </body>
 </html>
+
