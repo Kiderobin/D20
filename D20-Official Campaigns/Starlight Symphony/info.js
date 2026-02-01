@@ -45,11 +45,12 @@ const campaignInfo = {
     resources: [
         {
             name: "Play",
-            link: "https://kiderobin.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/D20.html"
+            link: "https://ScareTheVoices.github.io/D20/D20-Official%20Campaigns/Starlight%20Symphony/D20.html"
         },
     ]
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
