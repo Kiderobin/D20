@@ -11,7 +11,7 @@ const campaignInfo = {
     difficulty: "Medium",
     
     // Banner image URL
-    banner: "https://raw.githubusercontent.com/Kiderobin/D20/main/D20-Official%20Campaigns/AshesOfWar/banner.png",
+    banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/main/D20-Official%20Campaigns/AshesOfWar/banner.png",
     
     // Story section (can include HTML)
     story: `
@@ -38,12 +38,13 @@ const campaignInfo = {
     resources: [
         {
             name: "Play",
-            link: "https://kiderobin.github.io/D20/D20-Official%20Campaigns/AshesOfWar/D20.html"
+            link: "https://ScareTheVoices.github.io/D20/D20-Official%20Campaigns/AshesOfWar/D20.html"
         }
     ]
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
