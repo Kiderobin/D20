@@ -16,9 +16,18 @@ const campaignRegistry = [
         description: "The Third installment of The Baron Of Flame Story",
         banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/banner.png",
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/info.js"
-    }
+    },
+    {
+        name: "Anchors Away",
+        color: "#3d9fb7",
+        folder: "AnchorsAway",
+        description: "Set Sail To The 7 Seas As A Pirate Or Serve The World Government As A Marine.",
+        banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/AnchorsAway/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/AnchorsAway/info.js"
+    },
     // Add more campaigns here
 ];
+
 
 
 
