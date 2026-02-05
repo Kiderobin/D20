@@ -29,7 +29,7 @@ const campaignInfo = {
     chapters: [
         {
             title: "Act I: The Fading Notes",
-            description: "Heros are called to investigate mysterious silence spreading across the galaxy."
+            description: "Heroes are called to investigate mysterious silence spreading across the galaxy."
         }
     ],
     
@@ -43,6 +43,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
