@@ -29,15 +29,7 @@ const campaignInfo = {
     chapters: [
         {
             title: "Act I: The Fading Notes",
-            description: "Heroes are called to investigate mysterious silence spreading across the galaxy."
-        },
-        {
-            title: "Act II: Harmony's Quest",
-            description: "Journey through the Seven Musical Realms to recover lost melodies."
-        },
-        {
-            title: "Act III: The Final Crescendo",
-            description: "Face the Discord and restore the Starlight Symphony."
+            description: "Heros are called to investigate mysterious silence spreading across the galaxy."
         }
     ],
     
@@ -51,6 +43,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
