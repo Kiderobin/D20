@@ -25,8 +25,16 @@ const campaignRegistry = [
         banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/AnchorsAway/banner.png",
         infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/AnchorsAway/info.js"
     },
-    // Add more campaigns here
+    {
+        name: "Soul Remnant",
+        color: "#ff0000",
+        folder: "SoulRemnant",
+        description: "What Happens When You Open Your Heart In Your Final Moments...",
+        banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/SoulRemnant/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/SoulRemnant/info.js"
+    }
 ];
+
 
 
 
