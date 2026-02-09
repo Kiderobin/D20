@@ -32,7 +32,7 @@ const campaignInfo = {
     // Campaign structure
     chapters: [
       {
-            title: "Epilogue: Remnant",
+            title: "Prologue: Remnant",
             description: "Content Creator(s) comes to find out if ghosts are actually real, but end up finding out the truth is way worse."
       },
     ],
@@ -47,6 +47,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
