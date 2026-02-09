@@ -31,8 +31,10 @@ const campaignInfo = {
     
     // Campaign structure
     chapters: [
-        title: "Epilogue: Remnant",
-    description: "Content Creator(s) comes to find out if ghosts are actually real, but find out the truth is way worse."
+      {
+            title: "Epilogue: Remnant",
+            description: "Content Creator(s) comes to find out if ghosts are actually real, but end up finding out the truth is way worse."
+      },
     ],
     
     // Resources and downloads
@@ -45,6 +47,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
