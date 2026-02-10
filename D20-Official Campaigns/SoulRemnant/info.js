@@ -1,7 +1,7 @@
 const campaignInfo = {
     // Basic information
     title: "Soul Remnant",
-    subtitle: "What Remains After Death",
+    subtitle: "What Remains After The Death Of A Killer",
     description: "An Urban Supernatural Campaign Based.",
     
     // Campaign metadata
@@ -47,6 +47,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
