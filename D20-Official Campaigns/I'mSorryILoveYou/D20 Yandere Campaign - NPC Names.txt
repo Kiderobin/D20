@@ -1,0 +1,114 @@
+D20 Yandere Game - NPC Names
+
+PLAYERS:
+- Player 1 (Male/Female - Club - Player Character) - 
+- Player 2 (Male/Female - Club - Player Character) -  
+- Player 3 (Male/Female - Club - Player Character) -  
+- Player 4 (Male/Female - Club - Player Character) -  
+
+
+DEAD:
+
+
+HOMEROOM CLASS (Available anytime):
+
+- Kenji Nakamura (Occult Club - Serious believer in the supernatural, analytical thinker)
+- Sakura Yoshida (Occult Club - Air Head) - 
+- Emiko Nakamura (Photography Club - Outgoing extrovert, comfortable approaching anyone)
+- Hiroshi Tanaka (Cooking Club - Friendly, enthusiastic baker, oblivious to darker secrets) - Target
+- Riku Sato (Cooking Club - Sharp-tongued critic, dismissive and hostile toward Players in the same club)
+- Chiyo Sato (Photography Club - Shy by nature, questions people's motives)
+- Toma Ito (Photography Club - Calm and Collective, tries to see the best in everyone)
+
+COOKING CLUB MEMBERS:
+
+- Hiroshi Tanaka (Male - Friendly, enthusiastic baker, oblivious to darker secrets)
+- Riku Sato (Female - Sharp-tongued critic, dismissive and hostile toward the player who joins the Cooking club)
+- Haruto Ito (Charismatic leader, popular among club members)
+- Mizuki Kobayashi (Female - Laid-back, mediator between conflicts)
+
+PHOTOGRAPHY CLUB MEMBERS:
+
+- Takeshi Yamamoto (Female - Artistic perfectionist, critical of others' work)
+- Masaru Kimura (Male - Shy and reserved, expresses himself through photography)
+- Emiko Nakamura (Female - Outgoing extrovert, comfortable approaching anyone)
+- Chiyo Sato (Female - Shy by nature)
+- Toma Ito (Calm and Collective, tries to see the best in everyone)
+
+OCCULT CLUB MEMBERS:
+
+- Kenji Nakamura (Male - Serious believer in the supernatural, analytical thinker)
+- Yuki Kobayashi (Female - Skeptic with dark sense of humor, challenges occult claims)
+- Sakura Yoshida (Female - Air Head, Loves to be around people)
+- Aiko Suzuki (Female - Bookish researcher, digs into occult history and lore)
+
+TEACHERS/STAFF:
+- Sensei Higashikata (Laid back this is the HOMEROOM Teacher)
+- Sensei Matsuda (Stern but fair, maintains strict discipline)
+- Sensei Nakagawa (Caring mentor, takes interest in student welfare, Cooking Teacher)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTES:
+Start with a start screen with the buttons:
+- Start
+- How To Play
+- Options
+- Quit
+
+After Clicking Start:
+After player(s) click start they will be sent to a screen where they select how many players there are : 1-4 players
+
+Player(s) will then Choose their name, if they are a Male or Female, and the club they would like to be in. then after decisions have been made players can click Continue to move to the next screen
+
+The Players Then pick to Enable two Options of who can be picked to be the Yandere then click "Continue":
+- Players (Player Characters)
+- NPCs (Non-Player Characters)
+If Both are enabled then the randomizer can asign either a Player or Npc as Yandere
+
+The game Starts after players click Continue from the prior screen.
+
+There are (x) phases to the day. Before moving to the next phase all players must have a turn in this phase.:
+
+
+Morning - free time - Players can interact with whomever but apon interacting with NPCs they can only pick 1 Available action relating to the dialogue out of three Available to them. Investigations can only be done after a name is added to the DEAD list.
+
+Announcements - This is where players learn if anyone was killed the night prior. The first day Nobody should be announced as dead.
+
+Free Period - Players can choose to interact with characters or decide to Vote on who the Yandere is. Voting can not happen before someone is killed.
+ When a character is voted out they will be arrested:
+ If the arrested Character/Player is the Yandere, Innocents Win
+ If the arrested Character/Player isn't the Yandere, The game Continues
+ If the arrested Character/Player is the Yandere's Target (Love interest) then the Innocents lose.
+
+Club Activity - PLAYERS go to the club that they are in. They can not interact with player's or characters outside their club.
+  This is a good time to gather clues on who you think the Yandere is as well as a good way to get to know your clubmates.
+
+Going Home - This Phase Players must decide who they are walking home with
+ This will decide who they choose to save tonight and who they want to get closer too.
+ Characters who Players walk home with can't be picked again the folowing "Going Home" Phase by any players.
+ This phase is where the Yandere chooses to Kills a classmate or pass the night.
+ Yandere can not kill their target/love interest.
+
+
+Behind the scenes:
+ innocents can't be told who the Yandere is when selected.
+ the yandere is randomly selected at the start of the game and their target (love interest) is given to them.
+ the end point of the game is to try to win as the yandere taking your target to the fetival as your date, or as a player by voting out the yandere along side asking someone to the festival.
+ Their should be points in time where you can build a connection with other players so after (x) turns you may ask out who you are and if you have a Great-Amazing! connection then that character will go to the festival with you.
+ connection raiting should go from "Bad" to "Ok" to "Decent" to "Good" to "Great" to "Amazing!"
+ If nobody dies and the Yandere gets their target to go to the festival with them like everyone else, everyone wins and goes to the festival with the character they like.
+ Students in the HOMEROOM can only be the Yandere. *Make this An Option to enable before game starts* if disabled any student can be the Yandere.
+ Teachers can't be love interests or Yandere.
