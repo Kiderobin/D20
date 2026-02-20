@@ -122,6 +122,7 @@
 				<div style="display:flex;gap:8px">
 					<button class="btn" onclick="exportToClipboard()">Export (Copy JS)</button>
 					<button class="btn" onclick="downloadFile()">Download .js</button>
+					<button class="btn" onclick="importFile()">Import .js</button>
 					<button class="btn warn" onclick="clearAll()">Clear All</button>
 				</div>
 				<label style="margin-top:10px">Generated JS Preview</label>
@@ -132,43 +133,57 @@
 	</div>
 
 	<script>
-		// In-memory data
-		let dataModel = { races: [], classes: [] };
-		let selectedRaceIndex = null;
-		let selectedClassIndex = null;
-		let selectedSubclassIndex = null;
+	// In-memory data
+	let dataModel = { races: [], classes: [] };
+	let selectedRaceIndex = null;
+	let selectedClassIndex = null;
+	let selectedSubclassIndex = null;
 
-		// Utilities
-		function renderLists() {
-			// Races
-			const rl = document.getElementById('raceList');
-			rl.innerHTML = '';
-			dataModel.races.forEach((r, i) => {
-				const div = document.createElement('div');
-				div.className = 'entry';
-				div.innerHTML = `<div><div style="font-weight:bold">${r.name}</div><div class="meta">${r.passive ? r.passive.name || '' : ''} ${r.skills ? '| ' + r.skills.map(s=>s.name).join(', ') : ''}</div></div>
-					<div style="display:flex;gap:6px">
-						<button class="small btn" onclick="editRace(${i})">Edit</button>
-						<button class="small btn warn" onclick="removeRace(${i})">Remove</button>
-					</div>`;
-				rl.appendChild(div);
-			});
+	// IMPORT FUNCTIONALITY
+	function importFile() {
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.js,application/javascript,text/javascript';
+		input.onchange = function(e) {
+			const file = e.target.files[0];
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = function(evt) {
+				let text = evt.target.result;
+				try {
+					// Extract the object from window.D20_CAMPAIGN_DATA = ...;
+					const match = text.match(/window\.D20_CAMPAIGN_DATA\s*=\s*([\s\S]*);?$/m);
+					if (!match) throw new Error('Could not find D20_CAMPAIGN_DATA assignment.');
+					let objText = match[1];
+					// Try to parse as JS object (not strict JSON)
+					let imported;
+					try {
+						// Use Function constructor to safely evaluate the object literal
+						imported = (new Function('return ' + objText))();
+					} catch (err) {
+						throw new Error('Failed to parse campaign data: ' + err.message);
+					}
+					if (!imported || typeof imported !== 'object') throw new Error('Imported data is not an object.');
+					// Defensive: Only accept races/classes arrays
+					dataModel = {
+						races: Array.isArray(imported.races) ? imported.races : [],
+						classes: Array.isArray(imported.classes) ? imported.classes : []
+					};
+					selectedRaceIndex = null;
+					selectedClassIndex = null;
+					selectedSubclassIndex = null;
+					renderLists();
+					alert('Import successful!');
+				} catch (err) {
+					alert('Import failed: ' + err.message);
+				}
+			};
+			reader.readAsText(file);
+		};
+		input.click();
+	}
 
-			// Classes
-			const cl = document.getElementById('classList');
-			cl.innerHTML = '';
-			dataModel.classes.forEach((c, i) => {
-				const div = document.createElement('div');
-				div.className = 'entry';
-				div.innerHTML = `<div><div style="font-weight:bold">${c.name}</div><div class="meta">sub lvl:${c.subclasslevel||0} | ${c.passive?c.passive.name:''} | ${c.skills?c.skills.map(s=>s.name).join(', '):''}</div></div>
-					<div style="display:flex;gap:6px">
-						<button class="small btn" onclick="editClass(${i})">Edit</button>
-						<button class="small btn warn" onclick="removeClass(${i})">Remove</button>
-					</div>`;
-				cl.appendChild(div);
-			});
-			updatePreview();
-		}
+	// ...existing code...
 
 		// RACE functions
 		function addRace() {
@@ -430,5 +445,6 @@
 	</script>
 </body>
 </html>
+
 
 
