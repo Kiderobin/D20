@@ -38,11 +38,12 @@ const campaignRegistry = [
         color: "#f7a338",
         folder: "I'mSorryILoveYou",
         description: "What Happens When You Open Your Heart In Your Final Moments...",
-        banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/I'mSorryILoveYou/banner.png",
-        infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/I'mSorryILoveYou/info.js"
-    }
+        banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/ImSorryILoveYou/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/ImSorryILoveYou/info.js"
+    },
     
 ];
+
 
 
 
