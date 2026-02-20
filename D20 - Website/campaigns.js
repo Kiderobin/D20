@@ -37,12 +37,13 @@ const campaignRegistry = [
         name: "I'm Sorry I love You...",
         color: "#fe4442",
         folder: "I'mSorryILoveYou",
-        description: "What Happens When You Open Your Heart In Your Final Moments...",
+        description: "At least on of your classmates were up to something last night",
         banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/ImSorryILoveYou/banner.png",
         infoUrl: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/ImSorryILoveYou/info.js"
     },
     
 ];
+
 
 
 
