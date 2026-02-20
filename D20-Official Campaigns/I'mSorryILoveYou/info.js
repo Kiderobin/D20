@@ -1,21 +1,21 @@
 const campaignInfo = {
     // Basic information
-    title: "Soul Remnant",
-    subtitle: "What Remains After Death",
-    description: "An Urban Supernatural Campaign Based.",
+    title: "I'm Sorry I love You...",
+    subtitle: "A D20 Minigame Oneshot",
+    description: "",
     
     // Campaign metadata
     players: "1-4",
-    difficulty: "Medium",
+    difficulty: "Easy",
     
     // Banner image URL
-    banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/Yandere/banner.png",
+    banner: "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/D20-Official%20Campaigns/I'mSorryILoveYou/banner.png",
     
     // Story section (can include HTML)
     story: `
         <h3>Campaign Overview</h3>
-        <p>Whilst trying to uncover the existence of Ghosts for their Youtube Channel, the Player(s) stumble into a Remnant's Domain, and as the clock struck 11:59pm, they find themselves trapped in its hunting grounds... Their only options: fight to survive or accept fate and perish at the hands of what's left behind when a murderer passes and leaves behind their Remnant.</p>
-        <h3>D20 Yandere Campaign - NPCs & Game Structure</h3>
+        <p>
+        
         <h4>Players</h4>
         <ul>
             <li>Player 1 (Male/Female - Club - Player Character)</li>
@@ -62,8 +62,6 @@ const campaignInfo = {
         </ul>
         <h4>Game Structure Notes</h4>
         <ul>
-            <li>Start screen with: Start, How To Play, Options, Quit</li>
-            <li>Player setup: Choose number of players (1-4), name, gender, club</li>
             <li>Yandere selection: Players, NPCs, or both (randomized)</li>
             <li>Game phases: Morning, Announcements, Free Period, Club Activity, Going Home</li>
             <li>Connection ratings: Bad, Ok, Decent, Good, Great, Amazing!</li>
@@ -73,10 +71,8 @@ const campaignInfo = {
     
     // Key features
     features: [
-        "Anime Elements",
+        "Party Game",
         "Mystery and investigation",
-        "One Race & One Class",
-        "Urban Supernatural Setting",
         "Work in progress"
     ],
     
@@ -101,12 +97,13 @@ const campaignInfo = {
     resources: [
         {
             name: "Play",
-            link: "https://scarethevoices.github.io/D20/D20-Official%20Campaigns/SoulRemnant/D20.html"
+            link: "https://scarethevoices.github.io/D20/D20-Official%20Campaigns/I'mSorryILoveYou/D20.html"
         }
     ]
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
