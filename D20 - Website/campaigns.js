@@ -9,6 +9,14 @@ const campaignRegistry = [
         banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/BaronOfFlame/banner.png",
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/BaronOfFlame/info.js"
     },
+     {
+        name: "Remember The Peace",
+        color: "#da120b",
+        folder: "RememberThePeace",
+        description: "The Second installment of The Baron Of Flame Story",
+        banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/RememberThePeace/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/RememberThePeace/info.js"
+    },
     {
         name: "Ashes Of War",
         color: "#da120b",
@@ -51,6 +59,7 @@ const campaignRegistry = [
     },
     
 ];
+
 
 
 
