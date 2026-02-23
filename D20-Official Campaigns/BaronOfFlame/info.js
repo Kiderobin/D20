@@ -1,6 +1,6 @@
 const campaignInfo = {
     // Basic information
-    title: "Baron of Flame",
+    title: "The Baron of Flame",
     subtitle: "The Origins of the Embres' Hero.",
     description: "In the Town of Embres, there have been sightings of mysterious flames igniting in the noble district around the manor of the deceased Baron. Explore the town, uncover the source of the flames, and save Embres before it is consumed by fire. All in this one-shot campaign ",
     
@@ -41,6 +41,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
