@@ -2,7 +2,7 @@
 // Add new campaigns here when you create them
 const campaignRegistry = [
      {
-        name: "Baron Of Flame",
+        name: "The Baron Of Flame",
         color: "#fe9776",
         folder: "BaronOfFlame",
         description: "The Origins Of Embres' Hero.",
@@ -59,6 +59,7 @@ const campaignRegistry = [
     },
     
 ];
+
 
 
 
