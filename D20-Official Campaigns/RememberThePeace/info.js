@@ -29,7 +29,6 @@ const campaignInfo = {
     
     // Campaign structure
     chapters: [
-       "One-Shot: Remember The Peace"
     ],
     
     // Resources and downloads
@@ -42,6 +41,7 @@ const campaignInfo = {
 };
 
 window.campaignInfo = campaignInfo;
+
 
 
 
