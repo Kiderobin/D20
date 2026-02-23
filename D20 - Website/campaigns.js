@@ -1,13 +1,13 @@
 // Central registry of all campaigns
 // Add new campaigns here when you create them
 const campaignRegistry = [
-    {
-        name: "Starlight Symphony",
-        color: "#8a2be2",
-        folder: "Starlight Symphony",
-        description: "A Criminaly Epic Adventure Across The Universe",
-        banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/banner.png",
-        infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js"
+     {
+        name: "Baron Of Flame",
+        color: "#fe9776",
+        folder: "BaronOfFlame",
+        description: "The Origins Of Embres' Hero.",
+        banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/BaronOfFlame/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/BaronOfFlame/info.js"
     },
     {
         name: "Ashes Of War",
@@ -16,6 +16,14 @@ const campaignRegistry = [
         description: "The Third installment of The Baron Of Flame Story",
         banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/banner.png",
         infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/AshesOfWar/info.js"
+    },
+     {
+        name: "Starlight Symphony",
+        color: "#8a2be2",
+        folder: "Starlight Symphony",
+        description: "A Criminaly Epic Adventure Across The Universe",
+        banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/banner.png",
+        infoUrl: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/Starlight%20Symphony/info.js"
     },
     {
         name: "Anchors Away",
@@ -43,6 +51,7 @@ const campaignRegistry = [
     },
     
 ];
+
 
 
 
