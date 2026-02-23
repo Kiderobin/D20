@@ -11,7 +11,7 @@ const campaignRegistry = [
     },
      {
         name: "Remember The Peace",
-        color: "#da120b",
+        color: "#E0C089",
         folder: "RememberThePeace",
         description: "The Second installment of The Baron Of Flame Story",
         banner: "https://raw.githubusercontent.com/Kiderobin/D20/refs/heads/main/D20-Official%20Campaigns/RememberThePeace/banner.png",
@@ -59,6 +59,7 @@ const campaignRegistry = [
     },
     
 ];
+
 
 
 
