@@ -506,6 +506,13 @@
         </button>
     </div>
 
+    <!-- Stats Sheet Button (next to Notes) -->
+    <div id="statsSheetBtn" style="position: fixed; bottom: 18px; left: 198px; z-index: 1200;">
+        <button title="Stats Sheet" style="background: none; border: none; cursor: pointer; padding: 0;">
+            <img src="https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/pics/stats.png" alt="Stats" style="width: 48px; height: 48px;">
+        </button>
+    </div>
+
     <!-- Rulebook Modal -->
     <div id="rulebookModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -513,36 +520,41 @@
             <h2>Rules of the Game: D20</h2>
             <div class="rules-content">
                 <h3>Initial Setup</h3>
-                <p><strong>1. Player Order:</strong> Each player rolls a 20-sided die (d20). The highest roll goes first, and turn order follows from highest to lowest. In case of a tie, the players who tied roll again.</p>
-                <p><strong>2. Character Creation:</strong> Each player starts at level 5. Players choose a class as determined or approved by the GM. Each class comes with a base skill provided by the GM. Each character starts with one weapon that suits their class.</p>
+                <p><strong>1. Player Order:</strong> Each player rolls a d20. Highest roll goes first. Turn order then goes from highest to lowest. If players tie, tied players roll again.</p>
+                <p><strong>2. Character Creation:</strong> Each player starts at Level 5. Players choose a class approved by the GM. Each class has a base skill from the GM. Each character starts with one class-appropriate weapon.</p>
                 
                 <h3>Turn Structure</h3>
-                <p><strong>1. Turn Composition:</strong> Each turn (scene) allows a player one movement and one action. Actions may include attacking, using a skill, interacting with the environment, or other GM-approved actions.</p>
-                <p><strong>2. Scenes:</strong> A scene represents one complete turn rotation. When multiple players are in the same scene, they may interact with each other. Once all players have completed their actions in a scene, the turn order continues with the next scene.</p>
+                <p><strong>1. Turn Composition:</strong> Each turn (scene) gives a player one movement and one action. Actions can include attacking, using a skill, interacting with the environment, or another GM-approved action.</p>
+                <p><strong>2. Scenes:</strong> A scene is one full turn rotation. Players in the same scene may interact with each other. After all players finish their actions, turn order continues into the next scene.</p>
                 
                 <h3>Skill Checks and Combat</h3>
-                <p><strong>1. Skill Checks:</strong> Players must roll a d20 to determine the success of an action. The roll must be equal to or higher than a target number set by the GM to succeed.</p>
-                <p><strong>2. Combat:</strong> Initial combat order follows the turn order established at the game’s start. Enemies also roll a d20 to determine their place in the combat order. Combat proceeds in rounds, following the established order.</p>
-                <p><strong>3. Health:</strong> A character’s maximum health is calculated by multiplying their current level by 20. For example, a Level 5 character has 100 max health.</p>
-                <p><strong>4. Damage:</strong> When attacking, a character’s total damage is calculated by multiplying their current level by the result of a d20 roll. For example, a Level 5 character who rolls a 12 would deal 60 damage (5 × 12).</p>
-                <p><strong>5. Defense:</strong> When attacked, a character or enemy may roll a d20 to defend. Their total defense is equal to their current level multiplied by the defense roll. If the defense value is greater than or equal to the attack value, the attack is completely blocked. Otherwise, subtract the defense from the attack to determine final damage.</p>
+                <p><strong>1. Skill Checks:</strong> Roll a d20 to resolve actions. To succeed, the result must be equal to or higher than the GM-set target number.</p>
+                <p><strong>2. Combat:</strong> Combat order starts from the established turn order. Enemies also roll a d20 to join the order. Combat then proceeds in rounds using that order.</p>
+                <p><strong>3. Health:</strong> Maximum Health = Current Level x 20. Example: Level 5 = 100 max health.</p>
+                <p><strong>4. Damage:</strong> Attack Damage = Current Level x d20 roll. Example: Level 5 and roll 12 = 60 damage.</p>
+                <p><strong>5. Defense:</strong> On defense, roll a d20. Defense Value = Current Level x defense roll. If Defense Value is greater than or equal to Attack Value, the attack is fully blocked. Otherwise, subtract Defense Value from Attack Value to get final damage.</p>
                 <p><em>Final Damage = (Attacker Level × d20) − (Defender Level × d20)</em></p>
                 
                 <h3>Leveling Up</h3>
-                <p><strong>1. Experience and Levels:</strong> Characters can gain up to three levels in a single scene. Leveling up can result from battles, events, or finding artifacts.</p>
+                <p><strong>1. Experience and Levels:</strong> Characters can gain up to three levels in a single scene. Level gains can come from battles, events, or artifacts.</p>
+
+                <h3>Stats Sheet</h3>
+                <p><strong>1. Skill Points:</strong> Characters gain 2 bonus stat points at each prime-number level after Level 5.</p>
+                <p><strong>2. Point Use:</strong> Bonus points can be assigned to Might, Vigor, Agility, Mind, and Instinct. Each point adds +1 to that stat's modifier.</p>
+                <p><strong>3. Submission:</strong> Stats must be submitted with Save and Lock. Locked points remain fixed until new prime-level points are earned.</p>
                 
                 <h3>Inventory Management</h3>
-                <p><strong>1. Items:</strong> Each character can hold up to three items. Certain items may allow characters to hold more than three items. Items must be class-appropriate and approved by the GM.</p>
+                <p><strong>1. Items:</strong> Each character can hold up to three items. Some items may increase this limit. Starting Items must be class-appropriate and GM-approved.</p>
                 
                 <h3>Game Rules and Endgame</h3>
-                <p><strong>1. Class and Weapon Restrictions:</strong> Characters' weapons must suit their class unless otherwise specified by the GM. Class changes are not allowed unless the GM decides otherwise.</p>
-                <p><strong>2. Artifact Rules:</strong> Once an artifact's description and effects are determined by the GM, they cannot change.</p>
-                <p><strong>3. Starting Location:</strong> All characters begin in the story in the same location unless specified by the GM.</p>
-                <p><strong>4. Endgame:</strong> The game concludes once the designated end goal is achieved. The end goal is defined by the GM and can involve completing a quest, defeating a final boss, or reaching a specific destination.</p>
+                <p><strong>1. Class and Weapon Restrictions:</strong> Weapons must suit the character's class unless the GM says otherwise. Class changes are not allowed unless the GM approves them.</p>
+                <p><strong>2. Artifact Rules:</strong> Once the GM sets an artifact's description and effects, they do not change.</p>
+                <p><strong>3. Starting Location:</strong> All characters start in the same story location unless the GM specifies otherwise.</p>
+                <p><strong>4. Endgame:</strong> The game ends when the GM-defined end goal is completed, such as finishing a quest, defeating a final boss, or reaching a destination.</p>
                 
                 <h3>Miscellaneous</h3>
-                <p><strong>1. Game Master's Role:</strong> The GM is responsible for setting scenes, defining challenges, and arbitrating rules. The GM has the final say on all game-related decisions, including interpreting rules and resolving disputes.</p>
-                <p><strong>2. Interaction and Role-Playing:</strong> Players are encouraged to role-play their characters and interact with the game world creatively. Communication and cooperation between players can enhance the storytelling experience.</p>
+                <p><strong>1. Game Master's Role:</strong> The GM sets scenes, defines challenges, and arbitrates rules. The GM has final say on all game decisions, including rule interpretation and disputes.</p>
+                <p><strong>2. Interaction and Role-Playing:</strong> Players are encouraged to role-play and interact with the world creatively. Communication and cooperation between players improve the story experience.</p>
             </div>
         </div>
     </div>
@@ -726,6 +738,87 @@
     </div>
 </div>
 
+    <!-- Stats Sheet Modal -->
+    <div id="statsSheetModal" style="
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    left: 150px;
+    z-index: 3000;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
+">
+    <div id="statsSheetHeader" style="
+        cursor: move;
+        background: #533663;
+        color: #fff;
+        padding: 8px 12px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 1.1em;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    ">
+        <span>Stats Sheet</span>
+        <span class="close-button" onclick="closeStatsSheet()" style="cursor:pointer; font-size: 1.3em;">×</span>
+    </div>
+    <div class="modal-content" style="
+        width: 460px;
+        max-width: 90vw;
+        padding: 18px 20px 20px 20px;
+        box-sizing: border-box;
+        text-align: left;
+        background: #2c2c2c;
+        border: 2px solid #676767;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-top: none;
+    ">
+        <div style="font-size: 14px; color: #cfcfcf; margin-bottom: 10px;">
+            Available Points:
+            <span id="availableSkillPoints" style="color: #f0f0f0; font-weight: bold;">0</span>
+        </div>
+        <div id="statsSheetRows" style="display:grid; grid-template-columns: 130px 100px 1fr; gap: 8px; align-items: center; font-size: 14px;">
+            <div style="color:#aaa;">Stat</div><div style="color:#aaa;">Bonus Pts</div><div style="color:#aaa;">Modifier</div>
+
+            <div id="labelMight" class="stats-label" data-stat="Might" style="cursor: pointer; color: #f0f0f0;">Might</div>
+            <input id="allocMight" type="number" min="0" value="0" style="width:78px; padding:6px;">
+            <span id="modMight" style="font-weight:bold; color:#9fdf9f;"><span id="modValueMight">+0</span> <span id="rawRollMight" style="margin-left:6px; font-size:12px; color:#bbbbbb;">(roll: -)</span></span>
+
+            <div id="labelVigor" class="stats-label" data-stat="Vigor" style="cursor: pointer; color: #f0f0f0;">Vigor</div>
+            <input id="allocVigor" type="number" min="0" value="0" style="width:78px; padding:6px;">
+            <span id="modVigor" style="font-weight:bold; color:#9fdf9f;"><span id="modValueVigor">+0</span> <span id="rawRollVigor" style="margin-left:6px; font-size:12px; color:#bbbbbb;">(roll: -)</span></span>
+
+            <div id="labelAgility" class="stats-label" data-stat="Agility" style="cursor: pointer; color: #f0f0f0;">Agility</div>
+            <input id="allocAgility" type="number" min="0" value="0" style="width:78px; padding:6px;">
+            <span id="modAgility" style="font-weight:bold; color:#9fdf9f;"><span id="modValueAgility">+0</span> <span id="rawRollAgility" style="margin-left:6px; font-size:12px; color:#bbbbbb;">(roll: -)</span></span>
+
+            <div id="labelMind" class="stats-label" data-stat="Mind" style="cursor: pointer; color: #f0f0f0;">Mind</div>
+            <input id="allocMind" type="number" min="0" value="0" style="width:78px; padding:6px;">
+            <span id="modMind" style="font-weight:bold; color:#9fdf9f;"><span id="modValueMind">+0</span> <span id="rawRollMind" style="margin-left:6px; font-size:12px; color:#bbbbbb;">(roll: -)</span></span>
+
+            <div id="labelInstinct" class="stats-label" data-stat="Instinct" style="cursor: pointer; color: #f0f0f0;">Instinct</div>
+            <input id="allocInstinct" type="number" min="0" value="0" style="width:78px; padding:6px;">
+            <span id="modInstinct" style="font-weight:bold; color:#9fdf9f;"><span id="modValueInstinct">+0</span> <span id="rawRollInstinct" style="margin-left:6px; font-size:12px; color:#bbbbbb;">(roll: -)</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; margin-top: 12px;">
+            <button id="statsSheetSaveLockBtn" type="button" style="background:#3c763d; color:#fff; border:none; border-radius:5px; padding:8px 12px; cursor:pointer;">Save & Lock</button>
+            <span id="statsLockState" style="font-size: 13px; color: #bdbdbd;">Unlocked</span>
+        </div>
+        <div id="statsLockHelp" style="margin-top: 6px; font-size: 12px; color: #9f9f9f;">
+            Submit your points to lock them. New points unlock when you reach a new prime-level bonus.
+        </div>
+        <div style="margin-top: 14px; font-size: 13px; color: #bbbbbb; line-height: 1.35;">
+            Might: strength, striking power, push/pull/lift.
+            Vigor: toughness, damage endurance, poison/alcohol resistance.
+            Agility: sleight of hand, stealth, fixing, ranged weapons, acrobatics.
+            Mind: knowledge, understanding, speaking and reasoning.
+            Instinct: senses, reflexes, subconscious reactions.
+        </div>
+    </div>
+</div>
+
     <script>
         let cardBgData = ""; // Add this at the top of your <script> section
 
@@ -773,10 +866,91 @@
         }
 
         function rollDie() {
-            const result = Math.floor(Math.random() * 20) + 1;
-            document.getElementById('dieResult').textContent = result;
+            const rawResult = Math.floor(Math.random() * 20) + 1;
+            const dieResultEl = document.getElementById('dieResult');
+            const hasSelectedStat = Boolean(selectedRollStat);
+            const selectedMod = hasSelectedStat ? getSelectedStatModifier() : 0;
+            const totalResult = rawResult + selectedMod;
+
+            dieResultEl.textContent = totalResult;
+
+            if (lastRawRoll !== null && rawResult === lastRawRoll) {
+                dieResultEl.style.color = '#ff0000';
+            } else if (hasSelectedStat) {
+                dieResultEl.style.color = '#05bf07';
+            } else {
+                dieResultEl.style.color = '#533663';
+            }
+
+            if (hasSelectedStat) {
+                updateStatRawRoll(selectedRollStat, rawResult);
+                clearSelectedRollStat();
+            }
+
+            lastRawRoll = rawResult;
             const diceSound = document.getElementById('diceSound');
             diceSound.play();
+        }
+
+        function extractBackgroundImageUrl(backgroundImageValue) {
+            if (typeof backgroundImageValue !== 'string') return '';
+            const trimmed = backgroundImageValue.trim();
+            const match = trimmed.match(/^url\((.*)\)$/i);
+            if (!match) return '';
+
+            let innerValue = match[1].trim();
+            if (
+                (innerValue.startsWith('"') && innerValue.endsWith('"')) ||
+                (innerValue.startsWith("'") && innerValue.endsWith("'"))
+            ) {
+                innerValue = innerValue.slice(1, -1).trim();
+            }
+            return innerValue;
+        }
+
+        function normalizeActionIconValue(rawValue) {
+            if (typeof rawValue !== 'string') return '';
+            const trimmed = rawValue.trim();
+            if (!trimmed) return '';
+
+            if (/^url\(/i.test(trimmed)) {
+                return extractBackgroundImageUrl(trimmed);
+            }
+
+            if (
+                (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+                (trimmed.startsWith("'") && trimmed.endsWith("'"))
+            ) {
+                return trimmed.slice(1, -1).trim();
+            }
+
+            return trimmed;
+        }
+
+        function isActionIconImageValue(value) {
+            if (typeof value !== 'string') return false;
+            const normalized = value.trim();
+            if (!normalized) return false;
+
+            return (
+                /^https?:\/\//i.test(normalized) ||
+                /^data:image\//i.test(normalized) ||
+                /^blob:/i.test(normalized) ||
+                /^file:/i.test(normalized)
+            );
+        }
+
+        function applyActionIconToSlot(slot, iconValue, fallbackLabel) {
+            const normalizedIcon = normalizeActionIconValue(iconValue || '');
+            if (isActionIconImageValue(normalizedIcon)) {
+                slot.style.backgroundImage = `url('${normalizedIcon}')`;
+                slot.style.backgroundSize = 'cover';
+                slot.style.backgroundPosition = 'center';
+                slot.textContent = '';
+            } else {
+                slot.style.backgroundImage = '';
+                slot.textContent = normalizedIcon || fallbackLabel;
+            }
         }
 
         function exportCode() {
@@ -813,11 +987,10 @@
             let actionIcons = [];
             actionSlots.forEach((slot, i) => {
                 // Extract the background image URL if set
-                let bg = slot.style.backgroundImage;
-                if (bg && bg.startsWith('url(')) {
-                    // Extract URL from: url("...")
-                    let url = bg.slice(5, -2);
-                    actionIcons.push(url);
+                const bg = slot.style.backgroundImage;
+                const bgUrl = extractBackgroundImageUrl(bg);
+                if (bgUrl) {
+                    actionIcons.push(bgUrl);
                 } else {
                     // If no icon, store the slot label (e.g., "1", "2", "3", "H", "S")
                     actionIcons.push(slot.textContent.trim());
@@ -839,6 +1012,7 @@ Affinity Option: ${affinityChecked ? "Enabled" : "Disabled"}
 Affinity Icon: ${affinityIcon}
 Action Icons: ${JSON.stringify(actionIcons)}
 Notepad: ${document.getElementById('notepadArea') ? encodeURIComponent(document.getElementById('notepadArea').value) : ""}
+Stats Sheet: ${encodeURIComponent(JSON.stringify(getStatsSheetState()))}
 `.trim();
 
     if (portraitData) {
@@ -848,23 +1022,65 @@ Notepad: ${document.getElementById('notepadArea') ? encodeURIComponent(document.
         exportData += `\nCard Background: ${cardBgData}`;
     }
 
-    navigator.clipboard.writeText(exportData).then(() => {
-        alert(`${characterName || "Character"} has been saved to the clipboard`);
-    }).catch(err => {
-        console.error('Failed to save character: ', err);
-    });
+    const safeName = (characterName || 'Character')
+        .replace(/[\\/:*?"<>|]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim() || 'Character';
+    const fileName = `${safeName}.txt`;
+    const blob = new Blob([exportData], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function pasteCode() {
-    navigator.clipboard.readText().then((text) => {
-        const lines = text.split('\n').map(line => line.trim());
+    function parseCharacterCode(text) {
+        const lines = text.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
         const data = {};
         lines.forEach(line => {
-            const [key, ...rest] = line.split(':');
-            if (key && rest.length > 0) {
-                data[key.trim()] = rest.join(':').trim();
-            }
+            const match = line.match(/^([^:]+):\s*(.*)$/);
+            if (!match) return;
+            data[match[1].trim()] = match[2].trim();
         });
+        return data;
+    }
+
+    function resetStatsSheetToDefaults() {
+        committedAllocations = {
+            might: 0,
+            vigor: 0,
+            agility: 0,
+            mind: 0,
+            instinct: 0
+        };
+        pointsAtLastSubmission = 0;
+        setStatsSheetState({
+            allocations: committedAllocations,
+            committedAllocations,
+            pointsAtLastSubmission,
+            locked: false
+        });
+        updateStatsSheetUI();
+    }
+
+    function applyCharacterCodeText(text) {
+        if (!text || !text.trim()) {
+            alert('No character code found to paste.');
+            return;
+        }
+
+        const data = parseCharacterCode(text);
+        if (!Object.keys(data).length) {
+            alert('Character code format not recognized.');
+            return;
+        }
+
+        const importedSubclass = (typeof data['Subclass'] !== 'undefined') ? data['Subclass'] : '';
 
         if (typeof data['Character Name'] !== 'undefined') {
             document.getElementById('characterName').value = data['Character Name'];
@@ -880,59 +1096,52 @@ function pasteCode() {
             document.getElementById('class').value = data['Class'];
             updateClass();
         }
-        if (typeof data['Subclass'] !== 'undefined') { // <-- Add this block
-            setTimeout(() => {
-                const subclassSelect = document.getElementById('subclass');
-                if (subclassSelect) {
-                    subclassSelect.value = data['Subclass'];
-                    updateSubclass();
+        // Build subclass dropdown immediately based on imported class+level.
+        updateSubclassDropdown();
+
+        // Apply subclass on first pass and refresh subclass passives/skills.
+        if (importedSubclass) {
+            const subclassSelect = document.getElementById('subclass');
+            if (subclassSelect) {
+                const availableOptions = Array.from(subclassSelect.options).map(o => o.value);
+                if (availableOptions.includes(importedSubclass)) {
+                    subclassSelect.value = importedSubclass;
                 }
-            }, 0);
+                updateSubclass();
+            }
         }
         if (typeof data['Currency'] !== 'undefined') {
             document.getElementById('currency').value = data['Currency'];
         }
 
-        // Handle Extra Options: Affinity
         if (typeof data['Affinity Option'] !== 'undefined') {
-            const affinityChecked = data['Affinity Option'] === "Enabled";
+            const affinityChecked = data['Affinity Option'] === 'Enabled';
             document.getElementById('affinityCheckbox').checked = affinityChecked;
             affinityBtn.style.display = affinityChecked ? 'block' : 'none';
         }
         if (typeof data['Affinity Icon'] !== 'undefined') {
-            selectedAffinity = data['Affinity Icon'] || "none.png";
+            selectedAffinity = data['Affinity Icon'] || 'none.png';
             updateAffinityBtn();
         }
 
-        // Handle Action Slot icons
         if (typeof data['Action Icons'] !== 'undefined') {
             try {
                 const actionIcons = JSON.parse(data['Action Icons']);
                 const actionSlots = document.querySelectorAll('.actions .action-slot');
                 actionSlots.forEach((slot, i) => {
                     const icon = actionIcons[i];
-                    if (icon && icon.startsWith('http')) {
-                        slot.style.backgroundImage = `url('${icon}')`;
-                        slot.style.backgroundSize = 'cover';
-                        slot.style.backgroundPosition = 'center';
-                        slot.textContent = '';
-                    } else {
-                        slot.style.backgroundImage = '';
-                        slot.textContent = icon || (i === 3 ? 'H' : (i + 1).toString());
-                    }
+                    applyActionIconToSlot(slot, icon, i === 3 ? 'H' : (i + 1).toString());
                 });
             } catch (e) {
                 // Ignore if parsing fails
             }
         }
 
-        // Handle Portrait Image
         if (typeof data['Portrait Image'] !== 'undefined' && data['Portrait Image'].startsWith('data:image')) {
             document.getElementById('portraitImage').src = data['Portrait Image'];
             document.getElementById('modalPortraitImage').src = data['Portrait Image'];
         }
 
-        // Handle Card Background
         if (typeof data['Card Background'] !== 'undefined' && data['Card Background'].startsWith('data:image')) {
             document.querySelector('.character-card').style.backgroundImage = `url('${data['Card Background']}')`;
             document.querySelector('.character-card').style.backgroundSize = 'cover';
@@ -940,7 +1149,6 @@ function pasteCode() {
             cardBgData = data['Card Background'];
         }
 
-        // Handle Notepad
         if (typeof data['Notepad'] !== 'undefined') {
             const note = decodeURIComponent(data['Notepad']);
             if (document.getElementById('notepadArea')) {
@@ -949,21 +1157,58 @@ function pasteCode() {
             }
         }
 
-        // Handle Health loading
+        if (typeof data['Stats Sheet'] !== 'undefined') {
+            const statsSheetRaw = decodeURIComponent(data['Stats Sheet']);
+            try {
+                const parsedStatsSheet = JSON.parse(statsSheetRaw);
+                setStatsSheetState(parsedStatsSheet);
+                localStorage.setItem('d20statssheet', JSON.stringify(parsedStatsSheet));
+            } catch {
+                resetStatsSheetToDefaults();
+            }
+            updateStatsSheetUI();
+        } else {
+            // Older character codes had no stats sheet.
+            resetStatsSheetToDefaults();
+        }
+
         if (typeof data['Health'] !== 'undefined') {
             currentHP = parseInt(data['Health']) || 0;
-            updateHealthBar();  // Update the health bar display
+            updateHealthBar(false);
         }
 
         updateName();
         updateStats();
-        saveCharacterToLocal(); // <-- Add this line to save after pasting!
-    }).catch(err => {
-        console.error('Read clipboard: ', err);
-        // Use the pasted character name if available
-        const pastedName = data['Character Name'] || "Character";
-        alert(`${pastedName} has been added`);
-    });
+        saveCharacterToLocal();
+    }
+
+    let fileInput = document.getElementById('characterCodeFileInput');
+    if (!fileInput) {
+        fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.txt,text/plain';
+        fileInput.id = 'characterCodeFileInput';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = typeof e.target.result === 'string' ? e.target.result : '';
+                applyCharacterCodeText(text);
+            };
+            reader.onerror = function(err) {
+                console.error('Failed to read character file:', err);
+                alert('Could not read the selected character file.');
+            };
+            reader.readAsText(file);
+            fileInput.value = '';
+        });
+    }
+
+    fileInput.click();
 }
 
 function updateRace() {
@@ -1771,6 +2016,309 @@ document.getElementById('notepadModal').onselectstart = function() { return fals
     });
 })();
 
+// Stats Sheet button logic
+document.getElementById('statsSheetBtn').onclick = function() {
+    const modal = document.getElementById('statsSheetModal');
+    modal.style.display = 'block';
+    modal.style.left = '150px';
+    modal.style.top = '';
+    modal.style.bottom = '90px';
+    modal.style.right = '';
+    modal.style.position = 'fixed';
+    loadStatsSheetFromLocalStorage();
+    updateStatsSheetUI();
+};
+
+function closeStatsSheet() {
+    document.getElementById('statsSheetModal').style.display = 'none';
+    localStorage.setItem('d20statssheet', JSON.stringify(getStatsSheetState()));
+}
+
+// Prevent accidental text selection while dragging
+document.getElementById('statsSheetModal').onselectstart = function() { return false; };
+
+(function() {
+    const statsModal = document.getElementById('statsSheetModal');
+    const header = document.getElementById('statsSheetHeader');
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    header.onmousedown = function(e) {
+        isDragging = true;
+        const rect = statsModal.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        document.body.style.userSelect = "none";
+    };
+
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            statsModal.style.left = (e.clientX - offsetX) + "px";
+            statsModal.style.top = (e.clientY - offsetY) + "px";
+            statsModal.style.right = "auto";
+            statsModal.style.bottom = "auto";
+            statsModal.style.position = "fixed";
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+        document.body.style.userSelect = "";
+    });
+})();
+
+const STATS_KEYS = ['Might', 'Vigor', 'Agility', 'Mind', 'Instinct'];
+let statsSheetLocked = false;
+let selectedRollStat = null;
+let lastRawRoll = null;
+let committedAllocations = {
+    might: 0,
+    vigor: 0,
+    agility: 0,
+    mind: 0,
+    instinct: 0
+};
+let pointsAtLastSubmission = 0;
+
+function formatModifier(value) {
+    return value >= 0 ? `+${value}` : `${value}`;
+}
+
+function isPrimeNumber(n) {
+    if (n < 2) return false;
+    for (let i = 2; i * i <= n; i++) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+function getTotalPrimeSkillPoints(level) {
+    let primesSoFar = 0;
+    for (let i = 6; i <= level; i++) {
+        if (isPrimeNumber(i)) primesSoFar += 1;
+    }
+    return primesSoFar * 2;
+}
+
+function clearSelectedRollStat() {
+    selectedRollStat = null;
+    document.querySelectorAll('.stats-label').forEach(label => {
+        label.style.color = '#f0f0f0';
+    });
+}
+
+function selectRollStat(statName) {
+    selectedRollStat = statName;
+    document.querySelectorAll('.stats-label').forEach(label => {
+        const isSelected = label.dataset.stat === statName;
+        label.style.color = isSelected ? '#9FDF9F' : '#f0f0f0';
+    });
+}
+
+function getSelectedStatModifier() {
+    if (!selectedRollStat) return 0;
+    const modEl = document.getElementById(`modValue${selectedRollStat}`);
+    if (!modEl) return 0;
+    return parseInt(modEl.textContent, 10) || 0;
+}
+
+function updateStatRawRoll(statName, rawRoll) {
+    const rawRollEl = document.getElementById(`rawRoll${statName}`);
+    if (!rawRollEl) return;
+    rawRollEl.textContent = `(roll: ${rawRoll})`;
+}
+
+function safeGetLocalJSON(key, fallbackValue) {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallbackValue;
+    try {
+        return JSON.parse(raw);
+    } catch (err) {
+        console.warn(`Invalid localStorage JSON for ${key}, resetting.`, err);
+        localStorage.removeItem(key);
+        return fallbackValue;
+    }
+}
+
+function getStatsSheetState() {
+    const state = {
+        allocations: {},
+        locked: statsSheetLocked,
+        committedAllocations: { ...committedAllocations },
+        pointsAtLastSubmission
+    };
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+        state.allocations[key.toLowerCase()] = Math.max(0, parseInt(allocEl?.value, 10) || 0);
+    });
+    return state;
+}
+
+function setStatsSheetState(state) {
+    if (!state || typeof state !== 'object') return;
+    const incomingAllocations = {};
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+        const allocValue = state.allocations?.[key.toLowerCase()];
+        const normalized = Math.max(0, parseInt(allocValue, 10) || 0);
+        incomingAllocations[key.toLowerCase()] = normalized;
+        if (allocEl && typeof allocValue !== 'undefined') allocEl.value = normalized;
+    });
+    if (state.committedAllocations && typeof state.committedAllocations === 'object') {
+        const nextCommitted = { ...committedAllocations };
+        STATS_KEYS.forEach(key => {
+            nextCommitted[key.toLowerCase()] = Math.max(0, parseInt(state.committedAllocations[key.toLowerCase()], 10) || 0);
+        });
+        committedAllocations = nextCommitted;
+    } else if (state.locked) {
+        // Backward compatibility: if old saved state is locked but has no committed floor,
+        // use current allocations as the committed minimums.
+        committedAllocations = { ...incomingAllocations };
+    }
+    if (typeof state.pointsAtLastSubmission !== 'undefined') {
+        pointsAtLastSubmission = Math.max(0, parseInt(state.pointsAtLastSubmission, 10) || 0);
+    } else if (state.locked) {
+        pointsAtLastSubmission = getTotalPrimeSkillPoints(Math.max(1, parseInt(document.getElementById('level')?.value, 10) || 1));
+    }
+    if (typeof state.locked !== 'undefined') {
+        setStatsSheetLocked(Boolean(state.locked));
+    }
+}
+
+function setStatsSheetLocked(locked) {
+    statsSheetLocked = Boolean(locked);
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+        if (allocEl) allocEl.disabled = statsSheetLocked;
+    });
+
+    const saveLockBtn = document.getElementById('statsSheetSaveLockBtn');
+    const lockState = document.getElementById('statsLockState');
+    const lockHelp = document.getElementById('statsLockHelp');
+    if (saveLockBtn) {
+        saveLockBtn.textContent = statsSheetLocked ? 'Submitted' : 'Save & Lock';
+        saveLockBtn.style.background = statsSheetLocked ? '#676767' : '#3c763d';
+        saveLockBtn.disabled = statsSheetLocked;
+        saveLockBtn.style.cursor = statsSheetLocked ? 'not-allowed' : 'pointer';
+        saveLockBtn.style.opacity = statsSheetLocked ? '0.8' : '1';
+    }
+    if (lockState) {
+        lockState.textContent = statsSheetLocked ? 'Submitted and Locked' : 'Unlocked';
+        lockState.style.color = statsSheetLocked ? '#ffd27a' : '#bdbdbd';
+    }
+    if (lockHelp) {
+        lockHelp.textContent = statsSheetLocked
+            ? 'Locked until you gain new prime-level bonus points from leveling.'
+            : 'You can assign available points and submit them once with Save & Lock.';
+    }
+}
+
+function loadStatsSheetFromLocalStorage() {
+    const parsed = safeGetLocalJSON('d20statssheet', null);
+    if (!parsed) {
+        setStatsSheetLocked(false);
+        return;
+    }
+    setStatsSheetState(parsed);
+}
+
+function updateStatsSheetUI(changedAllocKey) {
+    const level = Math.max(1, parseInt(document.getElementById('level')?.value, 10) || 1);
+    const totalPoints = getTotalPrimeSkillPoints(level);
+
+    // Auto-unlock only when a new prime-point threshold has been reached after submission.
+    if (statsSheetLocked && totalPoints > pointsAtLastSubmission) {
+        setStatsSheetLocked(false);
+    }
+
+    let spentPoints = 0;
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+        const current = Math.max(0, parseInt(allocEl?.value, 10) || 0);
+        spentPoints += current;
+    });
+
+    // Clamp the edited allocation so total spent cannot exceed available points.
+    if (changedAllocKey && spentPoints > totalPoints) {
+        const changedEl = document.getElementById(`alloc${changedAllocKey}`);
+        const changedCurrent = Math.max(0, parseInt(changedEl?.value, 10) || 0);
+        const overflow = spentPoints - totalPoints;
+        const corrected = Math.max(0, changedCurrent - overflow);
+        if (changedEl) changedEl.value = corrected;
+    }
+
+    spentPoints = 0;
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+        const finalModEl = document.getElementById(`modValue${key}`);
+
+        const floor = Math.max(0, parseInt(committedAllocations[key.toLowerCase()], 10) || 0);
+        const alloc = Math.max(floor, parseInt(allocEl?.value, 10) || 0);
+        const finalMod = alloc;
+
+        if (allocEl) allocEl.value = alloc;
+        if (finalModEl) finalModEl.textContent = formatModifier(finalMod);
+
+        spentPoints += alloc;
+    });
+
+    const committedTotal = STATS_KEYS.reduce((sum, key) => {
+        return sum + Math.max(0, parseInt(committedAllocations[key.toLowerCase()], 10) || 0);
+    }, 0);
+    const spendableSinceSubmission = Math.max(0, totalPoints - committedTotal);
+    const usedSinceSubmission = Math.max(0, spentPoints - committedTotal);
+    const remainingPoints = Math.max(0, spendableSinceSubmission - usedSinceSubmission);
+
+    const availableEl = document.getElementById('availableSkillPoints');
+    const spentEl = document.getElementById('spentSkillPoints');
+    if (availableEl) availableEl.textContent = remainingPoints;
+    if (spentEl) {
+        spentEl.textContent = spentPoints;
+        spentEl.style.color = spentPoints > totalPoints ? '#ff8080' : '#f0f0f0';
+    }
+
+    localStorage.setItem('d20statssheet', JSON.stringify(getStatsSheetState()));
+}
+
+function bindStatsSheetInputs() {
+    STATS_KEYS.forEach(key => {
+        const allocEl = document.getElementById(`alloc${key}`);
+
+        if (allocEl) {
+            allocEl.addEventListener('input', function() {
+                updateStatsSheetUI(key);
+                saveCharacterToLocal();
+            });
+        }
+    });
+
+    const saveLockBtn = document.getElementById('statsSheetSaveLockBtn');
+    if (saveLockBtn) {
+        saveLockBtn.addEventListener('click', function() {
+            // Submission is one-way at the current point threshold.
+            const snapshot = getStatsSheetState();
+            committedAllocations = { ...snapshot.allocations };
+            pointsAtLastSubmission = getTotalPrimeSkillPoints(Math.max(1, parseInt(document.getElementById('level')?.value, 10) || 1));
+            saveCharacterToLocal();
+            setStatsSheetLocked(true);
+            localStorage.setItem('d20statssheet', JSON.stringify(getStatsSheetState()));
+        });
+    }
+
+    document.querySelectorAll('.stats-label').forEach(label => {
+        label.addEventListener('click', function() {
+            const statName = this.dataset.stat;
+            if (!statName) return;
+            if (selectedRollStat === statName) {
+                clearSelectedRollStat();
+            } else {
+                selectRollStat(statName);
+            }
+        });
+    });
+
+    setStatsSheetLocked(statsSheetLocked);
+}
+
 function populateDropdowns() {
     // Populate Race
     const raceSelect = document.getElementById('race');
@@ -1791,16 +2339,22 @@ function populateDropdowns() {
 populateDropdowns();
 
 window.addEventListener('DOMContentLoaded', function() {
-    populateDropdowns();
-    loadCharacterFromLocal();
-    updateSubclassDropdown();
-    setTimeout(function() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 500);
-        }
-    }, 2000);
+    try {
+        populateDropdowns();
+        bindStatsSheetInputs();
+        updateStatsSheetUI();
+        updateSubclassDropdown();
+    } catch (err) {
+        console.error('Initialization error:', err);
+    } finally {
+        setTimeout(function() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 500);
+            }
+        }, 2000);
+    }
 });
 
 function saveCharacterToLocal() {
@@ -1815,20 +2369,22 @@ function saveCharacterToLocal() {
         portraitImage: document.getElementById('portraitImage').src || '',
         cardBgData: window.cardBgData || '',
         actionIcons: Array.from(document.querySelectorAll('.actions .action-slot')).map(slot => {
-            let bg = slot.style.backgroundImage;
-            if (bg && bg.startsWith('url(')) {
-                return bg.slice(5, -2);
+            const bg = slot.style.backgroundImage;
+            const bgUrl = extractBackgroundImageUrl(bg);
+            if (bgUrl) {
+                return bgUrl;
             } else {
                 return slot.textContent.trim();
             }
         }),
+        statsSheet: getStatsSheetState(),
         health: currentHP,  // Add this line
     };
     localStorage.setItem('d20character', JSON.stringify(data));
 }
 
 function loadCharacterFromLocal() {
-    const data = JSON.parse(localStorage.getItem('d20character') || '{}');
+    const data = safeGetLocalJSON('d20character', {});
     if (!data || !Object.keys(data).length) return;
     
     if (typeof data.characterName !== 'undefined') document.getElementById('characterName').value = data.characterName;
@@ -1864,21 +2420,25 @@ function loadCharacterFromLocal() {
         const actionSlots = document.querySelectorAll('.actions .action-slot');
         actionSlots.forEach((slot, i) => {
             const icon = data.actionIcons[i];
-            if (icon && icon.startsWith('http')) {
-                slot.style.backgroundImage = `url('${icon}')`;
-                slot.style.backgroundSize = 'cover';
-                slot.style.backgroundPosition = 'center';
-                slot.textContent = '';
-            } else {
-                slot.style.backgroundImage = '';
-                slot.textContent = icon || (i === 3 ? 'H' : (i + 1).toString());
-            }
+            applyActionIconToSlot(slot, icon, i === 3 ? 'H' : (i + 1).toString());
         });
     }
+    if (typeof data.statsSheet !== 'undefined') {
+        if (typeof data.statsSheet === 'object' && data.statsSheet !== null) {
+            setStatsSheetState(data.statsSheet);
+            localStorage.setItem('d20statssheet', JSON.stringify(data.statsSheet));
+        } else if (typeof data.statsSheet === 'string') {
+            // Backward compatibility with old text-only stats storage.
+            localStorage.setItem('d20statssheet', data.statsSheet);
+        }
+    } else {
+        loadStatsSheetFromLocalStorage();
+    }
+    updateStatsSheetUI();
     // Load health
     if (typeof data.health !== 'undefined') {
         currentHP = data.health;
-        updateHealthBar();
+        updateHealthBar(false);
     }
 
     updateName();
@@ -1893,30 +2453,53 @@ function updateSubclassDropdown() {
     const cls = window.D20_CAMPAIGN_DATA.classes.find(c => c.name === className);
     const subclassContainer = document.getElementById('subclassContainer');
     const subclassSelect = document.getElementById('subclass');
-    subclassSelect.innerHTML = '<option value="">Select Subclass</option>';
+    const selectedBefore = subclassSelect.value;
 
-    if (
+    const isEligible = Boolean(
         cls &&
         Array.isArray(cls.subclasses) &&
         cls.subclasses.length > 0 &&
         typeof cls.subclasslevel === 'number' &&
         level >= cls.subclasslevel
-    ) {
-        cls.subclasses.forEach(sub => {
-            const opt = document.createElement('option');
-            opt.value = sub.name;
-            opt.textContent = sub.name;
-            subclassSelect.appendChild(opt);
-        });
-        subclassContainer.style.display = '';
-    } else {
+    );
+
+    if (!isEligible) {
+        subclassSelect.innerHTML = '<option value="">Select Subclass</option>';
         subclassContainer.style.display = 'none';
+        return;
     }
+
+    const options = cls.subclasses.map(sub => sub.name);
+
+    // If dropdown already matches the needed class options, keep it and preserve current choice.
+    const existingOptions = Array.from(subclassSelect.options).map(o => o.value).filter(Boolean);
+    const sameOptions = existingOptions.length === options.length && existingOptions.every((name, idx) => name === options[idx]);
+    if (sameOptions) {
+        subclassContainer.style.display = '';
+        if (selectedBefore && options.includes(selectedBefore)) {
+            subclassSelect.value = selectedBefore;
+        }
+        return;
+    }
+
+    subclassSelect.innerHTML = '<option value="">Select Subclass</option>';
+    options.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        subclassSelect.appendChild(opt);
+    });
+
+    if (selectedBefore && options.includes(selectedBefore)) {
+        subclassSelect.value = selectedBefore;
+    }
+    subclassContainer.style.display = '';
 }
 
 // Call this whenever class or level changes
 document.getElementById('class').addEventListener('change', updateSubclassDropdown);
 document.getElementById('level').addEventListener('input', updateSubclassDropdown);
+document.getElementById('level').addEventListener('input', updateStatsSheetUI);
 
 // Optional: handle subclass selection (for future use)
 function updateSubclass() {
@@ -1962,15 +2545,19 @@ let currentHP = 100;
 let maxHP = 100;
 let lastMaxHP = 100; // Add this to track the previous maxHP
 
-function updateHealthBar() {
+function updateHealthBar(maintainPercent = true) {
     const level = Math.max(1, parseInt(document.getElementById("level").value) || 1);
     const newMaxHP = level * 20;
 
     // Calculate and maintain the percentage when maxHP changes
     if (newMaxHP !== maxHP) {
-        const currentPercent = currentHP / maxHP;
-        maxHP = newMaxHP;
-        currentHP = Math.round(currentPercent * maxHP);
+        if (maintainPercent) {
+            const currentPercent = maxHP > 0 ? (currentHP / maxHP) : 1;
+            maxHP = newMaxHP;
+            currentHP = Math.round(currentPercent * maxHP);
+        } else {
+            maxHP = newMaxHP;
+        }
     }
 
     // Clamp HP
