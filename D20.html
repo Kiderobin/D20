@@ -8,7 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Permanent Marker', cursive;
+            --app-font: 'Permanent Marker', cursive;
+            --readable-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--app-font);
             background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
             color: #f0f0f0;
             margin: 0;
@@ -16,6 +18,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+        }
+        body.readable-font {
+            --app-font: var(--readable-font);
         }
         .character-card {
             background: linear-gradient(to bottom, #4b4b4b, #2f2f2f);
@@ -626,6 +631,10 @@
                 <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
                     <input type="checkbox" id="exportMatCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;" checked>
                     <span style="margin-left: 4px;">Export Mat</span>
+                </label>
+                <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
+                    <input type="checkbox" id="readableFontCheckbox" style="transform: scale(1.15); accent-color: #533663; margin: 0;">
+                    <span style="margin-left: 4px;">Readable Font</span>
                 </label>
                 <!-- Add this inside the settings panel, after the Export Mat setting checkbox -->
                 <label style="display: flex; align-items: center; font-size: 18px; gap: 0; cursor: pointer; margin-top: 10px;">
@@ -2511,11 +2520,29 @@ function updateSubclass() {
 
 const volumeSlider = document.getElementById('volumeSlider');
 const volumeValue = document.getElementById('volumeValue');
+const readableFontCheckbox = document.getElementById('readableFontCheckbox');
 const allAudio = [
     document.getElementById('diceSound'),
     document.getElementById('rulebookSound')
     // Add more audio elements here if needed
 ];
+
+function setReadableFontMode(enabled) {
+    document.body.classList.toggle('readable-font', Boolean(enabled));
+}
+
+if (readableFontCheckbox) {
+    readableFontCheckbox.addEventListener('change', function() {
+        const enabled = this.checked;
+        setReadableFontMode(enabled);
+        localStorage.setItem('d20_readable_font', enabled ? '1' : '0');
+    });
+
+    const savedReadableFont = localStorage.getItem('d20_readable_font');
+    const shouldEnableReadable = savedReadableFont === '1';
+    readableFontCheckbox.checked = shouldEnableReadable;
+    setReadableFontMode(shouldEnableReadable);
+}
 
 function setAllAudioVolume(vol) {
     allAudio.forEach(audio => {
