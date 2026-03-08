@@ -459,6 +459,7 @@
   </div>
 
   <script>
+    const D20_SOURCE_URL = "https://raw.githubusercontent.com/ScareTheVoices/D20/main/D20.html";
     const DEFAULT_PORTRAIT = "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/pics/placeholder.jpg";
     const STAGE_PADDING = 14;
     const query = new URLSearchParams(window.location.search);
@@ -734,7 +735,10 @@
       if (d20LoadPromise) return d20LoadPromise;
 
       d20LoadPromise = (async () => {
-        const response = await fetch("D20hardscript.html", { cache: "no-store" });
+        const response = await fetch(D20_SOURCE_URL, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Could not fetch D20 source: ${response.status}`);
+        }
         const html = await response.text();
         const parser = new DOMParser();
         const parsed = parser.parseFromString(html, "text/html");
@@ -942,7 +946,7 @@
         }
       } catch (err) {
         stopLiveSync();
-        d20Mount.innerHTML = `<div style="padding:18px;color:#ffb3b3;font-family:'Segoe UI',sans-serif;">Could not load D20 card in this mode. Run from a local server, then click the mini card again.</div>`;
+        d20Mount.innerHTML = `<div style="padding:18px;color:#ffb3b3;font-family:'Segoe UI',sans-serif;">Could not load D20 card from <code>${D20_SOURCE_URL}</code>.</div>`;
         console.error("Failed to open D20 editor", err);
       }
     }
