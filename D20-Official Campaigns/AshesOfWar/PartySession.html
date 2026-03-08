@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D20 Party Session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-a: #1e1e1e;
+      --bg-b: #3a3a3a;
+      --panel: rgba(44, 44, 44, 0.9);
+      --line: #676767;
+      --ink: #f0f0f0;
+      --muted: #b5b5b5;
+      --accent: #533663;
+      --gold: #a7a7a7;
+      --danger: #ff6f6f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      background:
+        radial-gradient(circle at 22% 12%, rgba(83, 54, 99, 0.24), transparent 34%),
+        radial-gradient(circle at 82% 86%, rgba(90, 90, 90, 0.2), transparent 38%),
+        linear-gradient(180deg, var(--bg-b), var(--bg-a));
+    }
+
+    .session-root {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 14px;
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      animation: fadeUp 320ms ease both;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      display: grid;
+      place-items: center;
+      background: #2c2c2c;
+      flex: 0 0 auto;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .title {
+      font-family: "Cinzel", serif;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      line-height: 1.2;
+    }
+
+    .title-sub {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .ctrl {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    select,
+    button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #2c2c2c;
+      color: var(--ink);
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    button {
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    button:hover {
+      background: #533663;
+      border-color: #7b5a90;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .stage {
+      position: absolute;
+      inset: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(83, 54, 99, 0.25), transparent 42%),
+        repeating-linear-gradient(
+          to right,
+          rgba(103, 103, 103, 0.25) 0,
+          rgba(103, 103, 103, 0.25) 1px,
+          transparent 1px,
+          transparent 64px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(103, 103, 103, 0.25) 0,
+          rgba(103, 103, 103, 0.25) 1px,
+          transparent 1px,
+          transparent 64px
+        ),
+        linear-gradient(180deg, #3a3a3a, #1e1e1e);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.35);
+      animation: fadeUp 420ms ease both;
+    }
+
+    .table-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #bdbdbd;
+      font-family: "Cinzel", serif;
+      letter-spacing: 1px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .player-card {
+      position: absolute;
+      border: 1px solid #676767;
+      border-radius: 10px;
+      background: rgba(30, 30, 30, 0.92);
+      padding: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+      cursor: pointer;
+      transform-origin: center center;
+      transition: transform 200ms ease, border-color 200ms ease;
+      animation: fadeUp 400ms ease both;
+      overflow: hidden;
+    }
+
+    .player-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .player-card.owner {
+      border-color: var(--gold);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .mini-d20-shell {
+      width: 960px;
+      height: 540px;
+      transform-origin: top left;
+      transform: scale(var(--mini-scale, 0.24));
+      pointer-events: none;
+    }
+
+    .mini-d20-card {
+      width: 960px;
+      height: 540px;
+      border-radius: 15px;
+      padding: 20px;
+      background: linear-gradient(to bottom, #4b4b4b, #2f2f2f);
+      box-shadow: inset 0 0 0 1px rgba(103, 103, 103, 0.6);
+      font-family: 'Permanent Marker', cursive;
+      color: #f0f0f0;
+      position: relative;
+    }
+
+    .mini-character-name {
+      text-align: center;
+      font-size: 32px;
+      padding: 15px;
+      border: 2px solid #676767;
+      border-radius: 10px;
+      background: #2c2c2c;
+      margin-bottom: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-details {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      width: 100%;
+      gap: 14px;
+    }
+
+    .mini-stats-box {
+      background: #2c2c2c;
+      border: 2px solid #676767;
+      border-radius: 10px;
+      padding: 15px;
+      width: 50%;
+      height: 430px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .mini-statline {
+      border: 1px solid #676767;
+      border-radius: 6px;
+      background: #1e1e1e;
+      color: #f0f0f0;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-portrait {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+      position: relative;
+    }
+
+    .mini-portrait img {
+      width: 240px;
+      height: 450px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 5px solid #000;
+      margin-bottom: 20px;
+    }
+
+    .mini-actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      position: absolute;
+      left: -60px;
+      height: 100%;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .mini-action-slot {
+      width: 75px;
+      height: 75px;
+      border: 2px solid #676767;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1e1e1e;
+      font-size: 18px;
+      color: #f0f0f0;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .mini-action-slot.last {
+      position: absolute;
+      bottom: 0;
+      left: 25px;
+    }
+
+    .mini-health {
+      width: 240px;
+      height: 20px;
+      background: #2c2c2c;
+      border: 2px solid #676767;
+      border-radius: 10px;
+      position: absolute;
+      bottom: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      overflow: hidden;
+    }
+
+    .mini-health-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to right, #33ff66, #66ff99);
+    }
+
+    .mini-health-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #f0f0f0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .editor-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #1e1e1e;
+      display: none;
+      flex-direction: column;
+    }
+
+    .editor-overlay.open {
+      display: flex;
+      animation: fadeIn 220ms ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #676767;
+      background: rgba(44, 44, 44, 0.95);
+    }
+
+    .editor-title {
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .editor-shell {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .editor-body {
+      position: relative;
+      min-height: 0;
+    }
+
+    .editor-tools .warn {
+      font-size: 12px;
+      color: var(--danger);
+    }
+
+    #d20Mount {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: linear-gradient(to bottom, #3a3a3a, #1e1e1e);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .editor-head {
+        padding: 8px 10px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .player-card {
+        transform: scale(0.96);
+        transform-origin: top left;
+      }
+
+      .editor-title {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="session-root">
+    <section class="stage" id="stage">
+      <div class="table-label">
+        <div style="font-size: 2rem;">Session Table</div>
+        <div style="font-size: 0.95rem;">Players wrap around the edges. Your card is bottom-center.</div>
+      </div>
+    </section>
+
+    <div class="editor-overlay" id="editorOverlay" aria-hidden="true">
+      <div class="editor-shell">
+        <div class="editor-head">
+          <div class="editor-title" id="editorTitle">Character Card</div>
+          <button id="closeEditorBtn" type="button">Close</button>
+        </div>
+        <div class="editor-body">
+          <div id="d20Mount"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_PORTRAIT = "https://raw.githubusercontent.com/ScareTheVoices/D20/refs/heads/main/pics/placeholder.jpg";
+    const STAGE_PADDING = 14;
+    const query = new URLSearchParams(window.location.search);
+    const requestedRole = (query.get("role") || "Player").toUpperCase();
+    const isHostMode = requestedRole === "GM";
+    const requestedUser = query.get("user") || "p1";
+    const activeSessionId = query.get("session") || "default";
+
+    function createDefaultPlayers() {
+      return [
+        {
+          id: "p1",
+          ownerId: "p1",
+          name: "Character Name",
+          roleTag: "Player",
+          level: 1,
+          race: "Race",
+          className: "Class",
+          hp: 100,
+          maxHp: 100,
+          currency: 0,
+          portrait: DEFAULT_PORTRAIT,
+          cardBackground: "",
+          actions: ["1", "2", "3", "H"]
+        },
+        {
+          id: "p2",
+          ownerId: "p2",
+          name: "Character Name",
+          roleTag: "Player",
+          level: 1,
+          race: "Race",
+          className: "Class",
+          hp: 100,
+          maxHp: 100,
+          currency: 0,
+          portrait: DEFAULT_PORTRAIT,
+          cardBackground: "",
+          actions: ["1", "2", "3", "H"]
+        },
+        {
+          id: "p3",
+          ownerId: "p3",
+          name: "Character Name",
+          roleTag: "Player",
+          level: 1,
+          race: "Race",
+          className: "Class",
+          hp: 100,
+          maxHp: 100,
+          currency: 0,
+          portrait: DEFAULT_PORTRAIT,
+          cardBackground: "",
+          actions: ["1", "2", "3", "H"]
+        },
+        {
+          id: "p4",
+          ownerId: "p4",
+          name: "Character Name",
+          roleTag: "Player",
+          level: 1,
+          race: "Race",
+          className: "Class",
+          hp: 100,
+          maxHp: 100,
+          currency: 0,
+          portrait: DEFAULT_PORTRAIT,
+          cardBackground: "",
+          actions: ["1", "2", "3", "H"]
+        },
+        {
+          id: "gm",
+          ownerId: "gm",
+          name: "Host GM",
+          roleTag: "GM",
+          level: 99,
+          race: "-",
+          className: "Narrator",
+          hp: 999,
+          maxHp: 999,
+          currency: 0,
+          portrait: DEFAULT_PORTRAIT,
+          cardBackground: "",
+          actions: ["GM", "GM", "GM", "GM"]
+        }
+      ];
+    }
+
+    const sessionState = {
+      role: isHostMode ? "GM" : "Player",
+      currentUserId: requestedUser,
+      sessionId: activeSessionId,
+      openPlayerId: null,
+      players: createDefaultPlayers()
+    };
+
+    const stage = document.getElementById("stage");
+    const editorOverlay = document.getElementById("editorOverlay");
+    const closeEditorBtn = document.getElementById("closeEditorBtn");
+    const editorTitle = document.getElementById("editorTitle");
+    const d20Mount = document.getElementById("d20Mount");
+
+    let d20Loaded = false;
+    let d20LoadPromise = null;
+    let liveSyncTimer = null;
+    const mountedHeadNodes = [];
+
+    function isImageValue(value) {
+      if (typeof value !== "string") return false;
+      const trimmed = value.trim();
+      return /^https?:\/\//i.test(trimmed) || /^data:image\//i.test(trimmed);
+    }
+
+    function normalizeAction(iconOrLabel) {
+      if (typeof iconOrLabel !== "string") return "";
+      const t = iconOrLabel.trim();
+      if (!t) return "";
+      const m = t.match(/^url\((.*)\)$/i);
+      if (m) {
+        const inner = m[1].trim().replace(/^['"]|['"]$/g, "");
+        return inner;
+      }
+      return t;
+    }
+
+    function loadUserLocalCard() {
+      // Intentionally empty. Party session always starts from blank default cards.
+    }
+
+    function saveSessionPlayers() {
+      // Intentionally disabled: session page is ephemeral and should not persist to localStorage.
+    }
+
+    function loadSessionPlayers() {
+      // Intentionally disabled: always start from blank defaults.
+    }
+
+    function canEdit(player) {
+      return sessionState.role === "GM" || player.ownerId === sessionState.currentUserId;
+    }
+
+    function makeCard(player, isOwner) {
+      const el = document.createElement("div");
+      el.className = `player-card${isOwner ? " owner" : ""}`;
+      el.dataset.playerId = player.id;
+
+      if (player.cardBackground && isImageValue(player.cardBackground)) {
+        el.style.backgroundImage = `linear-gradient(rgba(44,44,44,0.82), rgba(44,44,44,0.82)), url('${player.cardBackground.replace(/'/g, "\\'")}')`;
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+      } else {
+        el.style.backgroundImage = "";
+      }
+
+      const hpPct = player.maxHp > 0 ? Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100)) : 0;
+      const miniScale = isOwner ? 0.28 : 0.24;
+      const cardWidth = Math.round(960 * miniScale);
+      const cardHeight = Math.round(540 * miniScale);
+      el.style.width = `${cardWidth}px`;
+      el.style.height = `${cardHeight}px`;
+
+      const actionsHtml = (player.actions || ["1", "2", "3", "H"]).slice(0, 4).map((val, idx) => {
+        const normalized = normalizeAction(String(val || ""));
+        if (isImageValue(normalized)) {
+          return `<div class=\"mini-action-slot ${idx === 3 ? "last" : ""}\" style=\"background-image:url('${normalized.replace(/'/g, "\\'")}')\" title=\"Slot ${idx + 1}\"></div>`;
+        }
+        return `<div class=\"mini-action-slot ${idx === 3 ? "last" : ""}\" title=\"Slot ${idx + 1}\">${normalized || (idx === 3 ? "H" : String(idx + 1))}</div>`;
+      }).join("");
+
+      const cardBackgroundStyle = player.cardBackground && isImageValue(player.cardBackground)
+        ? `background-image:linear-gradient(rgba(75,75,75,0.72), rgba(47,47,47,0.72)), url('${player.cardBackground.replace(/'/g, "\\'")}'); background-size:cover; background-position:center;`
+        : "";
+
+      el.innerHTML = `
+        <div class="mini-d20-shell" style="--mini-scale:${miniScale};">
+          <div class="mini-d20-card" style="${cardBackgroundStyle}">
+            <div class="mini-character-name" title="${player.name}">${player.name}</div>
+            <div class="mini-details">
+              <div class="mini-portrait">
+                <img src="${player.portrait || DEFAULT_PORTRAIT}" alt="${player.name} portrait" />
+                <div class="mini-actions">${actionsHtml}</div>
+                <div class="mini-health">
+                  <div class="mini-health-bar" style="width:${hpPct}%;"></div>
+                  <div class="mini-health-text">${player.hp}/${player.maxHp}</div>
+                </div>
+              </div>
+              <div class="mini-stats-box">
+                <div class="mini-statline">Character Name: ${player.name}</div>
+                <div class="mini-statline">Lvl. ${player.level}</div>
+                <div class="mini-statline">Race: ${player.race}</div>
+                <div class="mini-statline">Class: ${player.className}</div>
+                <div class="mini-statline">$${player.currency ?? 0}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      el.addEventListener("click", () => openEditorForPlayer(player.id));
+      return el;
+    }
+
+    function layoutCards() {
+      stage.querySelectorAll(".player-card").forEach((c) => c.remove());
+
+      const visiblePlayers = sessionState.players.filter((p) => p.id !== "gm");
+      const owner = visiblePlayers.find((p) => p.ownerId === sessionState.currentUserId) || visiblePlayers[0];
+      const gmView = sessionState.role === "GM";
+      const others = gmView
+        ? visiblePlayers
+        : visiblePlayers.filter((p) => p.id !== owner.id);
+
+      if (!gmView && owner) {
+        const ownerCard = makeCard(owner, true);
+        stage.appendChild(ownerCard);
+
+        const stageRectOwner = stage.getBoundingClientRect();
+        const ownerW = parseInt(ownerCard.style.width || "269", 10);
+        const ownerH = parseInt(ownerCard.style.height || "151", 10);
+        ownerCard.style.left = `${(stageRectOwner.width - ownerW) / 2}px`;
+        ownerCard.style.top = `${stageRectOwner.height - ownerH - 10}px`;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+
+      const sideAnchors = [];
+      const topCount = Math.ceil(others.length / 2);
+      const sideCount = others.length - topCount;
+
+      for (let i = 0; i < topCount; i += 1) {
+        const gap = stageRect.width / (topCount + 1);
+        sideAnchors.push({ x: gap * (i + 1) - 140, y: 10 });
+      }
+
+      for (let j = 0; j < sideCount; j += 1) {
+        const half = Math.ceil(sideCount / 2);
+        if (j < half) {
+          const gap = (stageRect.height - 200) / (half + 1);
+          sideAnchors.push({ x: 10, y: 90 + gap * (j + 1) });
+        } else {
+          const idx = j - half;
+          const rightHalf = sideCount - half;
+          const gap = (stageRect.height - 200) / (rightHalf + 1);
+          sideAnchors.push({ x: stageRect.width - 290, y: 90 + gap * (idx + 1) });
+        }
+      }
+
+      others.forEach((player, idx) => {
+        const card = makeCard(player, false);
+        const cardW = parseInt(card.style.width || "230", 10);
+        const cardH = parseInt(card.style.height || "130", 10);
+        const anchor = sideAnchors[idx] || { x: 14, y: 14 + idx * 152 };
+        card.style.left = `${Math.max(STAGE_PADDING, Math.min(stageRect.width - cardW - STAGE_PADDING, anchor.x))}px`;
+        card.style.top = `${Math.max(STAGE_PADDING, Math.min(stageRect.height - cardH - STAGE_PADDING, anchor.y))}px`;
+        stage.appendChild(card);
+      });
+    }
+
+    function extractBackgroundImageUrl(backgroundImageValue) {
+      if (typeof backgroundImageValue !== "string") return "";
+      const trimmed = backgroundImageValue.trim();
+      const match = trimmed.match(/^url\((.*)\)$/i);
+      if (!match) return "";
+      let innerValue = match[1].trim();
+      if ((innerValue.startsWith("\"") && innerValue.endsWith("\"")) || (innerValue.startsWith("'") && innerValue.endsWith("'"))) {
+        innerValue = innerValue.slice(1, -1).trim();
+      }
+      return innerValue;
+    }
+
+    async function loadD20MarkupAndScripts() {
+      if (d20Loaded) return;
+      if (d20LoadPromise) return d20LoadPromise;
+
+      d20LoadPromise = (async () => {
+        const response = await fetch("D20hardscript.html", { cache: "no-store" });
+        const html = await response.text();
+        const parser = new DOMParser();
+        const parsed = parser.parseFromString(html, "text/html");
+
+        const headNodes = parsed.head.querySelectorAll("link[rel='icon'], link[rel='preconnect'], link[href], style");
+        headNodes.forEach((node) => {
+          const clone = node.cloneNode(true);
+          clone.setAttribute("data-d20-mounted", "true");
+          document.head.appendChild(clone);
+          mountedHeadNodes.push(clone);
+        });
+
+        d20Mount.innerHTML = parsed.body.innerHTML;
+
+        const scriptNodes = [
+          ...parsed.head.querySelectorAll("script"),
+          ...parsed.body.querySelectorAll("script")
+        ];
+
+        for (const scriptNode of scriptNodes) {
+          const scriptEl = document.createElement("script");
+          scriptEl.setAttribute("data-d20-mounted", "true");
+          if (scriptNode.src) {
+            scriptEl.src = scriptNode.getAttribute("src");
+            await new Promise((resolve, reject) => {
+              scriptEl.onload = resolve;
+              scriptEl.onerror = reject;
+              document.body.appendChild(scriptEl);
+            });
+          } else {
+            scriptEl.textContent = scriptNode.textContent;
+            document.body.appendChild(scriptEl);
+          }
+        }
+
+        d20Loaded = true;
+      })();
+
+      return d20LoadPromise;
+    }
+
+    function getOpenD20Snapshot() {
+      const name = document.getElementById("characterName")?.value || "Character Name";
+      const level = Math.max(1, Number(document.getElementById("level")?.value || 1));
+      const race = document.getElementById("race")?.value || "Race";
+      const className = document.getElementById("class")?.value || "Class";
+      const currency = Math.max(0, Number(document.getElementById("currency")?.value || 0));
+      const portrait = document.getElementById("portraitImage")?.src || DEFAULT_PORTRAIT;
+
+      const healthText = document.getElementById("healthText")?.textContent || "100/100";
+      const hpParts = healthText.split("/").map((v) => Number(v.trim()) || 0);
+      const hp = hpParts[0] || 0;
+      const maxHp = hpParts[1] || Math.max(20, level * 20);
+
+      const cardEl = document.querySelector(".character-card");
+      const cardBackground = cardEl ? extractBackgroundImageUrl(cardEl.style.backgroundImage || "") : "";
+
+      const actions = Array.from(document.querySelectorAll(".actions .action-slot")).slice(0, 4).map((slot, idx) => {
+        const bgUrl = extractBackgroundImageUrl(slot.style.backgroundImage || "");
+        if (bgUrl) return bgUrl;
+        const txt = (slot.textContent || "").trim();
+        return txt || (idx === 3 ? "H" : String(idx + 1));
+      });
+
+      return { name, level, race, className, currency, portrait, hp, maxHp, cardBackground, actions };
+    }
+
+    function hydrateD20FromPlayer(player) {
+      const setVal = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+      };
+
+      const ensureSelect = (id, value) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const options = Array.from(el.options || []);
+        if (!options.some((opt) => opt.value === value)) {
+          const opt = document.createElement("option");
+          opt.value = value;
+          opt.textContent = value;
+          el.appendChild(opt);
+        }
+        el.value = value;
+      };
+
+      setVal("characterName", player.name || "Character Name");
+      setVal("level", player.level || 1);
+      setVal("currency", player.currency || 0);
+      ensureSelect("race", player.race || "Race");
+      ensureSelect("class", player.className || "Class");
+
+      const portrait = document.getElementById("portraitImage");
+      const modalPortrait = document.getElementById("modalPortraitImage");
+      if (portrait) portrait.src = player.portrait || DEFAULT_PORTRAIT;
+      if (modalPortrait) modalPortrait.src = player.portrait || DEFAULT_PORTRAIT;
+
+      const cardEl = document.querySelector(".character-card");
+      if (cardEl) {
+        if (player.cardBackground && isImageValue(player.cardBackground)) {
+          cardEl.style.backgroundImage = `url('${player.cardBackground.replace(/'/g, "\\'")}')`;
+          cardEl.style.backgroundSize = "cover";
+          cardEl.style.backgroundPosition = "center";
+        } else {
+          cardEl.style.backgroundImage = "";
+        }
+      }
+
+      const actionSlots = document.querySelectorAll(".actions .action-slot");
+      actionSlots.forEach((slot, idx) => {
+        const val = normalizeAction((player.actions || [])[idx] || "");
+        if (isImageValue(val)) {
+          slot.style.backgroundImage = `url('${val.replace(/'/g, "\\'")}')`;
+          slot.style.backgroundSize = "cover";
+          slot.style.backgroundPosition = "center";
+          slot.textContent = "";
+        } else {
+          slot.style.backgroundImage = "";
+          slot.textContent = val || (idx === 3 ? "H" : String(idx + 1));
+        }
+      });
+
+      if (typeof window.updateRace === "function") window.updateRace();
+      if (typeof window.updateClass === "function") window.updateClass();
+      if (typeof window.updateSubclassDropdown === "function") window.updateSubclassDropdown();
+      if (typeof window.updateName === "function") window.updateName();
+      if (typeof window.updateStats === "function") window.updateStats();
+
+      if (typeof window.currentHP !== "undefined") {
+        window.currentHP = player.hp;
+      }
+      if (typeof window.maxHP !== "undefined") {
+        window.maxHP = player.maxHp;
+      }
+      if (typeof window.updateHealthBar === "function") {
+        window.updateHealthBar(false);
+      } else {
+        const healthText = document.getElementById("healthText");
+        if (healthText) healthText.textContent = `${player.hp}/${player.maxHp}`;
+      }
+    }
+
+    function setD20ReadOnly(readOnly) {
+      const controls = d20Mount.querySelectorAll("input, select, textarea, button");
+      controls.forEach((el) => {
+        el.disabled = readOnly;
+      });
+
+      const closeButtons = d20Mount.querySelectorAll(".close-button");
+      closeButtons.forEach((el) => {
+        el.disabled = false;
+      });
+    }
+
+    function syncOpenPlayerFromD20() {
+      const openId = sessionState.openPlayerId;
+      if (!openId) return;
+      const player = sessionState.players.find((p) => p.id === openId);
+      if (!player || !canEdit(player) || !d20Loaded) return;
+
+      const snap = getOpenD20Snapshot();
+      player.name = snap.name;
+      player.level = snap.level;
+      player.race = snap.race;
+      player.className = snap.className;
+      player.currency = snap.currency;
+      player.portrait = snap.portrait;
+      player.hp = snap.hp;
+      player.maxHp = snap.maxHp;
+      player.cardBackground = snap.cardBackground || "";
+      player.actions = snap.actions;
+      layoutCards();
+    }
+
+    function startLiveSync() {
+      stopLiveSync();
+      liveSyncTimer = setInterval(syncOpenPlayerFromD20, 80);
+    }
+
+    function stopLiveSync() {
+      if (!liveSyncTimer) return;
+      clearInterval(liveSyncTimer);
+      liveSyncTimer = null;
+    }
+
+    async function openEditorForPlayer(playerId) {
+      const player = sessionState.players.find((p) => p.id === playerId);
+      if (!player) return;
+
+      const editable = canEdit(player);
+      sessionState.openPlayerId = player.id;
+      editorTitle.textContent = `${player.name || "Character Name"} Card`;
+      editorOverlay.classList.add("open");
+      editorOverlay.setAttribute("aria-hidden", "false");
+
+      try {
+        d20Mount.innerHTML = `<div style="padding:18px;color:#f0f0f0;font-family:'Segoe UI',sans-serif;">Loading character card...</div>`;
+        await loadD20MarkupAndScripts();
+        hydrateD20FromPlayer(player);
+        setD20ReadOnly(!editable);
+        if (editable) {
+          startLiveSync();
+        } else {
+          stopLiveSync();
+        }
+      } catch (err) {
+        stopLiveSync();
+        d20Mount.innerHTML = `<div style="padding:18px;color:#ffb3b3;font-family:'Segoe UI',sans-serif;">Could not load D20 card in this mode. Run from a local server, then click the mini card again.</div>`;
+        console.error("Failed to open D20 editor", err);
+      }
+    }
+
+    function closeEditor() {
+      syncOpenPlayerFromD20();
+      stopLiveSync();
+      sessionState.openPlayerId = null;
+      editorOverlay.classList.remove("open");
+      editorOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    closeEditorBtn.addEventListener("click", closeEditor);
+    editorOverlay.addEventListener("click", (event) => {
+      if (event.target === editorOverlay) closeEditor();
+    });
+
+    d20Mount.addEventListener("input", () => {
+      syncOpenPlayerFromD20();
+    }, true);
+
+    d20Mount.addEventListener("change", () => {
+      syncOpenPlayerFromD20();
+    }, true);
+
+    d20Mount.addEventListener("click", () => {
+      setTimeout(syncOpenPlayerFromD20, 0);
+    }, true);
+
+    window.addEventListener("resize", layoutCards);
+
+    loadSessionPlayers();
+    layoutCards();
+    saveSessionPlayers();
+  </script>
+</body>
+</html>
