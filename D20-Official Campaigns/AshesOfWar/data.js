@@ -949,6 +949,15 @@ window.D20_CAMPAIGN_DATA = {
                             description: "Teleport a short distance and gain +2 to dodge for 1 turn."
                         }
                     ]
+                },
+                {
+                    name: "Unfamiliar Pact",
+                    passive: {
+                        name: "Curiosity Deal",
+                        icon: "twirly-flower.png",
+                        type: "class-sub-passive",
+                        description: "Throughout The Campaign; Curiosity will show up and give world altering gifts that may appear and disappear"
+                    }
                 }
             ]
         },
