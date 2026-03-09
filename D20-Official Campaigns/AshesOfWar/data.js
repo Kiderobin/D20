@@ -916,19 +916,19 @@ window.D20_CAMPAIGN_DATA = {
                     ]
                 },
                 {
-                    name: "Great Old One Pact",
+                     name: "Unfamiliar Pact",
                     passive: {
-                        name: "Mind Whisper",
-                        icon: "telepathy.png",
+                        name: "Curiosity Deal",
+                        icon: "twirly-flower.png",
                         type: "class-sub-passive",
-                        description: "Gain +2 to mental manipulation and psychic checks."
+                        description: "Throughout The Campaign; Curiosity will show up and give world altering gifts that may appear and disappear"
                     },
                     skills: [
                         {
                             name: "Madness Gaze",
                             icon: "eldritch-eye.png",
                             type: "class-sub-skill",
-                            description: "Cause an enemy to become confused, attacking randomly for 1 turn."
+                            description: "Cause an enemy to become Curious, attacking randomly for 1 turn."
                         }
                     ]
                 },
@@ -949,15 +949,6 @@ window.D20_CAMPAIGN_DATA = {
                             description: "Teleport a short distance and gain +2 to dodge for 1 turn."
                         }
                     ]
-                },
-                {
-                    name: "Unfamiliar Pact",
-                    passive: {
-                        name: "Curiosity Deal",
-                        icon: "twirly-flower.png",
-                        type: "class-sub-passive",
-                        description: "Throughout The Campaign; Curiosity will show up and give world altering gifts that may appear and disappear"
-                    }
                 }
             ]
         },
